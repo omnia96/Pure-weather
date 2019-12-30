@@ -1,10 +1,14 @@
 <script lang="ts">
     import Vue from 'vue';
+    import { appService, systemInfo } from './App.module';
     export default Vue.extend({
         mpType: 'app',
         onLaunch() {
             console.log('App Launch')
             uni.hideTabBar()
+            appService.getSystemInfo()
+            console.log(systemInfo);
+            console.log(appService.systemInfo);
         },
         onShow() {
             console.log('App Show')

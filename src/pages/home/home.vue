@@ -389,7 +389,8 @@ import IconFreecnsComponentVue from '../../components/IconFreecns/IconFreecns.co
 import TxMap from '../../libs/qqmap';
 import Data from "../../libs/data.js";
 import Cache from "../../libs/cache.js";
-	import Time from "../../libs/time.js";
+import Time from "../../libs/time.js";
+
 export default Vue.extend({
     components:{
         IconAwesomeComponentVue,
@@ -406,7 +407,7 @@ export default Vue.extend({
             OneWeekWeather:null,
             CityImage:null,
             TemperatureStatus:true,
-            MainSwiper:undefined||null||0,
+            MainSwiper:0,
             StarCityList:{}||undefined,
             NavigationBarItems:[
                 {icon: 'fa-home',title: '首页',path: '../home/home',selected: true},
@@ -428,6 +429,12 @@ export default Vue.extend({
         this.MainSwiper = 0
     },
     methods:{
+        MainSwiperChange(e:any){
+            let current = e.detail.current
+            this.CityImage = null
+            this.MainSwiper = 0
+            this.StarCityData(current)
+        },
         SetToday(){
             let date = new Date()
             let month = date.getMonth() + 1
@@ -653,6 +660,22 @@ export default Vue.extend({
             let status = e.currentTarget.dataset.id
             this.TemperatureStatus = status
         },
+        async StarCityData(current:any){
+            let StarCityList = Cache.get("StarCityList")
+            let citycode = StarCityList[current].citycode
+            this.Address = StarCityList[current].cityname
+            this.Cache_Is(citycode)
+            let cityimage = Data.CityImage()
+            if(current == 0){
+                for(const name in cityimage){
+                    StarCityList[current].cityname.city == name? this.CityImage = cityimage[name]:""
+                }
+            }else{
+                for(const name in cityimage){
+                    name.indexOf(StarCityList[current].cityname.leader) != -1? this.CityImage = cityimage[name]:""
+                }
+            }
+        }
     }
 })
 </script>
