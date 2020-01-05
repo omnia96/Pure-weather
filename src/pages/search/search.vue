@@ -112,13 +112,14 @@
 	import Cache from "../../libs/cache.js"
     import Vue from 'vue'
     import IconAwesomeComponentVue from '../../components/IconAwesome/IconAwesome.component.vue'
-import { appService,systemInfo } from '../../App.module'
+	import { AppService } from '../../App.service'
+	const appService: AppService = new AppService();
     export default Vue.extend({
 		data() {
 			return {
 				Index:{},
 				SearchHistory:null,
-				statusBarHeight:0
+				statusBarHeight: appService.systemInfo.statusBarHeight
 			}
 		},
 		components:{
@@ -126,10 +127,7 @@ import { appService,systemInfo } from '../../App.module'
         },
 		onLoad() {
 			let SearchHistory = Cache.get("SearchHistory")
-			SearchHistory == false? Cache.set("SearchHistory",[]):this.SearchHistory = SearchHistory
-			this.statusBarHeight = systemInfo.statusBarHeight
-			console.log(systemInfo);
-			
+			SearchHistory == false? Cache.set("SearchHistory",[]):this.SearchHistory = SearchHistory	
 		},
 		methods:{
 			SetIndex(e:any){

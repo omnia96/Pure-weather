@@ -386,11 +386,12 @@ import Vue from 'vue'
 import IconAwesomeComponentVue from '../../components/IconAwesome/IconAwesome.component.vue';
 import NavigationComponentVue from '../../components/Navigation/Navigation.component.vue';
 import IconFreecnsComponentVue from '../../components/IconFreecns/IconFreecns.component.vue';
-import TxMap from '../../libs/qqmap';
-import Data from "../../libs/data.js";
-import Cache from "../../libs/cache.js";
-import Time from "../../libs/time.js";
-
+import TxMap from '../../libs/qqmap.js';
+import Data from '../../libs/data.js';
+import Cache from '../../libs/cache.js';
+import Time from '../../libs/time.js';
+import { AppService } from '../../App.service';
+const appService: AppService = new AppService();
 export default Vue.extend({
     components:{
         IconAwesomeComponentVue,
@@ -399,7 +400,7 @@ export default Vue.extend({
     },
     data(){
         return {
-            StatusBarHeight:0,
+            StatusBarHeight:appService.systemInfo.statusBarHeight,
             Today: undefined||{},
             Address:null,
             StartupStatus: true,
@@ -416,7 +417,6 @@ export default Vue.extend({
         }
     },
     onLoad(){
-        this.SetStatusBarHeight()
         this.GetCityCode()
     },
     onShow() {
@@ -445,12 +445,6 @@ export default Vue.extend({
                 date:day,
                 hours:hours
             }
-        },
-        async SetStatusBarHeight(){
-            let result:any = await uni.getSystemInfo()
-            console.log(result);
-            let statusBarHeight:number = result[1].statusBarHeight
-            this.StatusBarHeight = statusBarHeight
         },
         GetAddress(location:any){
 				let txmap = new TxMap({key : 'QG2BZ-4OS3U-QNUVG-4RYJG-C54ZZ-3ZFCW'})
