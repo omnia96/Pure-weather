@@ -1,19 +1,9 @@
-export class AppService {
-    systemInfo:SystemInfo = {};
-    constructor() {
-        this.getSystemInfo()
-    }
-    async getSystemInfo() {
-        let result:Result<SystemInfo> = <Result<SystemInfo>> <unknown>await uni.getSystemInfo()
-        this.systemInfo = result[1]
-    }
-}
-interface Result<T> {
+export interface Result<T> {
     [index:number]:T|any
     length:number
     nv_length:number
 }
-interface SystemInfo {
+export interface SystemInfo {
     SDKVersion?:string
     batteryLevel?:number
     benchmarkLevel?:number

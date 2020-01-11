@@ -112,14 +112,13 @@
 	import Cache from "../../libs/cache.js"
     import Vue from 'vue'
     import IconAwesomeComponentVue from '../../components/IconAwesome/IconAwesome.component.vue'
-	import { AppService } from '../../App.service'
-	const appService: AppService = new AppService();
+	import { systemInfoService } from '../../service/service.module'
     export default Vue.extend({
 		data() {
 			return {
 				Index:{},
 				SearchHistory:null,
-				statusBarHeight: appService.systemInfo.statusBarHeight
+				statusBarHeight: systemInfoService.systemInfo.statusBarHeight
 			}
 		},
 		components:{

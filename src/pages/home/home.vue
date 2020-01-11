@@ -390,8 +390,7 @@ import TxMap from '../../libs/qqmap.js';
 import Data from '../../libs/data.js';
 import Cache from '../../libs/cache.js';
 import Time from '../../libs/time.js';
-import { AppService } from '../../App.service';
-const appService: AppService = new AppService();
+import { systemInfoService } from '../../service/service.module';
 export default Vue.extend({
     components:{
         IconAwesomeComponentVue,
@@ -400,7 +399,7 @@ export default Vue.extend({
     },
     data(){
         return {
-            StatusBarHeight:appService.systemInfo.statusBarHeight,
+            StatusBarHeight: systemInfoService.systemInfo.statusBarHeight,
             Today: undefined||{},
             Address:null,
             StartupStatus: true,
@@ -418,6 +417,7 @@ export default Vue.extend({
     },
     onLoad(){
         this.GetCityCode()
+        console.log();
     },
     onShow() {
         this.SetToday()
