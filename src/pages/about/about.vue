@@ -63,7 +63,7 @@
 </style>
 <template>
     <div class="page">
-		<view class="status-bar" :style="'height:'+ data.statusBarHeight + 'px;'"></view>
+		<view class="status-bar" :style="'height:'+ statusBarHeight + 'px;'"></view>
 		<view class="container">
 			<view class="header">
 				<view class="icon"><IconFreecns icon="Cumulus-Cloud" color="#2196f3" size="20px"/></view>
@@ -73,7 +73,7 @@
 			<view class="logo">
 				<icon-freecns-component-vue icon="Cumulus-Cloud" color="#2196f3" size="14vw"/>
 			</view>
-			<view class="version">Pure · 简天气 {{data.version}}</view>
+			<view class="version">Pure · 简天气 {{version}}</view>
 			<view class="group">
 				<view class="item" @tap="opneSetting">
 					<icon-awesome-component-vue class="icon" icon="fa-lock"/>
@@ -87,7 +87,7 @@
                 </button>
 			</view>
 		</view>
-        <navigation-component-vue :StatusBarHeight="data.statusBarHeight" :NavigationBarItems="data.navigationBarItems"/>
+        <navigation-component-vue :StatusBarHeight="statusBarHeight" :NavigationBarItems="navigationBarItems"/>
     </div>
 </template>
 <script lang="ts">
@@ -95,7 +95,8 @@
     import NavigationComponentVue from '../../components/Navigation/Navigation.component.vue'
     import IconFreecnsComponentVue from '../../components/IconFreecns/IconFreecns.component.vue'
     import IconAwesomeComponentVue from '../../components/IconAwesome/IconAwesome.component.vue'
-    import {data} from './about.module'
+    import { version } from '../../config/config.module'
+    import { systemInfoService } from '../../service/service.module'
     export default Vue.extend({
         components:{
             NavigationComponentVue,
@@ -104,7 +105,12 @@
         },
         data(){
             return {
-                data: data
+                version: version,
+                statusBarHeight: systemInfoService.systemInfo.statusBarHeight,
+                navigationBarItems:[
+                    {icon: 'fa-home',title: '首页',path: '../home/home',selected: false},
+                    {icon: 'fa-exclamation-circle',title: '关于',path: '../about/about',selected: true}
+                ]
             }
         },
         methods: {

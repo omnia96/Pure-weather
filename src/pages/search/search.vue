@@ -69,7 +69,7 @@
 				background rgba(0,0,0,0.1)
 </style>
 <template>
-	<view class="page" :style="'padding-top:' + statusBarHeight + 'px;'">
+	<view class="page">
 		<view class="container">
 			<view class="search">
 				<input type="text" @input="SetIndex">

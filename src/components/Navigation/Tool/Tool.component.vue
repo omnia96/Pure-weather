@@ -1,3 +1,11 @@
+<!--
+ * @Author: Omnia96
+ * @Date: 2020-01-13 16:22:55
+ * @LastEditors: Omnia96
+ * @LastEditTime: 2020-01-13 17:11:43
+ * @Description: 
+ * @FilePath: \pure-weather\src\components\Navigation\Tool\Tool.component.vue
+ -->
 <style>
 	.Navigation-Tool{
 		width:100vw;
@@ -64,7 +72,7 @@
 			},
 			GoToStar(){
 				uni.navigateTo({
-					url:"../Star/Star"
+					url:"../star/star"
 				})
 			}
 		}

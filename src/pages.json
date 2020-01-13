@@ -1,9 +1,9 @@
 {
 	"pages": [
-		{"path": "pages/home/home"},
-		{"path": "pages/about/about"},
-		{"path" : "pages/search/search"}
-        ,{"path" : "pages/star/star"}
+		{"path": "pages/home/home","style":{"navigationStyle":"custom"}},
+		{"path": "pages/about/about","style":{"navigationStyle":"custom"}},
+		{"path" : "pages/search/search","style":{"navigationBarTitleText":"搜索"}},
+		{"path" : "pages/star/star","style":{"navigationBarTitleText":"城市"}}
 	],
 	"tabBar":{
 		"list": [
@@ -14,8 +14,8 @@
 	"globalStyle": {
 		"navigationBarTextStyle": "black",
 		"navigationBarTitleText": "uni-app",
-		"navigationBarBackgroundColor": "#F8F8F8",
+		"navigationBarBackgroundColor": "#ffffff",
 		"backgroundColor": "#F8F8F8",
-		"navigationStyle":"custom"
+		"navigationStyle":"default"
 	}
 }

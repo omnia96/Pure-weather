@@ -1,7 +1,22 @@
-<style lang="stylus" scoped>
+<style lang="stylus">
 	@import "~@/static/styles/standards/font-size.styl";
 	@import "~@/static/styles/standards/font-weight.styl";
 	@import "~@/static/styles/standards/font-color.styl";
+	@keyframes expand {
+		from{
+			width: 0px;
+		}
+	}
+	@keyframes shrink {
+		to{
+			width: 0px;
+		}
+	}
+	@keyframes rotate { 
+		to{
+			transform: rotate(360deg);
+		}
+	}
 	.Navigation
 		width 100vw
 		position: fixed;
@@ -60,16 +75,6 @@
 			.RelativeField
 				width: 100%;
 				flex: 1;
-
-	@keyframes expand
-		from
-			width: 0px;
-	@keyframes shrink
-		to
-			width: 0px;
-	@keyframes rotate
-		to
-			transform: rotate(360deg);
 
 </style>
 <template>
