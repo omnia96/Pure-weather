@@ -38,39 +38,47 @@
 </template>
 <script lang="ts">
 import Vue from 'vue'
-import Cache from "../../libs/cache.js"
 import IconAwesomeComponentVue from '../../components/IconAwesome/IconAwesome.component.vue'
+import { StorageService } from '../../service/storage/storage.service'
+import { storages } from '../../config/config.module'
 export default Vue.extend({
     data() {
-			return {
-				StarCityList:null
-			}
-		},
-		components:{IconAwesomeComponentVue},
-		onLoad(){
-			let StarCityList = Cache.get("StarCityList")
-			this.StarCityList = StarCityList
-		},
-		methods:{
-			DeleteThis(e:any){
-				let index = e.currentTarget.dataset.index
-				let item = e.currentTarget.dataset.item
-				let StarCityList = []
-				StarCityList = Cache.get("StarCityList")
-				StarCityList.splice(index,1)
-				this.StarCityList = StarCityList
-				let title = ""
-				item.cityname.province != item.cityname.leader? title = title + item.cityname.province + "-":title = title
-				item.cityname.leader != item.cityname.city? title = title + item.cityname.leader + "-":title = title,
-				title = title + item.cityname.city
-				uni.showToast({
-					icon:"none",
-					title:title + "已从收藏城市列表中删除"
-				})
-				Cache.set("StarCityList",StarCityList)
-				Cache.remove("RealTimeWeather-" + item.citycode)
-				Cache.remove("OneWeekWeather-" + item.citycode)
-			}
+		let StarCityList: any;
+		return {
+			StarCityList
 		}
+	},
+	components:{IconAwesomeComponentVue},
+	onLoad(){
+		new StorageService(storages.starCityList).get().then(res => {
+			this.StarCityList = res;
+		});
+	},
+	methods:{
+		DeleteThis(e:any){
+			let index = e.currentTarget.dataset.index
+			let item = e.currentTarget.dataset.item
+			let title = ""
+			item.cityname.province != item.cityname.leader? title = title + item.cityname.province + "-":title = title
+			item.cityname.leader != item.cityname.city? title = title + item.cityname.leader + "-":title = title,
+			title = title + item.cityname.city
+			const storageService = new StorageService(storages.starCityList);
+			storageService.get().then(res => {
+				res.splice(index,1);
+				this.StarCityList = res;
+				if(storageService.storage) {
+					storageService.storage.value = res;
+				}
+				storageService.set().then(res => {
+					storageService.remove().then(res=>{
+						uni.showToast({
+							icon:"none",
+							title:title + "已从收藏城市列表中删除"
+						})
+					});
+				});
+			});
+		}
+	}
 })
 </script>
