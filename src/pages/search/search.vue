@@ -127,6 +127,7 @@ import { storages } from '../../config/config.module'
         },
 		onLoad() {
 			const storageService = new StorageService(storages.searchHistory);
+			console.log();
 			storageService.get().then(res => {
 				this.SearchHistory = res;
 			}).catch(err => {

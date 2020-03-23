@@ -1,4 +1,6 @@
 <style lang="stylus" scoped>
+.page
+    background #ffffff
     .status-bar
         width 100%
         position fixed
@@ -7,32 +9,33 @@
         z-index 1
     .header
         width: 100%
-        height: 40px
+        height: 80upx
         display: flex
         justify-content: center
         align-items: center
         .icon
-            width: 40px;
-            height: 40px;
+            width: 80upx;
+            height: 80upx;
         .name
-            font-size: 16px;
+            font-size: 32upx;
             margin-left: 2vw;
             margin-right: 2vw;
             font-weight: bold;
             color: #9e9e9e;
         .current
-            font-size: 16px;
+            font-size: 32upx;
             font-weight: bold;
     .card
-        width: 94vw
+        width: 100%
         height: auto
+        padding 0 30upx
         .header
             width: 100%;
-            height: 40px;
+            height: 80upx;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            font-size: 16px;
+            font-size: 32upx;
             font-weight: bold;
             .address
                 display: flex;
@@ -45,13 +48,13 @@
                     text-overflow: ellipsis;
                     white-space: nowrap;
                     max-width: 45vw;
-                    font-size: 14px;
+                    font-size: 28upx;
         .main
-	        width: 90vw;
-	        padding: 2vw;
-	        box-shadow:  0 2px 4px rgba(0,0,0,0.16),0 2px 4px rgba(0,0,0,0.23);
+	        width: 100%;
+	        padding: 20upx
+	        box-shadow:  0 4upx 8upx rgba(0,0,0,0.16),0 4upx 8upx rgba(0,0,0,0.23);
     .today-weather
-        height: 19.5vw;
+        height: auto
         display: flex;
         flex-direction: column;
         background-size: 100%,100%;
@@ -67,13 +70,13 @@
                 .status
                     display: flex;
                     width: 15vw;
-                    height: 20px;
+                    height: 40upx;
                     align-items: center;
                     justify-content: center;
-                    font-size: 12px;
+                    font-size: 24upx;
                     view
                         width: 7.5vw;
-                        height: 20px;
+                        height: 40upx;
                         display: flex;
                         align-items: center;
                         justify-content: center;
@@ -84,7 +87,7 @@
                     display: flex;
                     align-items: center;
                     justify-content: center;
-                    font-size: 30px;
+                    font-size: 60upx;
             .type
                 height: 15vw;
                 display: flex;
@@ -93,16 +96,16 @@
                 justify-content: space-between;
                 margin-left: 2vw;
                 .title
-                    font-size: 25px;
+                    font-size: 50upx;
                 .temperature
                     display: flex;
-                    font-size: 12px;
+                    font-size: 24upx;
                     align-items: center;
                     view
                         margin-right: 1vw;
         .end
             display: flex;
-            font-size: 12px;
+            font-size: 24upx;
             .item
                 margin-right: 1vw;
     .today-air
@@ -110,52 +113,52 @@
         align-items: center;
         justify-content: space-between;
         .item
-            font-size: 12px;
+            font-size: 24upx;
             display: flex;
             flex-direction: column;
             align-items: center;
             .title
                 color: #9e9e9e;
             .content
-                font-size: 14px;
+                font-size: 28upx;
                 color: black;
     .today-tips
-        font-size: 14 
+        font-size: 28upx
     .hours
         width: 90vw;
-        height: 65px;
+        height: 130upx;
         white-space: nowrap;
-        line-height: 65px;
+        line-height: 130upx;
         .item
             display: inline-block;
             width: 18vw;
-            height: 65px;
+            height: 130upx;
             text-align: center;
             vertical-align: middle;
             .title
-                font-size: 12px;
+                font-size: 24upx;
                 font-weight: bold;
                 color: #9E9E9E;
-                height: 20px;
-                line-height: 20px;
+                height: 40upx;
+                line-height: 40upx;
             .weather
-                font-size: 14px;
+                font-size: 28upx;
                 font-weight: bold;
-                height: 25px;
-                line-height: 25px;
+                height: 50upx;
+                line-height: 50upx;
             .tem
-                font-size: 12px;
+                font-size: 24upx;
                 font-weight: bold;
-                height: 20px;
-                line-height: 20px;
+                height: 40upx;
+                line-height: 40upx;
         .date
-            width: 40px;
-            height: 40px;
-            line-height: 40px;
+            width: 80upx;
+            height: 80upx;
+            line-height: 80upx;
             display: inline-block;
             vertical-align: middle;
             color: #9E9E9E;
-            font-size: 16px;
+            font-size: 32upx;
             font-weight: bold;
             background: rgba(0,0,0,0.05);
     .week-weather
@@ -168,21 +171,21 @@
             flex-direction: column;
             align-items: center;
             justify-content: flex-start;
-            font-size: 14px;
+            font-size: 28upx;
             font-weight: bold;
             view
-                min-height: 25px;
+                min-height: 50upx;
                 display: flex;
                 align-items: center;
                 justify-content: center;
             .weather
                 writing-mode: tb-rl;
-                height: 80px;
+                height: 160upx;
                 white-space:nowrap;
                 display: flex;
                 justify-content: center;
                 align-items: center;
-                font-size: 12px;
+                font-size: 24upx;
     .index
         display: flex;
         align-items: center;
@@ -194,17 +197,17 @@
             flex-direction: column;
             align-items: center;
             justify-content: space-around;
-            font-size: 12px;
+            font-size: 24upx;
             margin-top: 2vw;
             margin-bottom: 2vw;
             .title
                 color: #9E9E9E;
-                height: 20px;
+                height: 40upx;
                 display: flex;
                 justify-content: center;
                 align-items: center;
             .level
-                height: 20px;
+                height: 40upx;
                 display: flex;
                 justify-content: center;
                 align-items: center;
@@ -215,16 +218,16 @@
             width: 100%;
     .copyright
         margin-top: 5vw;
-        font-size: 16px;
+        font-size: 32upx;
         color: #9e9e9e;
-        margin-bottom: 50px;
+        margin-bottom: 100upx;
 
 </style>
 <template>
     <div class="page">
         <div class="status-bar" :style="'height:' + StatusBarHeight + 'px;'"></div>
         <div class="container">
-            <view class="header" :style="'margin-top:calc(45px + '+StatusBarHeight+'px);'">
+            <view class="header animation-fade animation-slide-left" :style="'margin-top:calc(90rpx + '+StatusBarHeight+'px);'">
 				<view class="icon"><icon-freecns-component-vue icon="Cumulus-Cloud" color="#2196f3" size="20px"/></view>
 				<view class="name">Pure · 简天气</view>
 				<view class="current">首页</view>
@@ -233,7 +236,7 @@
 				<swiper-item v-for="(value,key) in StarCityList" v-bind:key="key">
 					<scroll-view scroll-y style="width: 100%; height: 100%;">
 						<view style="width: 100%;height: 100%;display: flex;flex-direction: column;align-items: center;">
-							<view class="card">
+							<view class="card animation-slide-left">
 								<view class="header">
 									<view>今日天气</view>
 									<view class="address">
@@ -271,7 +274,7 @@
 									</view>
 								</view>
 							</view>
-							<view class="card">
+							<view class="card animation-slide-left">
 								<view class="header">
 									<text>今日空气</text>
 									<text>{{RealTimeWeather.Air.Level}}</text>
@@ -295,7 +298,7 @@
 									</view>
 								</view>
 							</view>
-							<view class="card">
+							<view class="card animation-slide-left">
 								<view class="header">
 									<text>Tips</text>
 								</view>
@@ -303,7 +306,7 @@
 									<text>{{RealTimeWeather.Air.Tips}}</text>
 								</view>
 							</view>
-							<view class="card">
+							<view class="card animation-slide-left">
 								<view class="header">每小时</view>
 								<view class="main">
 									<scroll-view class="hours" scroll-x="true">
@@ -338,7 +341,7 @@
 									</scroll-view>
 								</view>
 							</view>
-							<view class="card">
+							<view class="card animation-slide-left">
 								<view class="header">
 									<view>一周天气</view>
 								</view>
@@ -352,7 +355,7 @@
 									</view>
 								</view>
 							</view>
-							<view class="card">
+							<view class="card animation-slide-left">
 								<view class="header">
 									<view>指数</view>
 								</view>
@@ -364,7 +367,7 @@
 									</view>
 								</view>
 							</view>
-							<view class="card">
+							<view class="card animation-slide-left">
 								<view class="header">
 									<view>广告</view>
 								</view>
@@ -386,12 +389,12 @@ import Vue from 'vue'
 import IconAwesomeComponentVue from '../../components/IconAwesome/IconAwesome.component.vue';
 import NavigationComponentVue from '../../components/Navigation/Navigation.component.vue';
 import IconFreecnsComponentVue from '../../components/IconFreecns/IconFreecns.component.vue';
-import TxMap from '../../libs/qqmap.js';
 import { systemInfoService } from '../../service/service.module';
 import { Time } from '../../libs/time';
 import { CityData } from '../../libs/cityData';
 import { StorageService } from '../../service/storage/storage.service';
 import { storages, routers } from '../../config/config.module';
+const QQMapWX = require('../../static/js/qqmap.js');
 export default Vue.extend({
     components:{
         IconAwesomeComponentVue,
@@ -418,7 +421,6 @@ export default Vue.extend({
     },
     onLoad(){
         this.GetCityCode()
-        console.log();
     },
     onShow() {
         this.SetToday()
@@ -451,7 +453,7 @@ export default Vue.extend({
             }
         },
         GetAddress(location:any){
-				let txmap = new TxMap({key : 'QG2BZ-4OS3U-QNUVG-4RYJG-C54ZZ-3ZFCW'})
+				let txmap = new QQMapWX({key : 'QG2BZ-4OS3U-QNUVG-4RYJG-C54ZZ-3ZFCW'})
 				return new Promise((resolve,reject)=>{
 					txmap.reverseGeocoder({
 						location:{
