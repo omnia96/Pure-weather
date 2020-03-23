@@ -387,10 +387,11 @@ import IconAwesomeComponentVue from '../../components/IconAwesome/IconAwesome.co
 import NavigationComponentVue from '../../components/Navigation/Navigation.component.vue';
 import IconFreecnsComponentVue from '../../components/IconFreecns/IconFreecns.component.vue';
 import TxMap from '../../libs/qqmap.js';
-import Data from '../../libs/data.js';
-import Cache from '../../libs/cache.js';
-import Time from '../../libs/time.js';
 import { systemInfoService } from '../../service/service.module';
+import { Time } from '../../libs/time';
+import { CityData } from '../../libs/cityData';
+import { StorageService } from '../../service/storage/storage.service';
+import { storages, routers } from '../../config/config.module';
 export default Vue.extend({
     components:{
         IconAwesomeComponentVue,
@@ -422,8 +423,11 @@ export default Vue.extend({
     onShow() {
         this.SetToday()
         this.MainSwiper = 0
-        let StarCityList = Cache.get("StarCityList")
-        this.StarCityList = StarCityList
+        // let StarCityList = Cache.get("StarCityList")
+        // this.StarCityList = StarCityList
+        new StorageService(storages.starCityList).get().then(res => {
+            this.StarCityList = res;
+        });
     },
     onHide() {
         this.MainSwiper = 0
@@ -461,48 +465,63 @@ export default Vue.extend({
 				})
 			},
         async GetCityCode(){
-				let location:any = await uni.getLocation({type:"gcj02"})
-				location.length > 1 ? location = location[1] : location = null
-				let cityname:any = null
-				location != null ? cityname = await this.GetAddress(location) : cityname = {"province":"北京","city":"北京市","district":"北京","street":"天安门"},
-				cityname["icon"] = true
-				this.Address = cityname
-				let citylist = Data.CityList()
-				let keyword = cityname.province
-				citylist = this.cityis(keyword,citylist,"provinceZh")
-				keyword = cityname.city
-				citylist = this.cityis(keyword,citylist,"leaderZh")
-				keyword = cityname.district
-				citylist = this.cityis(keyword,citylist,"cityZh")
-				let citycode = citylist[0].id
-				let StarCityList = Cache.get("StarCityList")
-				StarCityList == false? (Cache.set("StarCityList",[{citycode:citycode,cityname:cityname}]),this.StarCityList = [{citycode:citycode,cityname:cityname}]):(StarCityList[0]["citycode"] = citycode,StarCityList[0]["cityname"] = cityname,this.StarCityList = StarCityList,Cache.set("StarCityList",StarCityList))
-				this.Cache_Is(citycode)
-				let cityimage:any = Data.CityImage()
-				for(const name in cityimage){
-					cityname.city == name? this.CityImage = cityimage[name]:""
-				}
+            let location:any = await uni.getLocation({type:"gcj02"})
+            location.length > 1 ? location = location[1] : location = null
+            let cityname:any = null
+            location != null ? cityname = await this.GetAddress(location) : cityname = {"province":"北京","city":"北京市","district":"北京","street":"天安门"},
+            cityname["icon"] = true
+            this.Address = cityname
+            let citylist = new CityData().citys;
+            let keyword = cityname.province
+            citylist = this.cityis(keyword,citylist,"provinceZh")
+            keyword = cityname.city
+            citylist = this.cityis(keyword,citylist,"leaderZh")
+            keyword = cityname.district
+            citylist = this.cityis(keyword,citylist,"cityZh")
+            let citycode = citylist[0].id
+            // let StarCityList = Cache.get("StarCityList")
+            const storageService = new StorageService(storages.starCityList);
+            storageService.get().then((res) => {
+                this.StarCityList = res;
+            }).catch(err => {
+                storages.starCityList.value = [{citycode:citycode,cityname:cityname}];
+                this.StarCityList = [{citycode:citycode,cityname:cityname}];
+                storageService.set().then(res => {
+                    console.log(res);
+                }).catch(err => {
+                    console.log(err);
+                });
+            });
+            this.Cache_Is(citycode)
         },
         cityis(keyword:any,citylist:any,key:string){
-				keyword = keyword.split("")
-				let word = ""
-				for (const index in keyword){
-					let array = []
-					word = word + keyword[index]
-					for(const child in citylist){
-						citylist[child][key].indexOf(word) != -1? array.push(citylist[child]):""
-					}
-					array.length > 0? citylist = array : ""
-				}
-				return citylist
+            keyword = keyword.split("")
+            let word = ""
+            for (const index in keyword){
+                let array = []
+                word = word + keyword[index]
+                for(const child in citylist){
+                    citylist[child][key].indexOf(word) != -1? array.push(citylist[child]):""
+                }
+                array.length > 0? citylist = array : ""
+            }
+            return citylist
         },
         Cache_Is(citycode:any){
-				let RealTimeWeather = Cache.get("RealTimeWeather-" + citycode)
-				RealTimeWeather == false ? this.GetRealTimeWeather(citycode) : this.SetRealTimeWeather(RealTimeWeather,citycode)
-				let OneWeekWeather = Cache.get("OneWeekWeather-" + citycode)
-				OneWeekWeather == false ? this.GetOneWeekWeather(citycode) : this.SetOneWeekWeather(OneWeekWeather,citycode)
-				this.StartupStatus = false
-				
+                const realTimeWeatherStorageService = new StorageService(storages.realTimeWeather(citycode));
+                realTimeWeatherStorageService.get().then(res => {
+                    this.SetRealTimeWeather(res,citycode);
+                    this.StartupStatus = false
+                }).catch(err => {
+                    this.GetRealTimeWeather(citycode);
+                });
+                const oneWeekWeatherStorageService = new StorageService(storages.oneWeekWeather(citycode));
+                oneWeekWeatherStorageService.get().then(res => {
+                    this.SetOneWeekWeather(res,citycode);
+                    this.StartupStatus = false
+                }).catch(err => {
+                    this.GetOneWeekWeather(citycode);
+                });
         },
         async GetRealTimeWeather(citycode:any){
 				let result:any = await uni.request({url:"https://www.tianqiapi.com/api/?version=v61&appid=06369426&appsecret=VVM7jMR0",data:{cityid: citycode}})
@@ -542,8 +561,16 @@ export default Vue.extend({
 				let RH = parseInt(RealTimeWeather.Air.Humidity)
 				let AT = this.ReturnAT(T,V,RH)
 				RealTimeWeather["Temperature"]["Somatosensory"] = AT
-				this.RealTimeWeather = RealTimeWeather
-				Cache.set("RealTimeWeather-" + citycode,{"create_time":Time.CurrentTime(),"data":RealTimeWeather})
+                this.RealTimeWeather = RealTimeWeather
+                new StorageService(storages.realTimeWeather(
+                    citycode,
+                    {
+                        create_time: new Time().currentTime(),
+                        data: RealTimeWeather
+                    }
+                )).set().then(res => {
+                    console.log('缓存实时天气成功！');
+                });
 			},
 			async GetOneWeekWeather (citycode:any) {
 				let  result:any = await uni.request({url: 'https://www.tianqiapi.com/api/', data: {version:"v9",appid:"06369426",appsecret:"VVM7jMR0",cityid: citycode}})
@@ -591,18 +618,34 @@ export default Vue.extend({
 					}
 				}
 				console.log(OneWeekWeather)
-				this.OneWeekWeather = OneWeekWeather
-				Cache.set("OneWeekWeather-" + citycode,{"create_time":Time.CurrentTime(),"data":OneWeekWeather})
+                this.OneWeekWeather = OneWeekWeather
+                new StorageService(storages.oneWeekWeather(
+                    citycode,
+                    {
+                        create_time: new Time().currentTime(),
+                        data:OneWeekWeather
+                    }
+                )).set().then(res => {
+                    console.log('缓存一周天气成功!');
+                });
             },
         SetRealTimeWeather(RealTimeWeather:any,citycode:any){
             let create_time = RealTimeWeather.create_time
             let data = RealTimeWeather.data
-            Time.TimeDifference(create_time,Time.CurrentTime()) <= 30 ? this.RealTimeWeather = data : this.GetRealTimeWeather(citycode)
+            if (new Time().timeDifference(create_time, new Time().currentTime()) <= 30) {
+                this.RealTimeWeather = data
+            } else {
+                this.GetRealTimeWeather(citycode)
+            }
         },
         SetOneWeekWeather(OneWeekWeather:any,citycode:any){
             let create_time = OneWeekWeather.create_time
             let data = OneWeekWeather.data
-            Time.TimeDifference(create_time,Time.CurrentTime()) <= 90 ? this.OneWeekWeather = data : this.GetOneWeekWeather(citycode)
+            if (new Time().timeDifference(create_time, new Time().currentTime()) <= 90) {
+                this.OneWeekWeather = data
+            } else {
+                this.GetOneWeekWeather(citycode)
+            }
         },
         ReturnAT(T:any,V:any,RH:any){
             let e = (RH / 100) * 6.105 * Math.exp((17.27 * T)/(237.7 + T))
@@ -655,20 +698,10 @@ export default Vue.extend({
             this.TemperatureStatus = status
         },
         async StarCityData(current:any){
-            let StarCityList = Cache.get("StarCityList")
-            let citycode = StarCityList[current].citycode
-            this.Address = StarCityList[current].cityname
-            this.Cache_Is(citycode)
-            let cityimage = Data.CityImage()
-            if(current == 0){
-                for(const name in cityimage){
-                    StarCityList[current].cityname.city == name? this.CityImage = cityimage[name]:""
-                }
-            }else{
-                for(const name in cityimage){
-                    name.indexOf(StarCityList[current].cityname.leader) != -1? this.CityImage = cityimage[name]:""
-                }
-            }
+            new StorageService(storages.starCityList).get().then(res => {
+                this.Cache_Is(res[current].citycode);
+                this.Address = res[current].cityname;
+            });
         }
     }
 })

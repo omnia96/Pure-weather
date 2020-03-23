@@ -108,11 +108,12 @@
 	</view>
 </template>
 <script lang="ts">
-	import Data from "../../libs/data.js"
-	import Cache from "../../libs/cache.js"
-    import Vue from 'vue'
-    import IconAwesomeComponentVue from '../../components/IconAwesome/IconAwesome.component.vue'
-	import { systemInfoService } from '../../service/service.module'
+import Vue from 'vue'
+import IconAwesomeComponentVue from '../../components/IconAwesome/IconAwesome.component.vue'
+import { systemInfoService } from '../../service/service.module'
+import { CityData } from '../../libs/cityData'
+import { StorageService } from '../../service/storage/storage.service'
+import { storages } from '../../config/config.module'
     export default Vue.extend({
 		data() {
 			return {
@@ -125,15 +126,19 @@
             IconAwesomeComponentVue
         },
 		onLoad() {
-			let SearchHistory = Cache.get("SearchHistory")
-			SearchHistory == false? Cache.set("SearchHistory",[]):this.SearchHistory = SearchHistory	
+			const storageService = new StorageService(storages.searchHistory);
+			storageService.get().then(res => {
+				this.SearchHistory = res;
+			}).catch(err => {
+				storageService.set();
+			});
 		},
 		methods:{
 			SetIndex(e:any){
 				let value = e.detail.value
 				let Index = []
 				if(value.length > 0){
-					let CityList = Data.CityList()
+					let CityList = new CityData().citys;
 					for(const key in CityList){
 						CityList[key]["provinceZh"].indexOf(value) != -1 || CityList[key]["leaderZh"].indexOf(value) != -1 || CityList[key]["cityZh"].indexOf(value) != -1? Index.push(CityList[key]):""
 					}
@@ -144,14 +149,18 @@
 			},
 			SelectCity(e:any){
 				let value = e.currentTarget.dataset.value
-				let SearchHistory = []
-				SearchHistory = Cache.get("SearchHistory")
-				SearchHistory.push(value)
-				SearchHistory.length > 4? SearchHistory.splice(0,1):""
-				this.SearchHistory = SearchHistory
-				this.Index = {}
-				this.AddToStar(value)
-				Cache.set("SearchHistory",SearchHistory)
+				const storageService = new StorageService(storages.searchHistory);
+				storageService.get().then(res => {
+					res.push(value);
+					res.length > 4 ? res.splice(0,1) : ''
+					this.SearchHistory = res;
+					this.Index = {};
+					this.AddToStar(value);
+					if(storageService.storage) {
+						storageService.storage = res;
+					}
+					storageService.set();
+				});
 			},
 			AddThis(e:any){
 				let value = e.currentTarget.dataset.value
@@ -159,7 +168,6 @@
 			},
 			AddToStar(value:any){
 				let StarCityList = []
-				StarCityList = Cache.get("StarCityList")
 				let city = {
 					citycode:value.id,
 					cityname:{
@@ -169,14 +177,21 @@
 						city:value.cityZh
 					}
 				}
-				StarCityList.push(city)
-				if(StarCityList.length > 5){
-					StarCityList.splice(1,1)
-				}
-				Cache.set("StarCityList",StarCityList)
-				uni.navigateBack({
-					delta:1
-				})
+				const storageService = new StorageService(storages.searchHistory);
+				storageService.get().then(res => {
+					res.push(res);
+					if(res.length > 5) {
+						res.splice(1,1);
+					}
+					if(storageService.storage){
+						storageService.storage.value = res;
+					}
+					storageService.set().then(res => {
+						uni.navigateBack({
+							delta:1
+						})
+					});
+				});
 			}
 		}
 	})
