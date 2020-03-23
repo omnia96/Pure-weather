@@ -99,6 +99,7 @@
                     font-size: 50upx;
                 .temperature
                     display: flex;
+                    flex-direction: row
                     font-size: 24upx;
                     align-items: center;
                     view
@@ -200,6 +201,9 @@
             font-size: 24upx;
             margin-top: 2vw;
             margin-bottom: 2vw;
+            .icon
+                width: 50upx;
+                height: 50upx;
             .title
                 color: #9E9E9E;
                 height: 40upx;
@@ -361,7 +365,7 @@
 								</view>
 								<view class="main index">
 									<view class="item" v-for="(item,index) in OneWeekWeather[0].Index" v-bind:key="index" :id="item.desc" @tap="ShowIndexDesc">
-										<view class="icon"><IconAwesome :icon="item.icon" size="20px"/></view>
+										<view class="icon"><icon-awesome-component-vue :icon="item.icon" size="20px"/></view>
 										<view class="title">{{item.title}}</view>
 										<view class="level">{{item.level}}</view>
 									</view>

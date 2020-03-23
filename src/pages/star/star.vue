@@ -1,10 +1,10 @@
 <style lang="stylus" scoped>
-    .item
-        width 94vw
-        height 15vw
+	.item
+		width 100%
 		display flex
 		align-items center
 		justify-content space-between
+		height 15vw
 		padding-left 3vw
 		padding-right 3vw
 		.icon
@@ -17,6 +17,7 @@
 		.subtitle
 			font-size 0.9rem
 			font-weight 500
+
 	.current
 		border-bottom 1vw solid rgba(0,0,0,0.1)
 </style>
@@ -24,7 +25,7 @@
     <view class="page">
 		<view class="container">
 			<view class="current item">
-				<icon-awesome-component-vue class="icon" icon="fa-map-marker" size="6vw"/>
+				<icon-awesome-component-vue class="icon" icon="fa-map-marker" size="20px"/>
 				<view class="title">{{StarCityList[0].cityname.district}}-{{StarCityList[0].cityname.street}}</view>
 				<view class="subtitle">您当前位置</view>
 			</view>
