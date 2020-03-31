@@ -193,7 +193,7 @@
         justify-content: space-between;
         flex-wrap: wrap;
         .item
-            width: 30vw;
+            width: 28vw;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -348,6 +348,7 @@
 							<view class="card animation-slide-left">
 								<view class="header">
 									<view>一周天气</view>
+                                    <view @click="more(key)">更多</view>
 								</view>
 								<view class="main week-weather">
 									<view class="item" v-for="(item,index) in OneWeekWeather" v-bind:key="index" :style="Today.date == item.Date.Date? 'color:#2196f3;':'color:#000000;'">
@@ -364,7 +365,7 @@
 									<view>指数</view>
 								</view>
 								<view class="main index">
-									<view class="item" v-for="(item,index) in OneWeekWeather[0].Index" v-bind:key="index" :id="item.desc" @tap="ShowIndexDesc">
+									<view class="item" v-for="(item,index) in OneWeekWeather[0].Index" v-bind:key="index" :id="item.desc" @click="ShowIndexDesc(item.desc)">
 										<view class="icon"><icon-awesome-component-vue :icon="item.icon" size="20px"/></view>
 										<view class="title">{{item.title}}</view>
 										<view class="level">{{item.level}}</view>
@@ -707,6 +708,20 @@ export default Vue.extend({
             new StorageService(storages.starCityList).get().then(res => {
                 this.Cache_Is(res[current].citycode);
                 this.Address = res[current].cityname;
+            });
+        },
+        ShowIndexDesc(desc:string){
+            uni.showToast({
+                title: desc,
+                icon: 'none'
+            })
+        },
+        more(key: number){
+            // let address:any = this.Address;
+            let starCityList: any = this.StarCityList;
+            uni.navigateTo({
+                url:'./monthWeather/monthWeather?city=' + starCityList[key].citycode
+                
             });
         }
     }

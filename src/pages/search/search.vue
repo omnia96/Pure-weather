@@ -186,15 +186,16 @@ import { storages } from '../../config/config.module'
 						city:value.cityZh
 					}
 				}
-				const storageService = new StorageService(storages.searchHistory);
+				const storageService = new StorageService(storages.starCityList);
 				storageService.get().then(res => {
-					res.push(res);
-					if(res.length > 5) {
+					res.push(city);
+					if(res.length >= 5) {
 						res.splice(1,1);
 					}
 					if(storageService.storage){
 						storageService.storage.value = res;
 					}
+					console.log(res);
 					storageService.set().then(res => {
 						uni.navigateBack({
 							delta:1
