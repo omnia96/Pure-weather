@@ -1,10 +1,11 @@
 <style lang="stylus" scoped>
-    .item
-        width 94vw
-        height 15vw
+	.item
+		width 100%
+		height 100vw
 		display flex
 		align-items center
 		justify-content space-between
+		height 15vw
 		padding-left 3vw
 		padding-right 3vw
 		.icon
@@ -24,14 +25,16 @@
     <view class="page">
 		<view class="container">
 			<view class="current item">
-				<icon-awesome-component-vue class="icon" icon="fa-map-marker" size="6vw"/>
+				<icon-awesome-component-vue class="icon" icon="fa-map-marker" size="20px"/>
 				<view class="title">{{StarCityList[0].cityname.district}}-{{StarCityList[0].cityname.street}}</view>
 				<view class="subtitle">您当前位置</view>
 			</view>
-			<view class="item" v-for="(item,index) in StarCityList" v-bind:key="index" v-if="index > 0">
-				<icon-awesome-component-vue class="icon" icon="fa-ellipsis-v" size="6vw"/>
-				<view class="title">{{item.cityname.province != item.cityname.leader? item.cityname.province + "-":""}}{{item.cityname.leader != item.cityname.city? item.cityname.leader + "-":""}}{{item.cityname.city}}</view>
-				<icon-awesome-component-vue class="icon" icon="fa-trash-o" size="6vw" :data-index="index" :data-item="item" @tap="DeleteThis"/>
+			<view v-for="(item,index) in StarCityList" v-bind:key="index">
+				<div class="item" v-if="index > 0">
+					<icon-awesome-component-vue class="icon" icon="fa-ellipsis-v" size="6vw"/>
+					<view class="title">{{item.cityname.province != item.cityname.leader? item.cityname.province + "-":""}}{{item.cityname.leader != item.cityname.city? item.cityname.leader + "-":""}}{{item.cityname.city}}</view>
+					<icon-awesome-component-vue class="icon" icon="fa-trash-o" size="6vw" :data-index="index" :data-item="item" @tap="DeleteThis"/>
+				</div>
 			</view>
 		</view>
 	</view>

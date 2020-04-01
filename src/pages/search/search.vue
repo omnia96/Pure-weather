@@ -1,7 +1,7 @@
 <style lang="stylus" scoped>
 	.search
 		margin-top 1vw
-		width 96vw
+		width 100%
 		height 12vw
 		padding-left 2vw
 		padding-right 2vw
@@ -72,10 +72,10 @@
 	<view class="page">
 		<view class="container">
 			<view class="search">
-				<input type="text" @input="SetIndex">
-				<icon-awesome-component-vue class="icon" icon="fa-search" size="5vw" color="#333333"/>
+				<input type="text" @input="SetIndex" v-model="text">
+				<icon-awesome-component-vue class="icon" icon="fa-search" size="5vw" color="#333333" @tap="but"/>
 			</view>
-			<scroll-view class="index" scroll-y="true" v-if="Index != null">
+			<scroll-view class="index" scroll-y="true" v-if="Index.length != null">
 				<view v-for="(item,index) in Index" v-bind:key="index" :data-value="item" @tap="SelectCity">{{item.provinceZh != item.leaderZh? item.provinceZh + '-':''}}{{item.leaderZh != item.cityZh? item.leaderZh + '-':''}}{{item.cityZh}}</view>
 			</scroll-view>
 			<view class="history card">
@@ -117,6 +117,7 @@ import { storages } from '../../config/config.module'
     export default Vue.extend({
 		data() {
 			return {
+				text:"",
 				Index:{},
 				SearchHistory:null,
 				statusBarHeight: systemInfoService.systemInfo.statusBarHeight
@@ -124,7 +125,7 @@ import { storages } from '../../config/config.module'
 		},
 		components:{
             IconAwesomeComponentVue
-        },
+		},
 		onLoad() {
 			const storageService = new StorageService(storages.searchHistory);
 			console.log();
@@ -135,7 +136,14 @@ import { storages } from '../../config/config.module'
 			});
 		},
 		methods:{
+			but(){
+				console.log(this.text);
+				let Index = []
+				Index.push(this.text)
+				this.Index = Index
+			},
 			SetIndex(e:any){
+				console.log(e)
 				let value = e.detail.value
 				let Index = []
 				if(value.length > 0){
@@ -178,15 +186,16 @@ import { storages } from '../../config/config.module'
 						city:value.cityZh
 					}
 				}
-				const storageService = new StorageService(storages.searchHistory);
+				const storageService = new StorageService(storages.starCityList);
 				storageService.get().then(res => {
-					res.push(res);
-					if(res.length > 5) {
+					res.push(city);
+					if(res.length >= 5) {
 						res.splice(1,1);
 					}
 					if(storageService.storage){
 						storageService.storage.value = res;
 					}
+					console.log(res);
 					storageService.set().then(res => {
 						uni.navigateBack({
 							delta:1

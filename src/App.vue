@@ -1,7 +1,7 @@
 <script lang="ts">
     import Vue from 'vue';
     import { StorageService } from './service/storage/storage.service';
-import { storages } from './config/config.module';
+    import { storages } from './config/config.module';
     export default Vue.extend({
         mpType: 'app',
         onLaunch() {
@@ -19,4 +19,7 @@ import { storages } from './config/config.module';
 
 <style>
     /*每个页面公共css */
+    .page{
+        background: #ffffff;
+    }
 </style>

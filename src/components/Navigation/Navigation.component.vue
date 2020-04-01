@@ -50,7 +50,7 @@
 			flex-wrap: nowrap;
 			background: rgba(255,255,255,0.98);
 			.item
-				width: 66vw;
+				width: 100%;
 				padding-left: 2vw;
 				padding-right: 2vw;
 				height: 12vw;
@@ -87,7 +87,7 @@
 		<view class="sidebar" v-if="NavigationBarStatus == true" :style="'animation: '+ SwitchAnimation +' 1s;'">
 			<view class="item" v-for="(item,index) in NavigationBarItems" @tap="NavigationBarItemSelect" :id="index" v-bind:key="index" :style="item.selected == true? 'background:#2196f3;color:white;':''">
 				<view class="icon">
-					<IconAwesomeComponentVue :icon="item.icon" size="20px"/>
+					<IconAwesomeComponentVue :icon="item.icon" size="20px" :color="item.selected == true? 'white':''"/>
 				</view>
 				<view class="title">{{item.title}}</view>
 			</view>
