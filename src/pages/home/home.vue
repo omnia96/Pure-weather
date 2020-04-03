@@ -126,7 +126,7 @@
     .today-tips
         font-size: 28upx
     .hours
-        width: 90vw;
+        width: 100%;
         height: 130upx;
         white-space: nowrap;
         line-height: 130upx;
@@ -377,7 +377,12 @@
 									<view>广告</view>
 								</view>
 								<view class="main ad-bar">
+                                    <!-- #ifdef MP-WEIXIN -->
 									<ad unit-id="adunit-86ce23bbd3c7393e"></ad>
+                                     <!-- #endif -->
+                                     <!-- #ifdef MP-QQ -->
+									<ad unit-id="c5e6d691147cc2f04445eb0b5c84bf90" type="card"></ad>
+                                     <!-- #endif -->
 								</view>
 							</view>
 							<view class="copyright" >Powered By Omnia96</view>
@@ -386,6 +391,7 @@
 				</swiper-item>
 			</swiper>
         </div>
+        <start-up-component-vue v-if="StartupStatus"></start-up-component-vue>
         <navigation-component-vue :StatusBarHeight="StatusBarHeight" :NavigationBarItems="NavigationBarItems"/>
     </div>
 </template>
@@ -399,12 +405,14 @@ import { Time } from '../../libs/time';
 import { CityData } from '../../libs/cityData';
 import { StorageService } from '../../service/storage/storage.service';
 import { storages, routers } from '../../config/config.module';
+import StartUpComponentVue from '../../components/StartUp/StartUp.component.vue';
 const QQMapWX = require('../../static/js/qqmap.js');
 export default Vue.extend({
     components:{
         IconAwesomeComponentVue,
         IconFreecnsComponentVue,
-        NavigationComponentVue
+        NavigationComponentVue,
+        StartUpComponentVue
     },
     data(){
         return {
@@ -426,6 +434,9 @@ export default Vue.extend({
     },
     onLoad(){
         this.GetCityCode()
+        //#ifdef MP-QQ
+        uni.hideTabBar();
+        //#endif
     },
     onShow() {
         this.SetToday()

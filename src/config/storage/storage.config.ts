@@ -20,9 +20,16 @@ let searchHistory: Storage<any> = {
     key: 'SearchHistory',
     value: []
 };
+let monthWeatheradta = (citycode :string, value?: {create_time:string, data:any})=>{
+    return{
+        key: 'monthWeatheradta' + citycode,
+        value: value
+    }
+}
 export let storages = {
     starCityList,
     realTimeWeather,
     oneWeekWeather,
-    searchHistory
+    searchHistory,
+    monthWeatheradta
 };

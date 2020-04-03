@@ -1,31 +1,3 @@
-<template>
-	<view class="startup">
-    <view class="loading">
-      <IconFreecns icon="Cumulus-Sun" size="25vw" color="#ff9800"/>
-    </view>
-    <view class="startup-content">
-      <view class="content-logo">
-        <IconFreecns icon="Cumulus-Cloud" size="25px" color="#2196F3"/>
-      </view>
-      <view class="content-title">Pure · 简天气</view>
-    </view>
-  </view>
-</template>
-
-<script>
-	import IconFreecns from '@/components/IconFreecns.vue'
-	export default {
-		data() {
-			return {
-				
-			};
-		},
-		components:{
-			IconFreecns
-		}
-	}
-</script>
-
 <style>
 	.startup{
     width: 100vw;
@@ -72,3 +44,29 @@
     }
   }
 </style>
+
+<template>
+	<view class="startup">
+    <view class="loading">
+      <icon-freecns-component-vue icon="Cumulus-Sun" size="25vw" color="#ff9800"></icon-freecns-component-vue>
+    </view>
+    <view class="startup-content">
+      <view class="content-logo">
+        <icon-freecns-component-vue icon="Cumulus-Cloud" size="25px" color="#2196F3"></icon-freecns-component-vue>
+      </view>
+      <view class="content-title">Pure · 简天气</view>
+    </view>
+  </view>
+</template>
+<script lang="ts">
+import Vue from 'vue'
+import IconFreecnsComponentVue from '../IconFreecns/IconFreecns.component.vue';
+	export default Vue.extend({
+		data() {
+			return {};
+		},
+		components:{
+			IconFreecnsComponentVue
+		}
+	})
+</script>

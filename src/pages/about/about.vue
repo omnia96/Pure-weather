@@ -80,11 +80,13 @@
 					<view class="title">授权管理</view>
 					<icon-awesome-component-vue class="icon" icon="fa-caret-right"/>
 				</view>
+                <!-- #ifdef MP-WEIXIN -->
                 <button open-type="contact" class="item">
                     <icon-awesome-component-vue class="icon" icon="fa-commenting"/>
                     <view class="title">在线联系</view>
                     <icon-awesome-component-vue class="icon" icon="fa-caret-right"/>
                 </button>
+                <!-- #endif -->
 			</view>
 		</view>
         <navigation-component-vue :StatusBarHeight="statusBarHeight" :NavigationBarItems="navigationBarItems"/>

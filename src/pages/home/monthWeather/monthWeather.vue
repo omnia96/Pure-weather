@@ -43,51 +43,64 @@
 </template>
 <script lang="ts">
 import Vue from 'vue'
+import { StorageService } from '../../../service/storage/storage.service'
+import { storages } from '../../../config/config.module'
+import { Time } from '../../../libs/time'
 export default Vue.extend({
     data(){
+        let monthWeatheradta: Array<any> = [];
         return{
             title:'月天气',
-            monthWeatheradta:Array,
-            citycode:Number
+            monthWeatheradta,
+            citycode: 0
         }
     },
     onLoad: function (option:any) {
         this.citycode = option.city
+        // new StorageService(storages.monthWeatheradta(String(this.citycode))).get().then(res => {
+        //     if(new Time().timeDifference(res.create_time,new Time().currentTime())>360){
+        //         this.getdata();
+        //     }else{
+        //         this.monthWeatheradta=res.data
+        //     }
+        // }).catch(err => {
+        //     this.getdata();
+        // });
+        this.getdata();
     },
     methods:{
-        
         getdata(){
             uni.request({
-                url:'https://tianqiapi.com/api?version=v3&appid=&appsecret=',
+                url:'https://www.tianqiapi.com/api',
                 data: {
+                    version: "v3",
                     appid:"06369426",
                     appsecret:"VVM7jMR0",
                     cityid:this.citycode
                 },
-                success: (res:any) => {
-                    let datas = res.data.data
-                    let monthWeatheradta:any = []
-                    for(let key in datas){
-					    let week = datas[key].week.substr(datas[key].week.length - 1,1)
-                        let date = parseInt(datas[key].date.split("-")[2])
-                        let type = datas[key].wea
-                        let max = datas[key].tem1
-                        let min = datas[key].tem2
-                        monthWeatheradta[key] = {
-                            Week: week,
-                            Date: date,
-                            Type: type,
-                            Max: max,
-                            Min: min
+                success: (res: any) => {
+                    let data: Array<any>= res.data.data;
+                    console.log(data);
+                    for (const key in data){
+                        if (data[key] != null) {
+                            this.monthWeatheradta.push(
+                                {
+                                    Week: data[key].week.substr(data[key].week.length - 1, 1),
+                                    Date: data[key].date.split("-")[2],
+                                    Type: data[key].wea,
+                                    Max: data[key].tem1,
+                                    Min: data[key].tem2
+                                }
+                            )
                         }
                     }
-                    this.monthWeatheradta=monthWeatheradta
+                    new StorageService(storages.monthWeatheradta(String(this.citycode),{create_time: new Time().currentTime(), data: this.monthWeatheradta})).set().then(res =>{
+                        console.log("缓存成功");
+                    })
+
                 }
             });
         },
-    },
-    mounted(){
-        this.getdata();
     }
 })
 </script>
