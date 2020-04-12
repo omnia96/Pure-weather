@@ -63,6 +63,8 @@
 				font-size: subtitle
 				font-weight: bold
 				color lightText
+				white-space nowrap
+				overflow hidden
 				.icon
 					width: 80upx;
 					height: 80upx;

@@ -28,7 +28,7 @@
     .card
         width: 100%
         height: auto
-        padding 0 30upx
+        padding 0 25upx
         .header
             width: 100%;
             height: 80upx;
@@ -51,7 +51,7 @@
                     font-size: 28upx;
         .main
 	        width: 100%;
-	        padding: 20upx
+	        padding: 15upx
 	        box-shadow:  0 4upx 8upx rgba(0,0,0,0.16),0 4upx 8upx rgba(0,0,0,0.23);
     .today-weather
         height: auto
@@ -216,8 +216,12 @@
                 justify-content: center;
                 align-items: center;
     .ad-bar
-        padding: 0;
-        width: 94vw;
+        // #ifdef MP-WEIXIN
+        padding: 0 !important;
+        // #endif
+        // #ifdef MP-QQ
+        padding: 25upx 0 !important;
+        // #endif
         ad
             width: 100%;
     .copyright
@@ -231,7 +235,7 @@
     <div class="page">
         <div class="status-bar" :style="'height:' + StatusBarHeight + 'px;'"></div>
         <div class="container">
-            <view class="header animation-fade animation-slide-left" :style="'margin-top:calc(90rpx + '+StatusBarHeight+'px);'">
+            <view class="header" :style="'margin-top:calc(90rpx + '+StatusBarHeight+'px);'">
 				<view class="icon"><icon-freecns-component-vue icon="Cumulus-Cloud" color="#2196f3" size="20px"/></view>
 				<view class="name">Pure · 简天气</view>
 				<view class="current">首页</view>
@@ -240,7 +244,7 @@
 				<swiper-item v-for="(value,key) in StarCityList" v-bind:key="key">
 					<scroll-view scroll-y style="width: 100%; height: 100%;">
 						<view style="width: 100%;height: 100%;display: flex;flex-direction: column;align-items: center;">
-							<view class="card animation-slide-left">
+							<view class="card">
 								<view class="header">
 									<view>今日天气</view>
 									<view class="address">
@@ -278,31 +282,31 @@
 									</view>
 								</view>
 							</view>
-							<view class="card animation-slide-left">
+							<view class="card">
 								<view class="header">
 									<text>今日空气</text>
 									<text>{{RealTimeWeather.Air.Level}}</text>
 								</view>
 								<view class="main today-air">
-									<view class="item">
+									<view class="item animation-slide-left" style="animation-delay: 0.3s">
 									  <view class="title">Pm2.5</view>
 									  <view class="content">{{RealTimeWeather.Air.Pm25}}</view>
 									</view>
-									<view class="item">
+									<view class="item animation-slide-left" style="animation-delay: 0.6s">
 									  <view class="title">湿度</view>
 									  <view class="content">{{RealTimeWeather.Air.Humidity}}</view>
 									</view>
-									<view class="item">
+									<view class="item animation-slide-left" style="animation-delay: 0.9s">
 									  <view class="title">气压hPa</view>
 									  <view class="content">{{RealTimeWeather.Air.Pressure}}</view>
 									</view>
-									<view class="item">
+									<view class="item animation-slide-left" style="animation-delay: 1.2s">
 									  <view class="title">能见度</view>
 									  <view class="content">{{RealTimeWeather.Air.Visibility}}</view>
 									</view>
 								</view>
 							</view>
-							<view class="card animation-slide-left">
+							<view class="card">
 								<view class="header">
 									<text>Tips</text>
 								</view>
@@ -310,7 +314,7 @@
 									<text>{{RealTimeWeather.Air.Tips}}</text>
 								</view>
 							</view>
-							<view class="card animation-slide-left">
+							<view class="card">
 								<view class="header">每小时</view>
 								<view class="main">
 									<scroll-view class="hours" scroll-x="true">
@@ -345,13 +349,13 @@
 									</scroll-view>
 								</view>
 							</view>
-							<view class="card animation-slide-left">
+							<view class="card">
 								<view class="header">
 									<view>一周天气</view>
                                     <view @click="more(key)">更多</view>
 								</view>
 								<view class="main week-weather">
-									<view class="item" v-for="(item,index) in OneWeekWeather" v-bind:key="index" :style="Today.date == item.Date.Date? 'color:#2196f3;':'color:#000000;'">
+									<view class="item animation-slide-left" v-for="(item,index) in OneWeekWeather" v-bind:key="index" :style="Today.date == item.Date.Date? 'color:#2196f3;animation-delay: ' + (index+1)*0.2 + 's':'color:#000000;animation-delay: ' + (index+1)*0.2 + 's'" >
 										<view :style="Today.date == item.Date.Date? 'color:#2196f3;':'color:#9e9e9e;'">{{item.Date.Week}}</view>
 										<view>{{item.Date.Date}}</view>
 										<view class="weather">{{item.Weather.Type}}</view>
@@ -360,7 +364,7 @@
 									</view>
 								</view>
 							</view>
-							<view class="card animation-slide-left">
+							<view class="card">
 								<view class="header">
 									<view>指数</view>
 								</view>
@@ -372,7 +376,7 @@
 									</view>
 								</view>
 							</view>
-							<view class="card animation-slide-left">
+							<view class="card">
 								<view class="header">
 									<view>广告</view>
 								</view>
@@ -407,6 +411,10 @@ import { StorageService } from '../../service/storage/storage.service';
 import { storages, routers } from '../../config/config.module';
 import StartUpComponentVue from '../../components/StartUp/StartUp.component.vue';
 const QQMapWX = require('../../static/js/qqmap.js');
+// #ifdef MP-WEIXIN
+let interstitialAd: any = null
+declare const wx:any;
+// #endif
 export default Vue.extend({
     components:{
         IconAwesomeComponentVue,
@@ -437,12 +445,21 @@ export default Vue.extend({
         //#ifdef MP-QQ
         uni.hideTabBar();
         //#endif
+        //#ifdef MP-WEIXIN
+        // 在页面onLoad回调事件中创建插屏广告实例
+        this.CreateAd();
+        //#endif
+        
+    },
+    onReady() {
+        //#ifdef MP-WEIXIN
+        // 在适合的场景显示插屏广告
+        // this.ShowAds();
+        //#endif
     },
     onShow() {
         this.SetToday()
         this.MainSwiper = 0
-        // let StarCityList = Cache.get("StarCityList")
-        // this.StarCityList = StarCityList
         new StorageService(storages.starCityList).get().then(res => {
             this.StarCityList = res;
         });
@@ -451,6 +468,31 @@ export default Vue.extend({
         this.MainSwiper = 0
     },
     methods:{
+        // 创建广告
+        CreateAd(){
+            // #ifdef MP-WEIXIN
+            if (wx.createInterstitialAd) {
+                interstitialAd = wx.createInterstitialAd({
+                    adUnitId: 'adunit-7c80ea03afc3f4f5'
+                })
+                interstitialAd.onLoad(() => {})
+                interstitialAd.onError((err: any) => {})
+                interstitialAd.onClose(() => {})
+            }
+            // #endif
+        },
+        // 显示广告
+        ShowAds(){
+            // #ifdef MP-WEIXIN
+            setTimeout(() => {
+                if (interstitialAd) {
+                    interstitialAd.show().catch((err: any) => {
+                        console.error(err)
+                    })
+                }
+            }, 5000);
+            // #endif
+        },
         MainSwiperChange(e:any){
             let current = e.detail.current
             this.CityImage = null
@@ -734,7 +776,7 @@ export default Vue.extend({
                 url:'./monthWeather/monthWeather?city=' + starCityList[key].citycode
                 
             });
-        }
+        },
     }
 })
 </script>

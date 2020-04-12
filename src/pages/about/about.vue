@@ -80,6 +80,11 @@
 					<view class="title">授权管理</view>
 					<icon-awesome-component-vue class="icon" icon="fa-caret-right"/>
 				</view>
+                <view class="item" @tap="toLogs">
+					<icon-awesome-component-vue class="icon" icon="fa-bookmark"/>
+					<view class="title">更新日志</view>
+					<icon-awesome-component-vue class="icon" icon="fa-caret-right"/>
+				</view>
                 <!-- #ifdef MP-WEIXIN -->
                 <button open-type="contact" class="item">
                     <icon-awesome-component-vue class="icon" icon="fa-commenting"/>
@@ -118,7 +123,12 @@
         methods: {
 			opneSetting(){
 				uni.openSetting({})
-			}
+            },
+            toLogs() {
+                uni.navigateTo({
+                    url: '/pages/about/log/log'
+                });
+            }
         }
     })
 </script>

@@ -6,37 +6,60 @@
     .item
         width 14.28%
         text-align center
-        border 1px solid #cccccc
-        border-radius 15upx
         background #FEFEFE
         display flex
         flex-direction column
-        div
-            padding 4upx 0
-            font-weight bold
-        .week
-            color #212121
-        .weather,.temperature
-            color #1481D5
-        .weather
-            height 84upx
-            display flex
-            align-items center
-            justify-content center
-        .temperature
-            padding 0
-            .max
-                color red
+        .item__top,.item__bottom
+            border 1px solid #cccccc
+            border-radius 15upx
+            div
+                padding 4upx 0
+                font-weight bold
+            .week
+                color #212121
+            .weather,.temperature
+                color #1481D5
+            .weather
+                height 84upx
+                display flex
+                align-items center
+                justify-content center
+            .temperature
+                padding 0
+                .max
+                    color red
+    .ad
+        width 100%
+        margin 10upx 0
+        padding 10upx
 </style>
 <template>
     <div class="page">
         <div class="item" v-for="(item,index) in monthWeatheradta" :key="index">
-            <div class="week">{{item.Week}}</div>
-            <div class="data">{{item.Date}}</div>
-            <div class="weather">{{item.Type}}</div>
-            <div class="temperature">
-                <div class="max">{{item.Max}}</div>
-                <div class="min">{{item.Min}}</div>
+            <div class="item__top" v-if="index <= 13">
+                <div class="week">{{item.Week}}</div>
+                <div class="data">{{item.Date}}</div>
+                <div class="weather">{{item.Type}}</div>
+                <div class="temperature">
+                    <div class="max">{{item.Max}}</div>
+                    <div class="min">{{item.Min}}</div>
+                </div>
+            </div>
+        </div>
+        <!-- #ifdef MP-WEIXIN -->
+        <div class="ad">
+            <ad unit-id="adunit-17dbdfa85288bec5" ad-type="grid" grid-opacity="0.8" grid-count="5" ad-theme="white"></ad>
+        </div>
+        <!-- #endif -->
+        <div class="item" v-for="(item,index) in monthWeatheradta" :key="index">
+            <div class="item__bottom" v-if="index > 13">
+                <div class="week">{{item.Week}}</div>
+                <div class="data">{{item.Date}}</div>
+                <div class="weather">{{item.Type}}</div>
+                <div class="temperature">
+                    <div class="max">{{item.Max}}</div>
+                    <div class="min">{{item.Min}}</div>
+                </div>
             </div>
         </div>
     </div>
@@ -57,16 +80,15 @@ export default Vue.extend({
     },
     onLoad: function (option:any) {
         this.citycode = option.city
-        // new StorageService(storages.monthWeatheradta(String(this.citycode))).get().then(res => {
-        //     if(new Time().timeDifference(res.create_time,new Time().currentTime())>360){
-        //         this.getdata();
-        //     }else{
-        //         this.monthWeatheradta=res.data
-        //     }
-        // }).catch(err => {
-        //     this.getdata();
-        // });
-        this.getdata();
+        new StorageService(storages.monthWeatheradta(String(this.citycode))).get().then(res => {
+            if(new Time().timeDifference(res.create_time,new Time().currentTime())>360){
+                this.getdata();
+            }else{
+                this.monthWeatheradta=res.data
+            }
+        }).catch(err => {
+            this.getdata();
+        });
     },
     methods:{
         getdata(){

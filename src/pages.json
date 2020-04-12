@@ -1,11 +1,11 @@
 {
 	"pages": [
-		
 		{"path": "pages/home/home","style":{"navigationStyle":"custom"}},
 		{"path": "pages/about/about","style":{"navigationStyle":"custom"}},
 		{"path" : "pages/search/search","style":{"navigationBarTitleText":"搜索"}},
 		{"path" : "pages/star/star","style":{"navigationBarTitleText":"城市"}},
-		{"path":"pages/home/monthWeather/monthWeather","style":{"navigationBarTitleText":"四十天天气"}}
+		{"path": "pages/home/monthWeather/monthWeather","style":{"navigationBarTitleText":"四十天天气"}},
+		{"path": "pages/about/log/log","style":{"navigationBarTitleText":"更新日志"}}
 	],
 	"tabBar":{
 		"color": "#ffffff00",
