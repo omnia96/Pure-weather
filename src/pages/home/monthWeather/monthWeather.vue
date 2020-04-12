@@ -2,14 +2,17 @@
 .page
     display flex
     flex-wrap wrap
-    padding 0 20upx
+    justify-content center
+    padding 0 auto
+    width auto
+    margin 0 auto
     .item
-        width 14.28%
         text-align center
         background #FEFEFE
         display flex
         flex-direction column
         .item__top,.item__bottom
+            width 13vw
             border 1px solid #cccccc
             border-radius 15upx
             div

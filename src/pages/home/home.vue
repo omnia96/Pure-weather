@@ -454,7 +454,7 @@ export default Vue.extend({
     onReady() {
         //#ifdef MP-WEIXIN
         // 在适合的场景显示插屏广告
-        // this.ShowAds();
+        this.ShowAds();
         //#endif
     },
     onShow() {

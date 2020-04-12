@@ -95,7 +95,12 @@ export default Vue.extend({
     },
     onLoad() {
         this.logs = [
-            {version: '1.1.5',date: '2020-04-06',content: ['- 添加更新日志','- 侧边栏伸缩文字换行bug修复']},
+            {version: '1.1.5',date: '2020-04-12',content: [
+                '- 添加更新日志',
+                '- 侧边栏伸缩文字换行bug修复',
+                '- 搜索页面优化',
+                '- 增加动画'
+                ]},
             {version: '1.1.4',date: '2020-04-06',content: ['- 添加月天气']},
         ];
         

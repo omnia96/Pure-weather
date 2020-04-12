@@ -6,7 +6,7 @@
  * @Description: 
  * @FilePath: \pure-weather\src\config\app\app.config.ts
  */
-const version = '1.1.4';
+const version = '1.1.5';
 
 export {
     version

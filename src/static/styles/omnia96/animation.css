@@ -1,0 +1,8 @@
+.animation-expan-vertical{
+    animation-name: expan-vertical;
+}
+@keyframes expan-vertical {
+    from{
+        height: 0;
+    }
+}
