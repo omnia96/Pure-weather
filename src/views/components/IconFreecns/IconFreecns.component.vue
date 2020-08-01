@@ -1,5 +1,5 @@
 <style>
-	@import "./freecns.css";
+	@import "freecns.css";
 	.icon{
 		width: 100%;
 		height: 100%;

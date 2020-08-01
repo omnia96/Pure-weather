@@ -1,5 +1,5 @@
 <style>
-	@import "./awesome.css";
+	@import "awesome.css";
 	.icon{
 		width: 100%;
 		height: 100%;

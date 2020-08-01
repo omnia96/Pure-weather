@@ -1,19 +1,19 @@
 {
 	"pages": [
-		{"path": "pages/home/home","style":{"navigationStyle":"custom"}},
-		{"path": "pages/about/about","style":{"navigationStyle":"custom"}},
-		{"path": "pages/search/search","style":{"navigationBarTitleText":"搜索"}},
-		{"path": "pages/star/star","style":{"navigationBarTitleText":"城市"}},
-		{"path": "pages/home/monthWeather/monthWeather","style":{"navigationBarTitleText":"四十天天气"}},
-		{"path": "pages/about/log/log","style":{"navigationBarTitleText":"更新日志"}}
+		{"path": "views/pages/home/home","style":{"navigationStyle":"custom"}},
+		{"path": "views/pages/about/about","style":{"navigationStyle":"custom"}},
+		{"path": "views/pages/search/search","style":{"navigationBarTitleText":"搜索"}},
+		{"path": "views/pages/star/star","style":{"navigationBarTitleText":"城市"}},
+		{"path": "views/pages/home/monthWeather/monthWeather","style":{"navigationBarTitleText":"四十天天气"}},
+		{"path": "views/pages/about/log/log","style":{"navigationBarTitleText":"更新日志"}}
 	],
 	"tabBar":{
 		"color": "#ffffff00",
 		"selectedColor": "#ffffff00",
 		"backgroundColor": "#ffffff00",
 		"list": [
-			{"pagePath":"pages/home/home","text":""},
-			{"pagePath" : "pages/about/about","text":""}
+			{"pagePath":"views/pages/home/home","text":""},
+			{"pagePath" : "views/pages/about/about","text":""}
 		]
 	},
 	"globalStyle": {

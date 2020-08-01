@@ -2,7 +2,7 @@
 	.search
 		width 94%
 		height 12vw
-		margin 10upx auto 
+		margin 10upx auto
 		background #FFFFFF
 		display flex
 		align-items center
@@ -42,7 +42,7 @@
 				justify-content flex-start
 			view:active
 				background #2196f3
-			
+
 	.card
 		width 100vw
 		height auto
@@ -93,11 +93,11 @@
 			</view>
 			<div class="drop-down">
 				<scroll-view class="index animation-expan-vertical" scroll-y="true" v-if="Index.length != null">
-					<view 
-						class="animation-slide-left" 
-						v-for="(item,index) in Index" 
-						:key="index" 
-						:data-value="item" 
+					<view
+						class="animation-slide-left"
+						v-for="(item,index) in Index"
+						:key="index"
+						:data-value="item"
 						:style="'animation-delay: ' + (index+1)*0.2 + 's'"
 						@tap="SelectCity">{{item.provinceZh != item.leaderZh? item.provinceZh + '-':''}}{{item.leaderZh != item.cityZh? item.leaderZh + '-':''}}{{item.cityZh}}</view>
 				</scroll-view>
@@ -110,10 +110,10 @@
 					</div>
 				</view>
 				<view class="card-content">
-					<view 
-						class="animation-slide-left" 
-						v-for="(item,index) in SearchHistory" 
-						:key="index" 
+					<view
+						class="animation-slide-left"
+						v-for="(item,index) in SearchHistory"
+						:key="index"
 						:style="'animation-delay: ' + (index+1)*0.2 + 's'"
 						@click="addThis(item)">{{item.cityZh}}</view>
 				</view>
@@ -121,9 +121,9 @@
 			<view class="popular card">
 				<view class="card-title">热门城市</view>
 				<view class="card-content">
-					<div 
-						class="animation-slide-left" 
-						v-for="(item,index) in popularCities" 
+					<div
+						class="animation-slide-left"
+						v-for="(item,index) in popularCities"
 						:key="index"
 						:style="'animation-delay: ' + (index+1)*0.2 + 's'"
 						@click="addThis(item)">{{item.leaderZh}}</div>
@@ -135,10 +135,10 @@
 <script lang="ts">
 import Vue from 'vue'
 import IconAwesomeComponentVue from '../../components/IconAwesome/IconAwesome.component.vue'
-import { systemInfoService } from '../../service/service.module'
-import { CityData } from '../../libs/cityData'
-import { StorageService } from '../../service/storage/storage.service'
-import { storages } from '../../config/config.module'
+import { systemInfoService } from '../../../core/service/service.module'
+import { CityData } from '../../../core/libs/cityData'
+import { StorageService } from '../../../core/service/storage/storage.service'
+import { storages } from '../../../core/config/config.module'
     export default Vue.extend({
 		data() {
 			let popularCities: Array<{id: string, provinceZh: string, leaderZh: string, cityZh: string}> = [];
@@ -249,7 +249,7 @@ import { storages } from '../../config/config.module'
 					this.SearchHistory = null;
 				});
 			}
-		
+
 		}
 	})
 </script>

@@ -1,4 +1,4 @@
-import { Storage } from '@/service/storage/storage';
+import { Storage } from '@/core/service/storage/storage';
 
 let starCityList: Storage<Array<{citycode: string, cityname: any}>> = {
     key: 'StarCityList',

@@ -273,7 +273,7 @@
 												<view style="color: #2196f3;">{{RealTimeWeather.Temperature.Min}}°</view>
 											</view>
 										</view>
-										
+
 									</view>
 									<view class="end">
 										<view class="item">{{RealTimeWeather.Wind.Type}}</view>
@@ -324,7 +324,7 @@
 											<view class="tem">{{item.tem}}</view>
 										</view>
 										<view class="item date" v-if="Today.date == OneWeekWeather[0].Date.Date">{{OneWeekWeather[1].Date.Date}}</view>
-										
+
 										<view class="item" v-for="(item,index) in OneWeekWeather[0].Hours" v-bind:key="index" v-if="item.hours < 8  && (Today.date == OneWeekWeather[0].Date.Date || item.hours >= Today.hours)">
 											<view class="title">{{item.title}}</view>
 											<view class="weather">{{item.wea}}</view>
@@ -404,13 +404,13 @@ import Vue from 'vue'
 import IconAwesomeComponentVue from '../../components/IconAwesome/IconAwesome.component.vue';
 import NavigationComponentVue from '../../components/Navigation/Navigation.component.vue';
 import IconFreecnsComponentVue from '../../components/IconFreecns/IconFreecns.component.vue';
-import { systemInfoService } from '../../service/service.module';
-import { Time } from '../../libs/time';
-import { CityData } from '../../libs/cityData';
-import { StorageService } from '../../service/storage/storage.service';
-import { storages, routers } from '../../config/config.module';
+import { systemInfoService } from '../../../core/service/service.module';
+import { Time } from '../../../core/libs/time';
+import { CityData } from '../../../core/libs/cityData';
+import { StorageService } from '../../../core/service/storage/storage.service';
+import { storages, routers } from '../../../core/config/config.module';
 import StartUpComponentVue from '../../components/StartUp/StartUp.component.vue';
-const QQMapWX = require('../../static/js/qqmap.js');
+const QQMapWX = require('../../../static/js/qqmap.js');
 // #ifdef MP-WEIXIN
 let interstitialAd: any = null
 declare const wx:any;
@@ -449,7 +449,7 @@ export default Vue.extend({
         // 在页面onLoad回调事件中创建插屏广告实例
         this.CreateAd();
         //#endif
-        
+
     },
     onReady() {
         //#ifdef MP-WEIXIN
@@ -774,7 +774,7 @@ export default Vue.extend({
             let starCityList: any = this.StarCityList;
             uni.navigateTo({
                 url:'./monthWeather/monthWeather?city=' + starCityList[key].citycode
-                
+
             });
         },
     }

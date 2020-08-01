@@ -58,8 +58,8 @@
                             <view v-for="(itemChild,indexChild) in item.content" :key="indexChild">{{itemChild}}</view>
                         </view>
                     </div>
-                </view> 
-            </div>  
+                </view>
+            </div>
         </scroll-view>
         <div class="timeline__side">
             <div class="main" :style="'top:' + lineMainTop + 'px;'">
@@ -95,6 +95,7 @@ export default Vue.extend({
     },
     onLoad() {
         this.logs = [
+            {version: '1.1.6', date: '2020-08-01', content: ['- 月天气UI优化']},
             {version: '1.1.5',date: '2020-04-12',content: [
                 '- 添加更新日志',
                 '- 侧边栏伸缩文字换行bug修复',
@@ -103,7 +104,7 @@ export default Vue.extend({
                 ]},
             {version: '1.1.4',date: '2020-04-06',content: ['- 添加月天气']},
         ];
-        
+
         this.toggleDelay= true;
         setTimeout(() => {
             this.toggleDelay = false;
@@ -121,7 +122,7 @@ export default Vue.extend({
             let allLogItemHeight = this.logsHeight - this.getWindowHeight();
             let lineMainTop = parseInt(String(scrollTop / allLogItemHeight * this.getWindowHeight()));
             if(lineMainTop >= this.getWindowHeight()){
-                this.lineMainTop = lineMainTop  - 20; 
+                this.lineMainTop = lineMainTop  - 20;
             }else {
                 this.lineMainTop = lineMainTop;
             }
@@ -136,6 +137,6 @@ export default Vue.extend({
             return windowHeight;
         }
     }
-    
+
 })
 </script>

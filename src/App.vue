@@ -1,7 +1,7 @@
 <script lang="ts">
     import Vue from 'vue';
-    import { StorageService } from './service/storage/storage.service';
-    import { storages } from './config/config.module';
+    import { StorageService } from './core/service/storage/storage.service';
+    import { storages } from './core/config/config.module';
     export default Vue.extend({
         mpType: 'app',
         onLaunch() {
