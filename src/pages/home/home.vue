@@ -1,236 +1,3 @@
-<style lang="stylus" scoped>
-.page
-    background #ffffff
-    .status-bar
-        width 100%
-        position fixed
-        top 0
-        background #FFFFFF
-        z-index 1
-    .header
-        width: 100%
-        height: 80upx
-        display: flex
-        justify-content: center
-        align-items: center
-        .icon
-            width: 80upx;
-            height: 80upx;
-        .name
-            font-size: 32upx;
-            margin-left: 2vw;
-            margin-right: 2vw;
-            font-weight: bold;
-            color: #9e9e9e;
-        .current
-            font-size: 32upx;
-            font-weight: bold;
-    .card
-        width: 100%
-        height: auto
-        padding 0 25upx
-        .header
-            width: 100%;
-            height: 80upx;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 32upx;
-            font-weight: bold;
-            .address
-                display: flex;
-                align-items: center;
-                justify-content: space-around
-                .right
-                    margin-left: 2vw;
-                    font-weight: normal;
-                    overflow: hidden;
-                    text-overflow: ellipsis;
-                    white-space: nowrap;
-                    max-width: 45vw;
-                    font-size: 28upx;
-        .main
-	        width: 100%;
-	        padding: 15upx
-	        box-shadow:  0 4upx 8upx rgba(0,0,0,0.16),0 4upx 8upx rgba(0,0,0,0.23);
-    .today-weather
-        height: auto
-        display: flex;
-        flex-direction: column;
-        background-size: 100%,100%;
-        .start
-            display: flex;
-            height: 15vw;
-            .temperature
-                display: flex;
-                height: 15vw;
-                flex-direction: column;
-                align-items: center;
-                justify-content: space-between;
-                .status
-                    display: flex;
-                    width: 15vw;
-                    height: 40upx;
-                    align-items: center;
-                    justify-content: center;
-                    font-size: 24upx;
-                    view
-                        width: 7.5vw;
-                        height: 40upx;
-                        display: flex;
-                        align-items: center;
-                        justify-content: center;
-                        background: rgba(0,0,0,0.16);
-                        color: #FFFFFF;
-                .value
-                    width: 15vw;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    font-size: 60upx;
-            .type
-                height: 15vw;
-                display: flex;
-                flex-direction: column;
-                align-items: flex-start;
-                justify-content: space-between;
-                margin-left: 2vw;
-                .title
-                    font-size: 50upx;
-                .temperature
-                    display: flex;
-                    flex-direction: row
-                    font-size: 24upx;
-                    align-items: center;
-                    view
-                        margin-right: 1vw;
-        .end
-            display: flex;
-            font-size: 24upx;
-            .item
-                margin-right: 1vw;
-    .today-air
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        .item
-            font-size: 24upx;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            .title
-                color: #9e9e9e;
-            .content
-                font-size: 28upx;
-                color: black;
-    .today-tips
-        font-size: 28upx
-    .hours
-        width: 100%;
-        height: 130upx;
-        white-space: nowrap;
-        line-height: 130upx;
-        .item
-            display: inline-block;
-            width: 18vw;
-            height: 130upx;
-            text-align: center;
-            vertical-align: middle;
-            .title
-                font-size: 24upx;
-                font-weight: bold;
-                color: #9E9E9E;
-                height: 40upx;
-                line-height: 40upx;
-            .weather
-                font-size: 28upx;
-                font-weight: bold;
-                height: 50upx;
-                line-height: 50upx;
-            .tem
-                font-size: 24upx;
-                font-weight: bold;
-                height: 40upx;
-                line-height: 40upx;
-        .date
-            width: 80upx;
-            height: 80upx;
-            line-height: 80upx;
-            display: inline-block;
-            vertical-align: middle;
-            color: #9E9E9E;
-            font-size: 32upx;
-            font-weight: bold;
-            background: rgba(0,0,0,0.05);
-    .week-weather
-        display: flex;
-        align-items: flex-start;
-        justify-content: space-between;
-        .item
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: flex-start;
-            font-size: 28upx;
-            font-weight: bold;
-            view
-                min-height: 50upx;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-            .weather
-                writing-mode: tb-rl;
-                height: 160upx;
-                white-space:nowrap;
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                font-size: 24upx;
-    .index
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        flex-wrap: wrap;
-        .item
-            width: 28vw;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: space-around;
-            font-size: 24upx;
-            margin-top: 2vw;
-            margin-bottom: 2vw;
-            .icon
-                width: 50upx;
-                height: 50upx;
-            .title
-                color: #9E9E9E;
-                height: 40upx;
-                display: flex;
-                justify-content: center;
-                align-items: center;
-            .level
-                height: 40upx;
-                display: flex;
-                justify-content: center;
-                align-items: center;
-    .ad-bar
-        // #ifdef MP-WEIXIN
-        padding: 0 !important;
-        // #endif
-        // #ifdef MP-QQ
-        padding: 25upx 0 !important;
-        // #endif
-        ad
-            width: 100%;
-    .copyright
-        margin-top: 5vw;
-        font-size: 32upx;
-        color: #9e9e9e;
-        margin-bottom: 100upx;
-
-</style>
 <template>
     <div class="page">
         <div class="status-bar" :style="'height:' + StatusBarHeight + 'px;'"></div>
@@ -779,3 +546,236 @@ export default Vue.extend({
   },
 });
 </script>
+<style lang="stylus" scoped>
+.page
+  background #ffffff
+  .status-bar
+    width 100%
+    position fixed
+    top 0
+    background #FFFFFF
+    z-index 1
+  .header
+    width: 100%
+    height: 80upx
+    display: flex
+    justify-content: center
+    align-items: center
+    .icon
+      width: 80upx;
+      height: 80upx;
+    .name
+      font-size: 32upx;
+      margin-left: 2vw;
+      margin-right: 2vw;
+      font-weight: bold;
+      color: #9e9e9e;
+    .current
+      font-size: 32upx;
+      font-weight: bold;
+  .card
+    width: 100%
+    height: auto
+    padding 0 25upx
+    .header
+      width: 100%;
+      height: 80upx;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 32upx;
+      font-weight: bold;
+      .address
+        display: flex;
+        align-items: center;
+        justify-content: space-around
+        .right
+          margin-left: 2vw;
+          font-weight: normal;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+          max-width: 45vw;
+          font-size: 28upx;
+    .main
+      width: 100%;
+      padding: 15upx
+      box-shadow:  0 4upx 8upx rgba(0,0,0,0.16),0 4upx 8upx rgba(0,0,0,0.23);
+  .today-weather
+    height: auto
+    display: flex;
+    flex-direction: column;
+    background-size: 100%,100%;
+    .start
+      display: flex;
+      height: 15vw;
+      .temperature
+        display: flex;
+        height: 15vw;
+        flex-direction: column;
+        align-items: center;
+        justify-content: space-between;
+        .status
+          display: flex;
+          width: 15vw;
+          height: 40upx;
+          align-items: center;
+          justify-content: center;
+          font-size: 24upx;
+          view
+            width: 7.5vw;
+            height: 40upx;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0,0,0,0.16);
+            color: #FFFFFF;
+        .value
+          width: 15vw;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 60upx;
+      .type
+        height: 15vw;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        justify-content: space-between;
+        margin-left: 2vw;
+        .title
+          font-size: 50upx;
+        .temperature
+          display: flex;
+          flex-direction: row
+          font-size: 24upx;
+          align-items: center;
+          view
+            margin-right: 1vw;
+    .end
+      display: flex;
+      font-size: 24upx;
+      .item
+        margin-right: 1vw;
+  .today-air
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    .item
+      font-size: 24upx;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      .title
+        color: #9e9e9e;
+      .content
+        font-size: 28upx;
+        color: black;
+  .today-tips
+    font-size: 28upx
+  .hours
+    width: 100%;
+    height: 130upx;
+    white-space: nowrap;
+    line-height: 130upx;
+    .item
+      display: inline-block;
+      width: 18vw;
+      height: 130upx;
+      text-align: center;
+      vertical-align: middle;
+      .title
+        font-size: 24upx;
+        font-weight: bold;
+        color: #9E9E9E;
+        height: 40upx;
+        line-height: 40upx;
+      .weather
+        font-size: 28upx;
+        font-weight: bold;
+        height: 50upx;
+        line-height: 50upx;
+      .tem
+        font-size: 24upx;
+        font-weight: bold;
+        height: 40upx;
+        line-height: 40upx;
+    .date
+      width: 80upx;
+      height: 80upx;
+      line-height: 80upx;
+      display: inline-block;
+      vertical-align: middle;
+      color: #9E9E9E;
+      font-size: 32upx;
+      font-weight: bold;
+      background: rgba(0,0,0,0.05);
+  .week-weather
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    .item
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      font-size: 28upx;
+      font-weight: bold;
+      view
+        min-height: 50upx;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      .weather
+        writing-mode: tb-rl;
+        height: 160upx;
+        white-space:nowrap;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 24upx;
+  .index
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    .item
+      width: 28vw;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-around;
+      font-size: 24upx;
+      margin-top: 2vw;
+      margin-bottom: 2vw;
+      .icon
+        width: 50upx;
+        height: 50upx;
+      .title
+        color: #9E9E9E;
+        height: 40upx;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      .level
+        height: 40upx;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+  .ad-bar
+    // #ifdef MP-WEIXIN
+    padding: 0 !important;
+    // #endif
+    // #ifdef MP-QQ
+    padding: 25upx 0 !important;
+    // #endif
+    ad
+      width: 100%;
+  .copyright
+    margin-top: 5vw;
+    font-size: 32upx;
+    color: #9e9e9e;
+    margin-bottom: 100upx;
+
+</style>
