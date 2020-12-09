@@ -61,12 +61,13 @@
 <script lang="ts">
 import Vue from 'vue';
 import IconFreecnsComponentVue from '../IconFreecns/IconFreecns.component.vue';
-export default Vue.extend({
-  data() {
-    return {};
-  },
+import Component from 'vue-class-component';
+@Component({
   components: {
     IconFreecnsComponentVue,
   },
-});
+})
+export default class StartUpComponent extends Vue {
+
+}
 </script>

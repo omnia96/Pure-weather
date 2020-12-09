@@ -77,7 +77,6 @@
     .RelativeField
       width: 100%;
       flex: 1;
-
 </style>
 <template>
 	<view class="Navigation" :style="NavigationBarStatus==true? 'z-index:1;height:calc(100vh - 40px - '+ StatusBarHeight +'px);top:'+StatusBarHeight+'px;':'height:45px;top:'+StatusBarHeight+'px;'">

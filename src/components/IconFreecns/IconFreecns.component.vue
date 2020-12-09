@@ -1,35 +1,30 @@
-<style>
-	@import "freecns.css";
-	.icon{
-		width: 100%;
-		height: 100%;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-	}
-</style>
 <template>
-	<view class="icon">
-		<i :class="icon" :style="'font-size:'+size+'; color:'+color+';'"/>
-	</view>
+  <view class="icon">
+    <i :class="icon" :style="'font-size:'+size+'; color:'+color+';'"/>
+  </view>
 </template>
 
-<script>
+<script lang="ts">
 import Vue from 'vue';
-export default Vue.extend({
-  props: {
-    icon: {
-      type: String,
-      default: 'fa-home',
-    },
-    size: {
-      type: String,
-      default: '16px',
-    },
-    color: {
-      type: String,
-      default: 'black',
-    },
-  },
-});
+import Component from 'vue-class-component';
+import {Prop} from 'vue-property-decorator';
+@Component
+export default class IconFreecnsComponent extends Vue {
+  @Prop({type: String, default: 'fa-home'})
+  private icon!: string;
+  @Prop({type: String, default: '16px'})
+  private size!: string;
+  @Prop({type: String, default: 'black'})
+  private color!: string;
+}
 </script>
+<style>
+  @import "freecns.css";
+  .icon{
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+</style>
