@@ -75,68 +75,68 @@
     </div>
 </template>
 <script lang="ts">
-import Vue from 'vue'
+import Vue from 'vue';
 import IconAwesomeComponentVue from '../../../components/IconAwesome/IconAwesome.component.vue';
 export default Vue.extend({
-    components:{
-        IconAwesomeComponentVue
-    },
-    data() {
-        let logs: Array<{version: string, date: string, content: Array<string>}> = [];
-        let toggleDelay = false;
-        let logsHeight = 0;
-        let lineMainTop = 0;
-        return {
-            logs,
-            toggleDelay,
-            logsHeight,
-            lineMainTop
-        }
-    },
-    onLoad() {
-        this.logs = [
-            {version: '1.1.6', date: '2020-08-01', content: ['- 月天气UI优化']},
-            {version: '1.1.5',date: '2020-04-12',content: [
-                '- 添加更新日志',
-                '- 侧边栏伸缩文字换行bug修复',
-                '- 搜索页面优化',
-                '- 增加动画'
-                ]},
-            {version: '1.1.4',date: '2020-04-06',content: ['- 添加月天气']},
-        ];
+  components: {
+    IconAwesomeComponentVue,
+  },
+  data() {
+    const logs: Array<{version: string, date: string, content: Array<string>}> = [];
+    const toggleDelay = false;
+    const logsHeight = 0;
+    const lineMainTop = 0;
+    return {
+      logs,
+      toggleDelay,
+      logsHeight,
+      lineMainTop,
+    };
+  },
+  onLoad() {
+    this.logs = [
+      {version: '1.1.6', date: '2020-08-01', content: ['- 月天气UI优化']},
+      {version: '1.1.5', date: '2020-04-12', content: [
+        '- 添加更新日志',
+        '- 侧边栏伸缩文字换行bug修复',
+        '- 搜索页面优化',
+        '- 增加动画',
+      ]},
+      {version: '1.1.4', date: '2020-04-06', content: ['- 添加月天气']},
+    ];
 
-        this.toggleDelay= true;
-        setTimeout(() => {
-            this.toggleDelay = false;
-        }, 1000);
+    this.toggleDelay= true;
+    setTimeout(() => {
+      this.toggleDelay = false;
+    }, 1000);
+  },
+  onReady() {
+    const query = uni.createSelectorQuery().in(this);
+    query.select('.timeline__content').boundingClientRect((data)=>{
+      this.logsHeight = <number> data.height;
+    }).exec();
+  },
+  methods: {
+    timelineScroll(e:any) {
+      const scrollTop = e.detail.scrollTop;
+      const allLogItemHeight = this.logsHeight - this.getWindowHeight();
+      const lineMainTop = parseInt(String(scrollTop / allLogItemHeight * this.getWindowHeight()));
+      if (lineMainTop >= this.getWindowHeight()) {
+        this.lineMainTop = lineMainTop - 20;
+      } else {
+        this.lineMainTop = lineMainTop;
+      }
     },
-    onReady() {
-        const query = uni.createSelectorQuery().in(this);
-        query.select('.timeline__content').boundingClientRect(data=>{
-            this.logsHeight = <number> data.height;
-        }).exec();
-    },
-    methods:{
-        timelineScroll(e:any) {
-            let scrollTop = e.detail.scrollTop;
-            let allLogItemHeight = this.logsHeight - this.getWindowHeight();
-            let lineMainTop = parseInt(String(scrollTop / allLogItemHeight * this.getWindowHeight()));
-            if(lineMainTop >= this.getWindowHeight()){
-                this.lineMainTop = lineMainTop  - 20;
-            }else {
-                this.lineMainTop = lineMainTop;
-            }
+    getWindowHeight(): number {
+      let windowHeight = 0;
+      uni.getSystemInfo({
+        success: (res) => {
+          windowHeight = <number> res.windowHeight;
         },
-        getWindowHeight(): number {
-            let windowHeight = 0;
-            uni.getSystemInfo({
-                success: res => {
-                    windowHeight = <number> res.windowHeight;
-                }
-            });
-            return windowHeight;
-        }
-    }
+      });
+      return windowHeight;
+    },
+  },
 
-})
+});
 </script>

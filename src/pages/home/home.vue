@@ -400,383 +400,382 @@
     </div>
 </template>
 <script lang="ts">
-import Vue from 'vue'
+import Vue from 'vue';
 import IconAwesomeComponentVue from '../../components/IconAwesome/IconAwesome.component.vue';
 import NavigationComponentVue from '../../components/Navigation/Navigation.component.vue';
 import IconFreecnsComponentVue from '../../components/IconFreecns/IconFreecns.component.vue';
-import { systemInfoService } from '../../core/service/service.module';
-import { Time } from '../../core/libs/time';
-import { CityData } from '../../core/libs/cityData';
-import { StorageService } from '../../core/service/storage/storage.service';
-import { storages, routers } from '../../core/config/config.module';
+import {systemInfoService} from '../../core/service/service.module';
+import {Time} from '../../core/libs/time';
+import {CityData} from '../../core/libs/cityData';
+import {StorageService} from '../../core/service/storage/storage.service';
+import {storages, routers} from '../../core/config/config.module';
 import StartUpComponentVue from '../../components/StartUp/StartUp.component.vue';
 const QQMapWX = require('../../static/js/qqmap.js');
 // #ifdef MP-WEIXIN
-let interstitialAd: any = null
+let interstitialAd: any = null;
 declare const wx:any;
 // #endif
 export default Vue.extend({
-    components:{
-        IconAwesomeComponentVue,
-        IconFreecnsComponentVue,
-        NavigationComponentVue,
-        StartUpComponentVue
-    },
-    data(){
-        return {
-            StatusBarHeight: systemInfoService.systemInfo.statusBarHeight,
-            Today: undefined||{},
-            Address:null,
-            StartupStatus: true,
-            RealTimeWeather:null,
-            OneWeekWeather:null,
-            CityImage:null,
-            TemperatureStatus:true,
-            MainSwiper:0,
-            StarCityList:{}||undefined,
-            NavigationBarItems:[
-                {icon: 'fa-home',title: '首页',path: '../home/home',selected: true},
-                {icon: 'fa-exclamation-circle',title: '关于',path: '../about/about',selected: false}
-            ]
-        }
-    },
-    onLoad(){
-        this.GetCityCode()
-        //#ifdef MP-QQ
-        uni.hideTabBar();
-        //#endif
-        //#ifdef MP-WEIXIN
-        // 在页面onLoad回调事件中创建插屏广告实例
-        this.CreateAd();
-        //#endif
-
-    },
-    onReady() {
-        //#ifdef MP-WEIXIN
-        // 在适合的场景显示插屏广告
-        this.ShowAds();
-        //#endif
-    },
-    onShow() {
-        this.SetToday()
-        this.MainSwiper = 0
-        new StorageService(storages.starCityList).get().then(res => {
-            this.StarCityList = res;
+  components: {
+    IconAwesomeComponentVue,
+    IconFreecnsComponentVue,
+    NavigationComponentVue,
+    StartUpComponentVue,
+  },
+  data() {
+    return {
+      StatusBarHeight: systemInfoService.systemInfo.statusBarHeight,
+      Today: undefined||{},
+      Address: null,
+      StartupStatus: true,
+      RealTimeWeather: null,
+      OneWeekWeather: null,
+      CityImage: null,
+      TemperatureStatus: true,
+      MainSwiper: 0,
+      StarCityList: {}||undefined,
+      NavigationBarItems: [
+        {icon: 'fa-home', title: '首页', path: '../home/home', selected: true},
+        {icon: 'fa-exclamation-circle', title: '关于', path: '../about/about', selected: false},
+      ],
+    };
+  },
+  onLoad() {
+    this.GetCityCode();
+    // #ifdef MP-QQ
+    uni.hideTabBar();
+    // #endif
+    // #ifdef MP-WEIXIN
+    // 在页面onLoad回调事件中创建插屏广告实例
+    this.CreateAd();
+    // #endif
+  },
+  onReady() {
+    // #ifdef MP-WEIXIN
+    // 在适合的场景显示插屏广告
+    this.ShowAds();
+    // #endif
+  },
+  onShow() {
+    this.SetToday();
+    this.MainSwiper = 0;
+    new StorageService(storages.starCityList).get().then((res) => {
+      this.StarCityList = res;
+    });
+  },
+  onHide() {
+    this.MainSwiper = 0;
+  },
+  methods: {
+    // 创建广告
+    CreateAd() {
+      // #ifdef MP-WEIXIN
+      if (wx.createInterstitialAd) {
+        interstitialAd = wx.createInterstitialAd({
+          adUnitId: 'adunit-7c80ea03afc3f4f5',
         });
+        interstitialAd.onLoad(() => {});
+        interstitialAd.onError((err: any) => {});
+        interstitialAd.onClose(() => {});
+      }
+      // #endif
     },
-    onHide() {
-        this.MainSwiper = 0
+    // 显示广告
+    ShowAds() {
+      // #ifdef MP-WEIXIN
+      setTimeout(() => {
+        if (interstitialAd) {
+          interstitialAd.show().catch((err: any) => {
+            console.error(err);
+          });
+        }
+      }, 5000);
+      // #endif
     },
-    methods:{
-        // 创建广告
-        CreateAd(){
-            // #ifdef MP-WEIXIN
-            if (wx.createInterstitialAd) {
-                interstitialAd = wx.createInterstitialAd({
-                    adUnitId: 'adunit-7c80ea03afc3f4f5'
-                })
-                interstitialAd.onLoad(() => {})
-                interstitialAd.onError((err: any) => {})
-                interstitialAd.onClose(() => {})
-            }
-            // #endif
-        },
-        // 显示广告
-        ShowAds(){
-            // #ifdef MP-WEIXIN
-            setTimeout(() => {
-                if (interstitialAd) {
-                    interstitialAd.show().catch((err: any) => {
-                        console.error(err)
-                    })
-                }
-            }, 5000);
-            // #endif
-        },
-        MainSwiperChange(e:any){
-            let current = e.detail.current
-            this.CityImage = null
-            this.MainSwiper = 0
-            this.StarCityData(current)
-        },
-        SetToday(){
-            let date = new Date()
-            let month = date.getMonth() + 1
-            let day = date.getDate()
-            let hours = date.getHours()
-            this.Today = {
-                month:month,
-                date:day,
-                hours:hours
-            }
-        },
-        GetAddress(location:any){
-				let txmap = new QQMapWX({key : 'QG2BZ-4OS3U-QNUVG-4RYJG-C54ZZ-3ZFCW'})
-				return new Promise((resolve,reject)=>{
-					txmap.reverseGeocoder({
-						location:{
-							latitude: location["latitude"],
-							longitude: location["longitude"]
-						},
-						success: (res:any) => {
-							resolve(res.result.address_component)
-						}
-					})
-				})
-			},
-        async GetCityCode(){
-            let location:any = await uni.getLocation({type:"gcj02"})
-            location.length > 1 ? location = location[1] : location = null
-            let cityname:any = null
-            location != null ? cityname = await this.GetAddress(location) : cityname = {"province":"北京","city":"北京市","district":"北京","street":"天安门"},
-            cityname["icon"] = true
-            this.Address = cityname
+    MainSwiperChange(e:any) {
+      const current = e.detail.current;
+      this.CityImage = null;
+      this.MainSwiper = 0;
+      this.StarCityData(current);
+    },
+    SetToday() {
+      const date = new Date();
+      const month = date.getMonth() + 1;
+      const day = date.getDate();
+      const hours = date.getHours();
+      this.Today = {
+        month: month,
+        date: day,
+        hours: hours,
+      };
+    },
+    GetAddress(location:any) {
+      const txmap = new QQMapWX({key: 'QG2BZ-4OS3U-QNUVG-4RYJG-C54ZZ-3ZFCW'});
+      return new Promise((resolve, reject)=>{
+        txmap.reverseGeocoder({
+          location: {
+            latitude: location['latitude'],
+            longitude: location['longitude'],
+          },
+          success: (res:any) => {
+            resolve(res.result.address_component);
+          },
+        });
+      });
+    },
+    async GetCityCode() {
+      let location:any = await uni.getLocation({type: 'gcj02'});
+            location.length > 1 ? location = location[1] : location = null;
+            let cityname:any = null;
+            location != null ? cityname = await this.GetAddress(location) : cityname = {'province': '北京', 'city': '北京市', 'district': '北京', 'street': '天安门'},
+            cityname['icon'] = true;
+            this.Address = cityname;
             let citylist = new CityData().citys;
-            let keyword = cityname.province
-            citylist = this.cityis(keyword,citylist,"provinceZh")
-            keyword = cityname.city
-            citylist = this.cityis(keyword,citylist,"leaderZh")
-            keyword = cityname.district
-            citylist = this.cityis(keyword,citylist,"cityZh")
-            let citycode = citylist[0].id
+            let keyword = cityname.province;
+            citylist = this.cityis(keyword, citylist, 'provinceZh');
+            keyword = cityname.city;
+            citylist = this.cityis(keyword, citylist, 'leaderZh');
+            keyword = cityname.district;
+            citylist = this.cityis(keyword, citylist, 'cityZh');
+            const citycode = citylist[0].id;
             // let StarCityList = Cache.get("StarCityList")
             const storageService = new StorageService(storages.starCityList);
             storageService.get().then((res) => {
-                this.StarCityList = res;
-            }).catch(err => {
-                storages.starCityList.value = [{citycode:citycode,cityname:cityname}];
-                this.StarCityList = [{citycode:citycode,cityname:cityname}];
-                storageService.set().then(res => {
-                    console.log(res);
-                }).catch(err => {
-                    console.log(err);
-                });
+              this.StarCityList = res;
+            }).catch((err) => {
+              storages.starCityList.value = [{citycode: citycode, cityname: cityname}];
+              this.StarCityList = [{citycode: citycode, cityname: cityname}];
+              storageService.set().then((res) => {
+                console.log(res);
+              }).catch((err) => {
+                console.log(err);
+              });
             });
-            this.Cache_Is(citycode)
+            this.Cache_Is(citycode);
+    },
+    cityis(keyword:any, citylist:any, key:string) {
+      keyword = keyword.split('');
+      let word = '';
+      for (const index in keyword) {
+        const array = [];
+        word = word + keyword[index];
+        for (const child in citylist) {
+                    citylist[child][key].indexOf(word) != -1? array.push(citylist[child]):'';
+        }
+                array.length > 0? citylist = array : '';
+      }
+      return citylist;
+    },
+    Cache_Is(citycode:any) {
+      const realTimeWeatherStorageService = new StorageService(storages.realTimeWeather(citycode));
+      realTimeWeatherStorageService.get().then((res) => {
+        this.SetRealTimeWeather(res, citycode);
+        this.StartupStatus = false;
+      }).catch((err) => {
+        this.GetRealTimeWeather(citycode);
+      });
+      const oneWeekWeatherStorageService = new StorageService(storages.oneWeekWeather(citycode));
+      oneWeekWeatherStorageService.get().then((res) => {
+        this.SetOneWeekWeather(res, citycode);
+        this.StartupStatus = false;
+      }).catch((err) => {
+        this.GetOneWeekWeather(citycode);
+      });
+    },
+    async GetRealTimeWeather(citycode:any) {
+      let result:any = await uni.request({url: 'https://www.tianqiapi.com/api/?version=v61&appid=06369426&appsecret=VVM7jMR0', data: {cityid: citycode}});
+      result = result[1]['data'];
+      const RealTimeWeather:any = {
+        Air: {
+          Index: result.air,
+          Level: result.air_level,
+          Pm25: result.air_pm25,
+          Tips: result.air_tips,
+          Humidity: result.humidity,
+          Pressure: result.pressure,
+          Visibility: result.visibility,
         },
-        cityis(keyword:any,citylist:any,key:string){
-            keyword = keyword.split("")
-            let word = ""
-            for (const index in keyword){
-                let array = []
-                word = word + keyword[index]
-                for(const child in citylist){
-                    citylist[child][key].indexOf(word) != -1? array.push(citylist[child]):""
-                }
-                array.length > 0? citylist = array : ""
-            }
-            return citylist
+        Address: {
+          Country: result.country,
+          City: result.city,
+          CityId: result.cityid,
         },
-        Cache_Is(citycode:any){
-                const realTimeWeatherStorageService = new StorageService(storages.realTimeWeather(citycode));
-                realTimeWeatherStorageService.get().then(res => {
-                    this.SetRealTimeWeather(res,citycode);
-                    this.StartupStatus = false
-                }).catch(err => {
-                    this.GetRealTimeWeather(citycode);
-                });
-                const oneWeekWeatherStorageService = new StorageService(storages.oneWeekWeather(citycode));
-                oneWeekWeatherStorageService.get().then(res => {
-                    this.SetOneWeekWeather(res,citycode);
-                    this.StartupStatus = false
-                }).catch(err => {
-                    this.GetOneWeekWeather(citycode);
-                });
+        Weather: {
+          Type: result.wea,
+          Icon: result.wea_img,
         },
-        async GetRealTimeWeather(citycode:any){
-				let result:any = await uni.request({url:"https://www.tianqiapi.com/api/?version=v61&appid=06369426&appsecret=VVM7jMR0",data:{cityid: citycode}})
-				result = result[1]["data"]
-				let RealTimeWeather:any = {
-					Air:{
-						Index: result.air,
-						Level: result.air_level,
-						Pm25: result.air_pm25,
-						Tips: result.air_tips,
-						Humidity: result.humidity,
-						Pressure: result.pressure,
-						Visibility: result.visibility
-					},
-					Address: {
-						Country: result.country,
-						City: result.city,
-						CityId: result.cityid
-					},
-					Weather: {
-						Type: result.wea,
-						Icon: result.wea_img
-					},
-					Temperature: {
-						Current: result.tem,
-						Max: result.tem1,
-						Min: result.tem2
-					},
-					Wind: {
-						Type: result.win,
-						Meter: result.win_meter,
-						speed: result.win_speed
-					}
-				}
-				let V = this.ReturnWindSpeed(RealTimeWeather.Wind.speed)
-				let T = RealTimeWeather.Temperature.Current
-				let RH = parseInt(RealTimeWeather.Air.Humidity)
-				let AT = this.ReturnAT(T,V,RH)
-				RealTimeWeather["Temperature"]["Somatosensory"] = AT
-                this.RealTimeWeather = RealTimeWeather
-                new StorageService(storages.realTimeWeather(
-                    citycode,
-                    {
-                        create_time: new Time().currentTime(),
-                        data: RealTimeWeather
-                    }
-                )).set().then(res => {
-                    console.log('缓存实时天气成功！');
-                });
-			},
-			async GetOneWeekWeather (citycode:any) {
-				let  result:any = await uni.request({url: 'https://www.tianqiapi.com/api/', data: {version:"v9",appid:"06369426",appsecret:"VVM7jMR0",cityid: citycode}})
-				result = result[1]["data"]["data"]
-				console.log(result);
-				let OneWeekWeather:any = []
-				for(const key in result){
-					let week = result[key].week.substr(result[key].week.length - 1,1)
-					let date = parseInt(result[key].day.split("日")[0])
-					let type = result[key].wea
-					let max = result[key].tem1
-					let min = result[key].tem2
-					let index = result[key].index
-					index[0]["title"] = "紫外线"
-					index[1]["title"] = "运动"
-					index[2]["title"] = "血糖"
-					index[3]["title"] = "穿衣"
-					index[4]["title"] = "洗车"
-					index[5]["title"] = "空气污染"
-					index[0]["icon"] = "fa-sun-o"
-					index[1]["icon"] = "fa-child"
-					index[2]["icon"] = "fa-heartbeat"
-					index[3]["icon"] = "fa-male"
-					index[4]["icon"] = "fa-car"
-					index[5]["icon"] = "fa-envira"
-					let hours = result[key].hours
-					for(const keychild in hours){
-						hours[keychild]["hours"] = hours[keychild]["hours"].split("时")[0]
-						hours[keychild]["title"] = hours[keychild]["hours"] + ":00"
-					}
-					OneWeekWeather[key] = {
-						Date: {
-							Week: week,
-							Date: date
-						},
-						Weather: {
-							Type: type
-						},
-						Temperature: {
-							Max: max,
-							Min: min
-						},
-						Index: index,
-						Hours: hours
-					}
-				}
-				console.log(OneWeekWeather)
-                this.OneWeekWeather = OneWeekWeather
-                new StorageService(storages.oneWeekWeather(
-                    citycode,
-                    {
-                        create_time: new Time().currentTime(),
-                        data:OneWeekWeather
-                    }
-                )).set().then(res => {
-                    console.log('缓存一周天气成功!');
-                });
-            },
-        SetRealTimeWeather(RealTimeWeather:any,citycode:any){
-            let create_time = RealTimeWeather.create_time
-            let data = RealTimeWeather.data
-            if (new Time().timeDifference(create_time, new Time().currentTime()) <= 30) {
-                this.RealTimeWeather = data
-            } else {
-                this.GetRealTimeWeather(citycode)
-            }
+        Temperature: {
+          Current: result.tem,
+          Max: result.tem1,
+          Min: result.tem2,
         },
-        SetOneWeekWeather(OneWeekWeather:any,citycode:any){
-            let create_time = OneWeekWeather.create_time
-            let data = OneWeekWeather.data
-            if (new Time().timeDifference(create_time, new Time().currentTime()) <= 90) {
-                this.OneWeekWeather = data
-            } else {
-                this.GetOneWeekWeather(citycode)
-            }
+        Wind: {
+          Type: result.win,
+          Meter: result.win_meter,
+          speed: result.win_speed,
         },
-        ReturnAT(T:any,V:any,RH:any){
-            let e = (RH / 100) * 6.105 * Math.exp((17.27 * T)/(237.7 + T))
-            let AT = (1.07 * T) + (0.2 * e) - (0.65 * V) - 2.7
-            return AT.toFixed(0)
-        },
-        ReturnWindSpeed(WindLevel:any){
-            WindLevel = parseInt(WindLevel)
-            switch (WindLevel){
-                case 0:
-                    return 0.1
-                    break
-                case 1:
-                    return 0.9
-                    break
-                case 2:
-                    return 2.45
-                    break
-                case 3:
-                    return 4.4
-                    break
-                case 4:
-                    return 6.7
-                    break
-                case 5:
-                    return 9.35
-                    break
-                case 6:
-                    return 12.3
-                    break
-                case 7:
-                    return 15.5
-                    break
-                case 8:
-                    return 18.95
-                    break
-                case 9:
-                    return 22.6
-                    break
-                case 10:
-                    return 26.45
-                    break
-                default:
-                    return 0.1
-                    break
-            }
-        },
-        SwitchTemperatureStatus(e:any){
-            let status = e.currentTarget.dataset.id
-            this.TemperatureStatus = status
-        },
-        async StarCityData(current:any){
-            new StorageService(storages.starCityList).get().then(res => {
-                this.Cache_Is(res[current].citycode);
-                this.Address = res[current].cityname;
-            });
-        },
-        ShowIndexDesc(desc:string){
-            uni.showToast({
-                title: desc,
-                icon: 'none'
-            })
-        },
-        more(key: number){
-            // let address:any = this.Address;
-            let starCityList: any = this.StarCityList;
-            uni.navigateTo({
-                url:'./monthWeather/monthWeather?city=' + starCityList[key].citycode
+      };
+      const V = this.ReturnWindSpeed(RealTimeWeather.Wind.speed);
+      const T = RealTimeWeather.Temperature.Current;
+      const RH = parseInt(RealTimeWeather.Air.Humidity);
+      const AT = this.ReturnAT(T, V, RH);
+      RealTimeWeather['Temperature']['Somatosensory'] = AT;
+      this.RealTimeWeather = RealTimeWeather;
+      new StorageService(storages.realTimeWeather(
+          citycode,
+          {
+            create_time: new Time().currentTime(),
+            data: RealTimeWeather,
+          },
+      )).set().then((res) => {
+        console.log('缓存实时天气成功！');
+      });
+    },
+    async GetOneWeekWeather(citycode:any) {
+      let result:any = await uni.request({url: 'https://www.tianqiapi.com/api/', data: {version: 'v9', appid: '06369426', appsecret: 'VVM7jMR0', cityid: citycode}});
+      result = result[1]['data']['data'];
+      console.log(result);
+      const OneWeekWeather:any = [];
+      for (const key in result) {
+        const week = result[key].week.substr(result[key].week.length - 1, 1);
+        const date = parseInt(result[key].day.split('日')[0]);
+        const type = result[key].wea;
+        const max = result[key].tem1;
+        const min = result[key].tem2;
+        const index = result[key].index;
+        index[0]['title'] = '紫外线';
+        index[1]['title'] = '运动';
+        index[2]['title'] = '血糖';
+        index[3]['title'] = '穿衣';
+        index[4]['title'] = '洗车';
+        index[5]['title'] = '空气污染';
+        index[0]['icon'] = 'fa-sun-o';
+        index[1]['icon'] = 'fa-child';
+        index[2]['icon'] = 'fa-heartbeat';
+        index[3]['icon'] = 'fa-male';
+        index[4]['icon'] = 'fa-car';
+        index[5]['icon'] = 'fa-envira';
+        const hours = result[key].hours;
+        for (const keychild in hours) {
+          hours[keychild]['hours'] = hours[keychild]['hours'].split('时')[0];
+          hours[keychild]['title'] = hours[keychild]['hours'] + ':00';
+        }
+        OneWeekWeather[key] = {
+          Date: {
+            Week: week,
+            Date: date,
+          },
+          Weather: {
+            Type: type,
+          },
+          Temperature: {
+            Max: max,
+            Min: min,
+          },
+          Index: index,
+          Hours: hours,
+        };
+      }
+      console.log(OneWeekWeather);
+      this.OneWeekWeather = OneWeekWeather;
+      new StorageService(storages.oneWeekWeather(
+          citycode,
+          {
+            create_time: new Time().currentTime(),
+            data: OneWeekWeather,
+          },
+      )).set().then((res) => {
+        console.log('缓存一周天气成功!');
+      });
+    },
+    SetRealTimeWeather(RealTimeWeather:any, citycode:any) {
+      const create_time = RealTimeWeather.create_time;
+      const data = RealTimeWeather.data;
+      if (new Time().timeDifference(create_time, new Time().currentTime()) <= 30) {
+        this.RealTimeWeather = data;
+      } else {
+        this.GetRealTimeWeather(citycode);
+      }
+    },
+    SetOneWeekWeather(OneWeekWeather:any, citycode:any) {
+      const create_time = OneWeekWeather.create_time;
+      const data = OneWeekWeather.data;
+      if (new Time().timeDifference(create_time, new Time().currentTime()) <= 90) {
+        this.OneWeekWeather = data;
+      } else {
+        this.GetOneWeekWeather(citycode);
+      }
+    },
+    ReturnAT(T:any, V:any, RH:any) {
+      const e = (RH / 100) * 6.105 * Math.exp((17.27 * T)/(237.7 + T));
+      const AT = (1.07 * T) + (0.2 * e) - (0.65 * V) - 2.7;
+      return AT.toFixed(0);
+    },
+    ReturnWindSpeed(WindLevel:any) {
+      WindLevel = parseInt(WindLevel);
+      switch (WindLevel) {
+        case 0:
+          return 0.1;
+          break;
+        case 1:
+          return 0.9;
+          break;
+        case 2:
+          return 2.45;
+          break;
+        case 3:
+          return 4.4;
+          break;
+        case 4:
+          return 6.7;
+          break;
+        case 5:
+          return 9.35;
+          break;
+        case 6:
+          return 12.3;
+          break;
+        case 7:
+          return 15.5;
+          break;
+        case 8:
+          return 18.95;
+          break;
+        case 9:
+          return 22.6;
+          break;
+        case 10:
+          return 26.45;
+          break;
+        default:
+          return 0.1;
+          break;
+      }
+    },
+    SwitchTemperatureStatus(e:any) {
+      const status = e.currentTarget.dataset.id;
+      this.TemperatureStatus = status;
+    },
+    async StarCityData(current:any) {
+      new StorageService(storages.starCityList).get().then((res) => {
+        this.Cache_Is(res[current].citycode);
+        this.Address = res[current].cityname;
+      });
+    },
+    ShowIndexDesc(desc:string) {
+      uni.showToast({
+        title: desc,
+        icon: 'none',
+      });
+    },
+    more(key: number) {
+      // let address:any = this.Address;
+      const starCityList: any = this.StarCityList;
+      uni.navigateTo({
+        url: './monthWeather/monthWeather?city=' + starCityList[key].citycode,
 
-            });
-        },
-    }
-})
+      });
+    },
+  },
+});
 </script>

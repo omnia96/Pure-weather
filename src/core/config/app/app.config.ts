@@ -9,5 +9,5 @@
 const version = '1.1.6';
 
 export {
-    version
-}
+  version,
+};

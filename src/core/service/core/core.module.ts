@@ -1,7 +1,7 @@
-import { SystemInfoService } from "./systemInfo/systemInfo.service";
+import {SystemInfoService} from './systemInfo/systemInfo.service';
 
 const systemInfoService = new SystemInfoService;
 
 export {
-    systemInfoService
-}
+  systemInfoService,
+};

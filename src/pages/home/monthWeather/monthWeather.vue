@@ -99,72 +99,70 @@
     </div>
 </template>
 <script lang="ts">
-import Vue from 'vue'
-import { StorageService } from '../../../core/service/storage/storage.service'
-import { storages } from '../../../core/config/config.module'
-import { Time } from '../../../core/libs/time'
+import Vue from 'vue';
+import {StorageService} from '../../../core/service/storage/storage.service';
+import {storages} from '../../../core/config/config.module';
+import {Time} from '../../../core/libs/time';
 export default Vue.extend({
-    data(){
-        let monthWeatheradta: Array<any> = [];
-        return{
-            title:'月天气',
-            monthWeatheradta,
-            citycode: 0,
-
-        }
-    },
-    onLoad: function (option:any) {
-        this.citycode = option.city
-        new StorageService(storages.monthWeatheradta(String(this.citycode))).get().then(res => {
-            if(new Time().timeDifference(res.create_time,new Time().currentTime())>360){
-                this.getdata();
-            }else{
-                this.monthWeatheradta=res.data
-            }
-        }).catch(err => {
-            this.getdata();
-        });
-    },
-    methods:{
-        getdata(){
-            uni.request({
-                url:'https://www.tianqiapi.com/api',
-                data: {
-                    version: "v3",
-                    appid:"06369426",
-                    appsecret:"VVM7jMR0",
-                    cityid:this.citycode
-                },
-                success: (res: any) => {
-                    let data: Array<any>= res.data.data;
-                    console.log(data);
-                    for (const key in data){
-                        if (data[key] != null) {
-                            this.monthWeatheradta.push(
-                                {
-                                    Week: data[key].week.substr(data[key].week.length - 1, 1),
-                                    Date: data[key].date.split("-")[2],
-                                    Type: data[key].wea,
-                                    Max: data[key].tem1,
-                                    Min: data[key].tem2
-                                }
-                            )
-                        }
-                    }
-                    new StorageService(storages.monthWeatheradta(String(this.citycode),{create_time: new Time().currentTime(), data: this.monthWeatheradta})).set().then(res =>{
-                        console.log("缓存成功");
-                    })
-
-                }
-            });
+  data() {
+    const monthWeatheradta: Array<any> = [];
+    return {
+      title: '月天气',
+      monthWeatheradta,
+      citycode: 0,
+    };
+  },
+  onLoad: function(option:any) {
+    this.citycode = option.city;
+    new StorageService(storages.monthWeatheradta(String(this.citycode))).get().then((res) => {
+      if (new Time().timeDifference(res.create_time, new Time().currentTime())>360) {
+        this.getdata();
+      } else {
+        this.monthWeatheradta=res.data;
+      }
+    }).catch((err) => {
+      this.getdata();
+    });
+  },
+  methods: {
+    getdata() {
+      uni.request({
+        url: 'https://www.tianqiapi.com/api',
+        data: {
+          version: 'v3',
+          appid: '06369426',
+          appsecret: 'VVM7jMR0',
+          cityid: this.citycode,
         },
-        setTemperaturePercentage(temperature: number) {
-            if (temperature > 0) {
-                return 50 + temperature;
-            } else {
-                return temperature
+        success: (res: any) => {
+          const data: Array<any>= res.data.data;
+          console.log(data);
+          for (const key in data) {
+            if (data[key] != null) {
+              this.monthWeatheradta.push(
+                  {
+                    Week: data[key].week.substr(data[key].week.length - 1, 1),
+                    Date: data[key].date.split('-')[2],
+                    Type: data[key].wea,
+                    Max: data[key].tem1,
+                    Min: data[key].tem2,
+                  },
+              );
             }
-        }
-    }
-})
+          }
+          new StorageService(storages.monthWeatheradta(String(this.citycode), {create_time: new Time().currentTime(), data: this.monthWeatheradta})).set().then((res) =>{
+            console.log('缓存成功');
+          });
+        },
+      });
+    },
+    setTemperaturePercentage(temperature: number) {
+      if (temperature > 0) {
+        return 50 + temperature;
+      } else {
+        return temperature;
+      }
+    },
+  },
+});
 </script>

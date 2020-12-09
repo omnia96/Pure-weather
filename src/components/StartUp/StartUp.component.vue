@@ -59,14 +59,14 @@
   </view>
 </template>
 <script lang="ts">
-import Vue from 'vue'
+import Vue from 'vue';
 import IconFreecnsComponentVue from '../IconFreecns/IconFreecns.component.vue';
-	export default Vue.extend({
-		data() {
-			return {};
-		},
-		components:{
-			IconFreecnsComponentVue
-		}
-	})
+export default Vue.extend({
+  data() {
+    return {};
+  },
+  components: {
+    IconFreecnsComponentVue,
+  },
+});
 </script>

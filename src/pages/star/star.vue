@@ -40,48 +40,48 @@
 	</view>
 </template>
 <script lang="ts">
-import Vue from 'vue'
-import IconAwesomeComponentVue from '../../components/IconAwesome/IconAwesome.component.vue'
-import { StorageService } from '@/core/service/storage/storage.service'
-import { storages } from '@/core/config/config.module'
+import Vue from 'vue';
+import IconAwesomeComponentVue from '../../components/IconAwesome/IconAwesome.component.vue';
+import {StorageService} from '@/core/service/storage/storage.service';
+import {storages} from '@/core/config/config.module';
 export default Vue.extend({
-    data() {
-		let StarCityList: any;
-		return {
-			StarCityList
-		}
-	},
-	components:{IconAwesomeComponentVue},
-	onLoad(){
-		new StorageService(storages.starCityList).get().then(res => {
-			this.StarCityList = res;
-		});
-	},
-	methods:{
-		DeleteThis(e:any){
-			let index = e.currentTarget.dataset.index
-			let item = e.currentTarget.dataset.item
-			let title = ""
-			item.cityname.province != item.cityname.leader? title = title + item.cityname.province + "-":title = title
-			item.cityname.leader != item.cityname.city? title = title + item.cityname.leader + "-":title = title,
-			title = title + item.cityname.city
+  data() {
+    let StarCityList: any;
+    return {
+      StarCityList,
+    };
+  },
+  components: {IconAwesomeComponentVue},
+  onLoad() {
+    new StorageService(storages.starCityList).get().then((res) => {
+      this.StarCityList = res;
+    });
+  },
+  methods: {
+    DeleteThis(e:any) {
+      const index = e.currentTarget.dataset.index;
+      const item = e.currentTarget.dataset.item;
+      let title = '';
+			item.cityname.province != item.cityname.leader? title = title + item.cityname.province + '-':title = title;
+			item.cityname.leader != item.cityname.city? title = title + item.cityname.leader + '-':title = title,
+			title = title + item.cityname.city;
 			const storageService = new StorageService(storages.starCityList);
-			storageService.get().then(res => {
-				res.splice(index,1);
-				this.StarCityList = res;
-				if(storageService.storage) {
-					storageService.storage.value = res;
-				}
-				storageService.set().then(res => {
-					storageService.remove().then(res=>{
-						uni.showToast({
-							icon:"none",
-							title:title + "已从收藏城市列表中删除"
-						})
-					});
-				});
+			storageService.get().then((res) => {
+			  res.splice(index, 1);
+			  this.StarCityList = res;
+			  if (storageService.storage) {
+			    storageService.storage.value = res;
+			  }
+			  storageService.set().then((res) => {
+			    storageService.remove().then((res)=>{
+			      uni.showToast({
+			        icon: 'none',
+			        title: title + '已从收藏城市列表中删除',
+			      });
+			    });
+			  });
 			});
-		}
-	}
-})
+    },
+  },
+});
 </script>

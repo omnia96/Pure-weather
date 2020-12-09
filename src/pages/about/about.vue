@@ -98,37 +98,37 @@
     </div>
 </template>
 <script lang="ts">
-    import Vue from 'vue'
-    import NavigationComponentVue from '../../components/Navigation/Navigation.component.vue'
-    import IconFreecnsComponentVue from '../../components/IconFreecns/IconFreecns.component.vue'
-    import IconAwesomeComponentVue from '../../components/IconAwesome/IconAwesome.component.vue'
-    import { version } from '../../core/config/config.module'
-    import { systemInfoService } from '../../core/service/service.module'
-    export default Vue.extend({
-        components:{
-            NavigationComponentVue,
-            IconFreecnsComponentVue,
-            IconAwesomeComponentVue
-        },
-        data(){
-            return {
-                version: version,
-                statusBarHeight: systemInfoService.systemInfo.statusBarHeight,
-                navigationBarItems:[
-                    {icon: 'fa-home',title: '首页',path: '../home/home',selected: false},
-                    {icon: 'fa-exclamation-circle',title: '关于',path: '../about/about',selected: true}
-                ]
-            }
-        },
-        methods: {
-			opneSetting(){
-				uni.openSetting({})
-            },
-            toLogs() {
-                uni.navigateTo({
-                    url: '/views/pages/about/log/log'
-                });
-            }
-        }
-    })
+import Vue from 'vue';
+import NavigationComponentVue from '../../components/Navigation/Navigation.component.vue';
+import IconFreecnsComponentVue from '../../components/IconFreecns/IconFreecns.component.vue';
+import IconAwesomeComponentVue from '../../components/IconAwesome/IconAwesome.component.vue';
+import {version} from '../../core/config/config.module';
+import {systemInfoService} from '../../core/service/service.module';
+export default Vue.extend({
+  components: {
+    NavigationComponentVue,
+    IconFreecnsComponentVue,
+    IconAwesomeComponentVue,
+  },
+  data() {
+    return {
+      version: version,
+      statusBarHeight: systemInfoService.systemInfo.statusBarHeight,
+      navigationBarItems: [
+        {icon: 'fa-home', title: '首页', path: '../home/home', selected: false},
+        {icon: 'fa-exclamation-circle', title: '关于', path: '../about/about', selected: true},
+      ],
+    };
+  },
+  methods: {
+    opneSetting() {
+      uni.openSetting({});
+    },
+    toLogs() {
+      uni.navigateTo({
+        url: '/views/pages/about/log/log',
+      });
+    },
+  },
+});
 </script>

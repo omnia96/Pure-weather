@@ -1,77 +1,3 @@
-<template>
-	<view class="Navigation" :style="NavigationBarStatus? 'z-index:1;height:calc(100vh - 40px - '+ StatusBarHeight +'px);top:'+StatusBarHeight+'px;':'height:45px;top:'+StatusBarHeight+'px;'">
-		<view class="header">
-			<view class="icon" @tap="NavigationBarSwitch">
-				<IconAwesomeComponentVue icon="fa-bars" size="40rpx" color="black"/>
-			</view>
-		</view>
-		<view class="sidebar" v-if="NavigationBarStatus" :style="'animation: '+ SwitchAnimation +' 1s;'">
-			<view class="item" v-for="(item,index) in NavigationBarItems" @tap="NavigationBarItemSelect" :id="index" v-bind:key="index" :style="item.selected? 'background:#2196f3;color:white;':''">
-				<view class="icon">
-					<IconAwesomeComponentVue :icon="item.icon" size="20px" :color="item.selected? 'white':''"/>
-				</view>
-				<view class="title">{{item.title}}</view>
-			</view>
-			<view class="RelativeField"></view>
-		</view>
-		<tool-component-vue/>
-	</view>
-</template>
-
-<script>
-	import Vue from 'vue'
-	import IconAwesomeComponentVue from '../IconAwesome/IconAwesome.component.vue'
-	import ToolComponentVue from './Tool/Tool.component.vue'
-	export default Vue.extend({
-		props:{
-			StatusBarHeight:Number,
-			NavigationBarItems: Array
-		},
-		data() {
-			return {
-				NavigationBarStatus:false,
-				SwitchAnimation:"expand",
-			}
-		},
-		components:{
-			IconAwesomeComponentVue,
-			ToolComponentVue
-		},
-		methods:{
-			NavigationBarSwitch(){
-				let that = this
-				if(that.$data.NavigationBarStatus == false){
-					that.SwitchAnimation = "expand"
-					that.NavigationBarStatus = !that.$data.NavigationBarStatus
-				}else{
-					that.SwitchAnimation = "shrink"
-					setTimeout(function() {
-						that.NavigationBarStatus = !that.$data.NavigationBarStatus
-					}, 1000)
-				}	
-			},
-			NavigationBarItemSelect(e){
-				let that = this
-				let selectedId = e.currentTarget.id
-				let NavigationBarItems = that.$props.NavigationBarItems
-				if (NavigationBarItems[selectedId].selected == false){
-					that.SwitchAnimation = "shrink"
-					setTimeout(function() {
-						that.NavigationBarStatus = false
-						uni.switchTab({
-							url:NavigationBarItems[selectedId]["path"]
-						})
-					}, 950)
-				}else{
-					that.SwitchAnimation = "shrink"
-					setTimeout(function() {
-						that.NavigationBarStatus = false
-					}, 950)
-				}
-			}
-		}
-	})
-</script>
 <style lang="stylus">
 @import "~@/static/styles/standards/font-size.styl";
 @import "~@/static/styles/standards/font-weight.styl";
@@ -153,3 +79,77 @@
       flex: 1;
 
 </style>
+<template>
+	<view class="Navigation" :style="NavigationBarStatus==true? 'z-index:1;height:calc(100vh - 40px - '+ StatusBarHeight +'px);top:'+StatusBarHeight+'px;':'height:45px;top:'+StatusBarHeight+'px;'">
+		<view class="header">
+			<view class="icon" @tap="NavigationBarSwitch">
+				<IconAwesomeComponentVue icon="fa-bars" size="40rpx" color="black"/>
+			</view>
+		</view>
+		<view class="sidebar" v-if="NavigationBarStatus == true" :style="'animation: '+ SwitchAnimation +' 1s;'">
+			<view class="item" v-for="(item,index) in NavigationBarItems" @tap="NavigationBarItemSelect" :id="index" v-bind:key="index" :style="item.selected == true? 'background:#2196f3;color:white;':''">
+				<view class="icon">
+					<IconAwesomeComponentVue :icon="item.icon" size="20px" :color="item.selected == true? 'white':''"/>
+				</view>
+				<view class="title">{{item.title}}</view>
+			</view>
+			<view class="RelativeField"></view>
+		</view>
+		<tool-component-vue/>
+	</view>
+</template>
+
+<script>
+import Vue from 'vue';
+import IconAwesomeComponentVue from '../IconAwesome/IconAwesome.component.vue';
+import ToolComponentVue from './Tool/Tool.component.vue';
+export default Vue.extend({
+  props: {
+    StatusBarHeight: Number,
+    NavigationBarItems: Array,
+  },
+  data() {
+    return {
+      NavigationBarStatus: false,
+      SwitchAnimation: 'expand',
+    };
+  },
+  components: {
+    IconAwesomeComponentVue,
+    ToolComponentVue,
+  },
+  methods: {
+    NavigationBarSwitch() {
+      const that = this;
+      if (that.$data.NavigationBarStatus == false) {
+        that.SwitchAnimation = 'expand';
+        that.NavigationBarStatus = !that.$data.NavigationBarStatus;
+      } else {
+        that.SwitchAnimation = 'shrink';
+        setTimeout(function() {
+          that.NavigationBarStatus = !that.$data.NavigationBarStatus;
+        }, 1000);
+      }
+    },
+    NavigationBarItemSelect(e) {
+      const that = this;
+      const selectedId = e.currentTarget.id;
+      const NavigationBarItems = that.$props.NavigationBarItems;
+      if (NavigationBarItems[selectedId].selected == false) {
+        that.SwitchAnimation = 'shrink';
+        setTimeout(function() {
+          that.NavigationBarStatus = false;
+          uni.switchTab({
+            url: NavigationBarItems[selectedId]['path'],
+          });
+        }, 950);
+      } else {
+        that.SwitchAnimation = 'shrink';
+        setTimeout(function() {
+          that.NavigationBarStatus = false;
+        }, 950);
+      }
+    },
+  },
+});
+</script>

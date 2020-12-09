@@ -3,7 +3,7 @@
  * @Date: 2020-01-13 16:22:55
  * @LastEditors: Omnia96
  * @LastEditTime: 2020-01-13 17:11:43
- * @Description: 
+ * @Description:
  * @FilePath: \pure-weather\src\components\Navigation\Tool\Tool.component.vue
  -->
 <style>
@@ -53,30 +53,30 @@
 </template>
 
 <script>
-	import Vue from 'vue'
-	import IconAwesomeComponentVue from '../../IconAwesome/IconAwesome.component.vue';
-	export default Vue.extend({
-		data() {
-			return {
-				
-			};
-		},
-		components:{
-			IconAwesomeComponentVue
-		},
-		methods:{
-			GoToSearch(){
-				uni.navigateTo({
-					url:"../search/search"
-				})
-			},
-			GoToStar(){
-				uni.navigateTo({
-					url:"../star/star"
-				})
-			}
-		}
-	})
+import Vue from 'vue';
+import IconAwesomeComponentVue from '../../IconAwesome/IconAwesome.component.vue';
+export default Vue.extend({
+  data() {
+    return {
+
+    };
+  },
+  components: {
+    IconAwesomeComponentVue,
+  },
+  methods: {
+    GoToSearch() {
+      uni.navigateTo({
+        url: '../search/search',
+      });
+    },
+    GoToStar() {
+      uni.navigateTo({
+        url: '../star/star',
+      });
+    },
+  },
+});
 </script>
 
 
