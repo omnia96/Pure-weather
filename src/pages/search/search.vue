@@ -135,10 +135,10 @@
 <script lang="ts">
 import Vue from 'vue'
 import IconAwesomeComponentVue from '../../components/IconAwesome/IconAwesome.component.vue'
-import { systemInfoService } from '../../../core/service/service.module'
-import { CityData } from '../../../core/libs/cityData'
-import { StorageService } from '../../../core/service/storage/storage.service'
-import { storages } from '../../../core/config/config.module'
+import { systemInfoService } from '../../core/service/service.module'
+import { CityData } from '../../core/libs/cityData'
+import { StorageService } from '../../core/service/storage/storage.service'
+import { storages } from '../../core/config/config.module'
     export default Vue.extend({
 		data() {
 			let popularCities: Array<{id: string, provinceZh: string, leaderZh: string, cityZh: string}> = [];

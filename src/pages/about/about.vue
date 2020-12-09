@@ -102,8 +102,8 @@
     import NavigationComponentVue from '../../components/Navigation/Navigation.component.vue'
     import IconFreecnsComponentVue from '../../components/IconFreecns/IconFreecns.component.vue'
     import IconAwesomeComponentVue from '../../components/IconAwesome/IconAwesome.component.vue'
-    import { version } from '../../../core/config/config.module'
-    import { systemInfoService } from '../../../core/service/service.module'
+    import { version } from '../../core/config/config.module'
+    import { systemInfoService } from '../../core/service/service.module'
     export default Vue.extend({
         components:{
             NavigationComponentVue,

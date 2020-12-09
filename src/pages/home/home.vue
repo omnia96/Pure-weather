@@ -404,13 +404,13 @@ import Vue from 'vue'
 import IconAwesomeComponentVue from '../../components/IconAwesome/IconAwesome.component.vue';
 import NavigationComponentVue from '../../components/Navigation/Navigation.component.vue';
 import IconFreecnsComponentVue from '../../components/IconFreecns/IconFreecns.component.vue';
-import { systemInfoService } from '../../../core/service/service.module';
-import { Time } from '../../../core/libs/time';
-import { CityData } from '../../../core/libs/cityData';
-import { StorageService } from '../../../core/service/storage/storage.service';
-import { storages, routers } from '../../../core/config/config.module';
+import { systemInfoService } from '../../core/service/service.module';
+import { Time } from '../../core/libs/time';
+import { CityData } from '../../core/libs/cityData';
+import { StorageService } from '../../core/service/storage/storage.service';
+import { storages, routers } from '../../core/config/config.module';
 import StartUpComponentVue from '../../components/StartUp/StartUp.component.vue';
-const QQMapWX = require('../../../static/js/qqmap.js');
+const QQMapWX = require('../../static/js/qqmap.js');
 // #ifdef MP-WEIXIN
 let interstitialAd: any = null
 declare const wx:any;
