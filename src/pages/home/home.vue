@@ -197,10 +197,10 @@ import Vue from 'vue';
 import IconAwesomeComponentVue from '../../components/IconAwesome/IconAwesome.component.vue';
 import NavigationComponentVue from '../../components/Navigation/Navigation.component.vue';
 import IconFreecnsComponentVue from '../../components/IconFreecns/IconFreecns.component.vue';
-import {systemInfoService} from '../../core/service/service.module';
-import {Time} from '../../core/libs/time';
-import {CityData} from '../../core/libs/cityData';
-import {StorageService} from '../../core/service/storage/storage.service';
+import {systemInfoService} from '@/core/service/core/core.module';
+import {Time} from '@/core/libs/time';
+import {CityData} from '@/core/libs/cityData';
+import {StorageService} from '@/core/service/storage/storage.service';
 import {storages} from '../../core/config/config.module';
 import StartUpComponentVue from '../../components/StartUp/StartUp.component.vue';
 import Component from 'vue-class-component';
@@ -493,18 +493,18 @@ export default class Home extends Vue {
     });
   }
   SetRealTimeWeather(RealTimeWeather: any, citycode: any) {
-    const create_time = RealTimeWeather.create_time;
+    const createTime = RealTimeWeather.create_time;
     const data = RealTimeWeather.data;
-    if (new Time().timeDifference(create_time, new Time().currentTime()) <= 30) {
+    if (new Time().timeDifference(createTime, new Time().currentTime()) <= 30) {
       this.RealTimeWeather = data;
     } else {
       this.GetRealTimeWeather(citycode);
     }
   }
   SetOneWeekWeather(OneWeekWeather: any, citycode: any) {
-    const create_time = OneWeekWeather.create_time;
+    const createTime: any = OneWeekWeather.create_time;
     const data = OneWeekWeather.data;
-    if (new Time().timeDifference(create_time, new Time().currentTime()) <= 90) {
+    if (new Time().timeDifference(createTime, new Time().currentTime()) <= 90) {
       this.OneWeekWeather = data;
     } else {
       this.GetOneWeekWeather(citycode);
@@ -520,40 +520,28 @@ export default class Home extends Vue {
     switch (WindLevel) {
       case 0:
         return 0.1;
-        break;
       case 1:
         return 0.9;
-        break;
       case 2:
         return 2.45;
-        break;
       case 3:
         return 4.4;
-        break;
       case 4:
         return 6.7;
-        break;
       case 5:
         return 9.35;
-        break;
       case 6:
         return 12.3;
-        break;
       case 7:
         return 15.5;
-        break;
       case 8:
         return 18.95;
-        break;
       case 9:
         return 22.6;
-        break;
       case 10:
         return 26.45;
-        break;
       default:
         return 0.1;
-        break;
     }
   }
   SwitchTemperatureStatus(e: any) {
