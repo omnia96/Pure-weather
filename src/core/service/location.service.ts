@@ -1,5 +1,6 @@
 import {Observable, Subject} from 'rxjs';
 import {map, switchMap} from 'rxjs/operators';
+import {AddressService} from '@/core/service/address.service';
 
 export class LocationService {
   constructor() {
@@ -10,14 +11,17 @@ export class LocationService {
         (error) => this.showOpenSettingModal(),
     );
   }
-  private isAuthorized() {
+  public isAuthorized() {
     const isAuthorized$ = new Subject();
     uni.authorize({
       scope: 'scope.userLocation',
       success: (result) => isAuthorized$.next(),
       fail: (result) => isAuthorized$.error(result),
     });
-    return isAuthorized$.pipe(switchMap(() => this.getLocation()));
+    return isAuthorized$.pipe(
+        switchMap(() => this.getLocation()),
+        switchMap((location) => new AddressService().getAddressCode(location)),
+    );
   }
   private getLocation(): Observable<any> {
     const location$ = new Subject<any>();

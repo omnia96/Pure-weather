@@ -204,6 +204,7 @@ import {StorageService} from '@/core/service/storage/storage.service';
 import {storages} from '../../core/config/config.module';
 import StartUpComponentVue from '../../components/StartUp/StartUp.component.vue';
 import Component from 'vue-class-component';
+import {LocationService} from '@/core/service/location.service';
 
 const QQMapWX = require('../../static/js/qqmap.js');
 // #ifdef MP-WEIXIN
@@ -302,41 +303,9 @@ export default class Home extends Vue {
       hours: hours,
     };
   }
-  GetAddress(location: any) {
-    const txmap = new QQMapWX({key: 'QG2BZ-4OS3U-QNUVG-4RYJG-C54ZZ-3ZFCW'});
-    return new Promise((resolve, reject) => {
-      txmap.reverseGeocoder({
-        location: {
-          latitude: location['latitude'],
-          longitude: location['longitude'],
-        },
-        success: (res: any) => {
-          resolve(res.result.address_component);
-        },
-      });
-    });
-  }
-  async GetCityCode() {
-    let location: any = await uni.getLocation({type: 'gcj02'});
-      location.length > 1 ? location = location[1] : location = null;
-      let cityname: any = null;
-      location != null ? cityname = await this.GetAddress(location) : cityname = {
-        'province': '北京',
-        'city': '北京市',
-        'district': '北京',
-        'street': '天安门',
-      };
-      cityname['icon'] = true;
-      this.Address = cityname;
-      let citylist = new CityData().citys;
-      let keyword = cityname.province;
-      citylist = this.cityis(keyword, citylist, 'provinceZh');
-      keyword = cityname.city;
-      citylist = this.cityis(keyword, citylist, 'leaderZh');
-      keyword = cityname.district;
-      citylist = this.cityis(keyword, citylist, 'cityZh');
-      const citycode = citylist[0].id;
-      // let StarCityList = Cache.get("StarCityList")
+  GetCityCode() {
+    new LocationService().isAuthorized().subscribe((citycode) => {
+      console.log(citycode);
       const storageService = new StorageService(storages.starCityList);
       storageService.get().then((res) => {
         this.StarCityList = res;
@@ -350,19 +319,7 @@ export default class Home extends Vue {
         });
       });
       this.Cache_Is(citycode);
-  }
-  cityis(keyword: any, citylist: any, key: string) {
-    keyword = keyword.split('');
-    let word = '';
-    for (const index in keyword) {
-      const array = [];
-      word = word + keyword[index];
-      for (const child in citylist) {
-          citylist[child][key].indexOf(word) != -1 ? array.push(citylist[child]) : '';
-      }
-        array.length > 0 ? citylist = array : '';
-    }
-    return citylist;
+    });
   }
   Cache_Is(citycode: any) {
     const realTimeWeatherStorageService = new StorageService(storages.realTimeWeather(citycode));
