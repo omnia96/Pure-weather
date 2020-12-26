@@ -1,10 +1,12 @@
 <script lang="ts">
 import Vue from 'vue';
+import {LocationService} from '@/core/service/location.service';
 export default Vue.extend({
   mpType: 'app',
   onLaunch() {
     console.log('App Launch');
     uni.hideTabBar();
+    new LocationService();
   },
   onShow() {
     console.log(this);
