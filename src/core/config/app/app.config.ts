@@ -6,8 +6,8 @@
  * @Description:
  * @FilePath: \pure-weather\src\config\app\app.config.ts
  */
-const version = '1.1.6';
-
-export {
-  version,
+export const version = '1.1.6';
+export const apiKey = {
+  appid: '06369426',
+  appsecret: 'VVM7jMR0',
 };
