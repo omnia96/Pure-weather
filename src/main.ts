@@ -6,5 +6,5 @@ import '@/static/styles/colorUi/animation.css'
 import '@/static/styles/omnia96/animation.css'
 
 Vue.config.productionTip = false
-
+Vue.prototype['rout'] = '222';
 new App().$mount()

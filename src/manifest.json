@@ -1,11 +1,14 @@
 {
     "name": "pure-weather",
     "appid": "",
-    "description": "",
-    "versionName": "1.0.0",
+    "description": "__UNI__F9CB14D",
+    "versionName": "1.0.6",
     "versionCode": "100",
 	"transformPx":false,
-    "app-plus": { 
+    "uniStatistics": {
+      "enable": true
+    },
+    "app-plus": {
         "modules": {
 
         },
@@ -66,6 +69,7 @@
         "usingComponents" : true
     },
     "mp-toutiao" : {
+        "appid": "tt40c0367ddffb783b",
         "usingComponents" : true
     },
     "mp-qq" : {
