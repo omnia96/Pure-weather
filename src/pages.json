@@ -1,26 +1,32 @@
 {
-	"pages": [
-		{"path": "views/pages/home/home","style":{"navigationStyle":"custom"}},
-		{"path": "views/pages/about/about","style":{"navigationStyle":"custom"}},
-		{"path": "views/pages/search/search","style":{"navigationBarTitleText":"搜索"}},
-		{"path": "views/pages/star/star","style":{"navigationBarTitleText":"城市"}},
-		{"path": "views/pages/home/monthWeather/monthWeather","style":{"navigationBarTitleText":"四十天天气"}},
-		{"path": "views/pages/about/log/log","style":{"navigationBarTitleText":"更新日志"}}
-	],
-	"tabBar":{
-		"color": "#ffffff00",
-		"selectedColor": "#ffffff00",
-		"backgroundColor": "#ffffff00",
-		"list": [
-			{"pagePath":"views/pages/home/home","text":""},
-			{"pagePath" : "views/pages/about/about","text":""}
-		]
-	},
-	"globalStyle": {
-		"navigationBarTextStyle": "black",
-		"navigationBarTitleText": "uni-app",
-		"navigationBarBackgroundColor": "#ffffff",
-		"backgroundColor": "#F8F8F8",
-		"navigationStyle":"default"
-	}
+  "pages": [
+    {"path": "views/pages/home/home","style":{"navigationStyle":"custom"}},
+    {"path": "views/pages/about/about","style":{"navigationStyle":"custom"}},
+    {"path": "views/pages/search/search","style":{"navigationBarTitleText":"搜索"}},
+    {"path": "views/pages/star/star","style":{"navigationBarTitleText":"城市"}},
+    {"path": "views/pages/home/monthWeather/monthWeather","style":{"navigationBarTitleText":"四十天天气"}},
+    {"path": "views/pages/about/log/log","style":{"navigationBarTitleText":"更新日志"}}
+  ],
+  "tabBar":{
+    "color": "#ffffff00",
+    "selectedColor": "#ffffff00",
+    "backgroundColor": "#ffffff00",
+    "list": [
+      {"pagePath":"views/pages/home/home","text":""},
+      {"pagePath" : "views/pages/about/about","text":""}
+    ]
+  },
+  "globalStyle": {
+    "navigationBarTextStyle": "black",
+    "navigationBarTitleText": "uni-app",
+    "navigationBarBackgroundColor": "#ffffff",
+    "backgroundColor": "#F8F8F8",
+    "navigationStyle":"default"
+  },
+  "condition": {
+    "current": 0,
+    "list": [
+      {"name": "月天气", "path": "views/pages/home/monthWeather/monthWeather", "query": "city=101110112"}
+    ]
+  }
 }

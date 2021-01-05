@@ -57,7 +57,7 @@
 </style>
 <template>
     <div class="page">
-        <scroll-view class="month-weathers" :scroll-x="true" @scroll="scroll">
+        <scroll-view class="month-weathers" :scroll-x="true">
             <div class="item" v-for="(item, index) in monthWeatheradta" :key="index">
                 <div class="weather animation-slide-left" :style="[{'animation-delay': (index+1)*0.2 + 's'}]">
                     <div class="header">
@@ -109,7 +109,8 @@ export default Vue.extend({
         return{
             title:'月天气',
             monthWeatheradta,
-            citycode: 0
+            citycode: 0,
+
         }
     },
     onLoad: function (option:any) {
