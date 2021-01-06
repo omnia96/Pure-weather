@@ -7,7 +7,6 @@ export default Vue.extend({
     uni.hideTabBar();
   },
   onShow() {
-    console.log(this);
     console.log('App Show');
   },
   onHide() {

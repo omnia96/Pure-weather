@@ -205,6 +205,8 @@ import {storages} from '../../core/config/config.module';
 import StartUpComponentVue from '../../components/StartUp/StartUp.component.vue';
 import Component from 'vue-class-component';
 import {LocationService} from '@/core/service/location.service';
+import {forkJoin, zip} from "rxjs";
+import {fromPromise} from "rxjs/internal-compatibility";
 
 const QQMapWX = require('../../static/js/qqmap.js');
 // #ifdef MP-WEIXIN
@@ -319,6 +321,10 @@ export default class Home extends Vue {
         });
       });
       this.Cache_Is(citycode);
+      forkJoin({
+        realTime: fromPromise(new StorageService(storages.realTimeWeather(citycode)).get()),
+        week: fromPromise(new StorageService(storages.oneWeekWeather(citycode)).get()),
+      }).subscribe(response => console.log(response));
     });
   }
   Cache_Is(citycode: any) {
