@@ -34,6 +34,7 @@
     "@dcloudio/uni-mp-toutiao": "^2.0.0-29820201110001",
     "@dcloudio/uni-mp-weixin": "^2.0.0-29820201110001",
     "@dcloudio/uni-stat": "^2.0.0-29820201110001",
+    "@types/moment": "^2.13.0",
     "flyio": "^0.6.2",
     "regenerator-runtime": "^0.12.1",
     "rxjs": "^6.6.3",

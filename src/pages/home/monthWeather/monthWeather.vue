@@ -43,7 +43,7 @@
 </template>
 <script lang="ts">
 import Vue from 'vue';
-import {StorageService} from '../../../core/service/storage/storage.service';
+import {StorageService} from '../../../core/service/storage.service';
 import {storages} from '../../../core/config/config.module';
 import {Time} from '../../../core/libs/time';
 import Component from 'vue-class-component';

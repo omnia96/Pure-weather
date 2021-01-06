@@ -1,35 +1,29 @@
-import {Storage} from '@/core/service/storage/storage';
+import {Storage} from '@/core/models/storage';
+import {StorageValue} from '@/core/models/storageValue';
 
-const starCityList: Storage<Array<{citycode: string, cityname: any}>> = {
+export const starCityList: Storage<Array<{cityCode: string, cityName: any}>> = {
   key: 'StarCityList',
-  value: [],
+  value: new StorageValue<Array<{cityCode: string; cityName: any}>>([]),
 };
-const realTimeWeather = (citycode: string, value?:{create_time: string, data: any}): Storage<{create_time: string, data: any}> => {
+export const realTimeWeatherStorage = (cityCode: string, value?: any): Storage<any> => {
   return {
-    key: `RealTimeWeather-${citycode}`,
-    value: value,
+    key: `RealTimeWeather-${cityCode}`,
+    value: new StorageValue<any>(value),
   };
 };
-const oneWeekWeather = (citycode: string, value?: {create_time: string, data: any}): Storage<{create_time: string, data: any}> => {
+export const weekWeatherStorage = (cityCode: string, value?: any): Storage<any> => {
   return {
-    key: `OneWeekWeather-${citycode}`,
-    value: value,
+    key: `OneWeekWeather-${cityCode}`,
+    value: new StorageValue<any>(value),
   };
 };
-const searchHistory: Storage<any> = {
+export const searchHistory: Storage<any> = {
   key: 'SearchHistory',
-  value: [],
+  value: new StorageValue<any>([]),
 };
-const monthWeatheradta = (citycode :string, value?: {create_time:string, data:any})=>{
+export const monthWeather = (cityCode :string, value?: any)=>{
   return {
-    key: 'monthWeatheradta' + citycode,
-    value: value,
+    key: 'monthWeather' + cityCode,
+    value: new StorageValue<any>(value),
   };
-};
-export const storages = {
-  starCityList,
-  realTimeWeather,
-  oneWeekWeather,
-  searchHistory,
-  monthWeatheradta,
 };

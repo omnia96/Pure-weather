@@ -51,7 +51,7 @@ import Vue from 'vue';
 import IconAwesomeComponentVue from '../../components/IconAwesome/IconAwesome.component.vue';
 import {systemInfoService} from '../../core/service/service.module';
 import {CityData} from '../../core/libs/cityData';
-import {StorageService} from '../../core/service/storage/storage.service';
+import {StorageService} from '../../core/service/storage.service';
 import {storages} from '../../core/config/config.module';
 import Component from 'vue-class-component';
 @Component({components: {
