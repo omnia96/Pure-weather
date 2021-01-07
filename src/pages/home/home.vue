@@ -227,7 +227,7 @@ export default class Home extends Vue {
   private Today: any = {};
   private Address = null;
   private StartupStatus = true;
-  private RealTimeWeather = null;
+  private RealTimeWeather: any = {};
   private OneWeekWeather = null;
   private CityImage = null;
   private TemperatureStatus = true;
@@ -323,21 +323,24 @@ export default class Home extends Vue {
       // this.getRealTimeWeather(citycode).subscribe((response) => console.log(response));
       forkJoin({
         realTime: new StorageService(realTimeWeatherStorage(citycode)).get().pipe(
-            catchError((err) => this.getRealTimeWeather(citycode)),
+            catchError(() => {
+              throw '';
+            })
         ),
         // week: new StorageService(weekWeatherStorage(citycode)).get(),
       }).pipe(
-          // catchError((err, caught) => this.getRealTimeWeather(citycode).pipe(
-          //     map(() => of(2)),
-          // )),
+          catchError(() => forkJoin({e: this.getRealTimeWeather(citycode)})),
       ).subscribe(
-          (response) => console.log(response),
-          (error) => {
-            console.log(error);
-            forkJoin({
-              realTime: this.getRealTimeWeather(citycode),
-            }).subscribe(() => this.GetCityCode());
+          (response) => {
+            console.log(response);
+            this.StartupStatus = false;
           },
+          () => {
+            console.log(11111);
+          },
+          () => {
+            console.log(2222);
+          }
       );
       // realTimeWeather(citycode).subscribe((res) => console.log(res));
       // storageService.get().then((res) => {

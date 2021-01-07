@@ -32,6 +32,19 @@ export class StorageService<T> {
         }
       }));
     }
+    public getSync(): undefined | T {
+      const storage: StorageValue<T> = uni.getStorageSync(this.storage.key)
+      if (storage.expiration === 0) {
+        return storage.data;
+      } else {
+        if (moment().diff(storage.createTime, 'seconds') > 0) {
+          return storage.data;
+        } else {
+          this.remove();
+          return undefined;
+        }
+      }
+    }
     public set(): Observable<StorageValue<T>> {
       const option: SetStorageOptions = {};
       if (this.storage) {
