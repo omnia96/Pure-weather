@@ -33,6 +33,9 @@ export class AddressService {
         catchError(() => '101110108'),
     );
   }
+  public getAddressName() {
+
+  }
   cityis(keyword: any, citylist: any, key: string) {
     keyword = keyword.split('');
     let word = '';

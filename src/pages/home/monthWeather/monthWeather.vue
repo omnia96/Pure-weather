@@ -47,6 +47,7 @@ import {StorageService} from '../../../core/service/storage.service';
 import {storages} from '../../../core/config/config.module';
 import {Time} from '../../../core/libs/time';
 import Component from 'vue-class-component';
+import {monthWeather} from "@/core/config/storage/storage.config";
 @Component({})
 export default class MonthWeather extends Vue {
  private monthWeatheradta: Array<any> = [];
@@ -54,7 +55,7 @@ export default class MonthWeather extends Vue {
  private citycode = 0;
  public onLoad(option:any) {
    this.citycode = option.city;
-   new StorageService(storages.monthWeatheradta(String(this.citycode))).get().then((res) => {
+   new StorageService(monthWeather(String(this.citycode))).get().subscribe((res) => {
      if (new Time().timeDifference(res.create_time, new Time().currentTime())>360) {
        this.getdata();
      } else {

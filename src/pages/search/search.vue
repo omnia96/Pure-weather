@@ -54,6 +54,7 @@ import {CityData} from '../../core/libs/cityData';
 import {StorageService} from '../../core/service/storage.service';
 import {storages} from '../../core/config/config.module';
 import Component from 'vue-class-component';
+import {searchHistory, starCityList} from "@/core/config/storage/storage.config";
 @Component({components: {
   IconAwesomeComponentVue,
 }})
@@ -66,11 +67,12 @@ export default class Search extends Vue {
   public onLoad() {
     const storageService = new StorageService(storages.searchHistory);
     console.log();
-    storageService.get().then((res) => {
-      this.SearchHistory = res;
-    }).catch((err) => {
-      storageService.set();
-    });
+    storageService.get().subscribe((res) => {
+      this.SearchHistory = res.data;
+    },
+        () => {
+          storageService.set().subscribe();
+        })
   }
   public onReady() {
     this.popularCities = [
@@ -92,7 +94,7 @@ export default class Search extends Vue {
     console.log(this.text);
     const Index = [];
     Index.push(this.text);
-    this.Index = Index;
+    this.index = Index;
   }
   private SetIndex(e:any) {
     console.log(e);
@@ -103,21 +105,21 @@ export default class Search extends Vue {
       for (const key in CityList) {
         CityList[key]['provinceZh'].indexOf(value) != -1 || CityList[key]['leaderZh'].indexOf(value) != -1 || CityList[key]['cityZh'].indexOf(value) != -1? Index.push(CityList[key]):'';
       }
-      this.Index = Index;
+      this.index = Index;
     } else {
-      this.Index = {};
+      this.index = {};
     }
   }
   private SelectCity(e:any) {
     const value = e.currentTarget.dataset.value;
-    const storageService = new StorageService(storages.searchHistory);
-    storageService.get().then((res) => {
-      res.push(value);
-      res.length > 4 ? res.splice(0, 1) : '';
-      this.SearchHistory = res;
+    const storageService = new StorageService(searchHistory);
+    storageService.get().subscribe((res) => {
+      res.data.push(value);
+      res.data.length > 4 ? res.data.splice(0, 1) : '';
+      this.SearchHistory = res.data;
       this.AddToStar(value);
       if (storageService.storage) {
-        storageService.storage.value = res;
+        storageService.storage.value.data = res;
       }
       storageService.set();
     });
@@ -127,7 +129,7 @@ export default class Search extends Vue {
   }
   private AddToStar(value:any) {
     const StarCityList = [];
-    const city = {
+    const city: any = {
       citycode: value.id,
       cityname: {
         icon: false,
@@ -136,17 +138,17 @@ export default class Search extends Vue {
         city: value.cityZh,
       },
     };
-    const storageService = new StorageService(storages.starCityList);
-    storageService.get().then((res) => {
-      res.push(city);
-      if (res.length >= 5) {
-        res.splice(1, 1);
+    const storageService = new StorageService(starCityList);
+    storageService.get().subscribe((res) => {
+      res.data.push(city);
+      if (res.data.length >= 5) {
+        res.data.splice(1, 1);
       }
       if (storageService.storage) {
         storageService.storage.value = res;
       }
-      storageService.set().then((res) => {
-        this.Index = {};
+      storageService.set().subscribe((res) => {
+        this.index = {};
         uni.navigateBack({
           delta: 1,
         });
@@ -154,7 +156,7 @@ export default class Search extends Vue {
     });
   }
   private clearHistory() {
-    new StorageService(storages.searchHistory).set().then((res) => {
+    new StorageService(storages.searchHistory).set().subscribe((res) => {
       this.SearchHistory = null;
     });
   }

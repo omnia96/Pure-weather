@@ -36,6 +36,7 @@
     "@dcloudio/uni-stat": "^2.0.0-29820201110001",
     "@types/moment": "^2.13.0",
     "flyio": "^0.6.2",
+    "lodash": "^4.17.20",
     "regenerator-runtime": "^0.12.1",
     "rxjs": "^6.6.3",
     "vue": "^2.6.12",

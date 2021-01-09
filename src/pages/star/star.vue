@@ -22,14 +22,15 @@ import IconAwesomeComponentVue from '../../components/IconAwesome/IconAwesome.co
 import {StorageService} from '@/core/service/storage.service';
 import {storages} from '@/core/config/config.module';
 import Component from 'vue-class-component';
+import {starCityList} from "@/core/config/storage/storage.config";
 @Component({components: {
   IconAwesomeComponentVue,
 }})
 export default class Star extends Vue {
   private StarCityList: any;
   public onLoad() {
-    new StorageService(storages.starCityList).get().then((res) => {
-      this.StarCityList = res;
+    new StorageService(storages.starCityList).get().subscribe((res) => {
+      this.StarCityList = res.data;
     });
   }
   private DeleteThis(e:any) {
@@ -39,15 +40,15 @@ export default class Star extends Vue {
     item.cityname.province != item.cityname.leader? title = title + item.cityname.province + '-':title = title;
     item.cityname.leader != item.cityname.city? title = title + item.cityname.leader + '-':title = title,
     title = title + item.cityname.city;
-    const storageService = new StorageService(storages.starCityList);
-    storageService.get().then((res) => {
-      res.splice(index, 1);
-      this.StarCityList = res;
+    const storageService = new StorageService(starCityList);
+    storageService.get().subscribe((res) => {
+      res.data.splice(index, 1);
+      this.StarCityList = res.data;
       if (storageService.storage) {
         storageService.storage.value = res;
       }
-      storageService.set().then((res) => {
-        storageService.remove().then((res)=>{
+      storageService.set().subscribe((res) => {
+        storageService.remove().subscribe((res)=>{
           uni.showToast({
             icon: 'none',
             title: title + '已从收藏城市列表中删除',

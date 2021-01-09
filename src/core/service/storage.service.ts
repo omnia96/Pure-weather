@@ -1,5 +1,5 @@
 import {Storage} from '@/core/models/storage';
-import {Observable, Subject} from 'rxjs';
+import {Observable, of, Subject} from 'rxjs';
 import {map} from 'rxjs/operators';
 import moment from 'moment';
 import {StorageValue} from '@/core/models/storageValue';
@@ -46,14 +46,19 @@ export class StorageService<T> {
       }
     }
     public set(): Observable<StorageValue<T>> {
+      const subject = new Subject<StorageValue<T>>();
       const option: SetStorageOptions = {};
       if (this.storage) {
         option.key = this.storage.key;
         option.data = this.storage.value;
       }
-      const subject = new Subject<StorageValue<T>>();
-      option.success = (res: {errMsg: string}) => subject.next(this.storage.value);
-      option.fail = (err: {errMsg: string}) => subject.error(err.errMsg);
+      option.success = (res: {errMsg: string}) => {
+        return subject.next(option.data);
+      };
+      option.fail = (err: {errMsg: string}) => {
+        console.log(err);
+        subject.error(err.errMsg);
+      };
       option.complete = () => subject.complete();
       uni.setStorage(option);
       return subject.pipe();

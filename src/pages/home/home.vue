@@ -203,13 +203,13 @@ import {StorageService} from '@/core/service/storage.service';
 import {storages} from '../../core/config/config.module';
 import StartUpComponentVue from '../../components/StartUp/StartUp.component.vue';
 import Component from 'vue-class-component';
-import {LocationService} from '@/core/service/location.service';
-import {forkJoin, of} from 'rxjs';
-import {fromPromise} from 'rxjs/internal-compatibility';
+import {async, zip} from 'rxjs';
 import {realTimeWeatherStorage, starCityList, weekWeatherStorage} from '@/core/config/storage/storage.config';
-import {StorageValue} from '@/core/models/storageValue';
 import {catchError, map, switchMap} from 'rxjs/operators';
-import {realTimeWeather} from '@/core/requests/weather.requests';
+import {realTimeWeather, weekWeather} from '@/core/requests/weather.requests';
+import {StorageValue} from "@/core/models/storageValue";
+import {LocationService} from "@/core/service/location.service";
+import {AddressService} from "@/core/service/address.service";
 
 const QQMapWX = require('../../static/js/qqmap.js');
 // #ifdef MP-WEIXIN
@@ -308,174 +308,135 @@ export default class Home extends Vue {
       hours: hours,
     };
   }
-  GetCityCode() {
-    new LocationService().isAuthorized().subscribe((citycode) => {
-      console.log(citycode);
-      // new StorageService(starCityList).get().subscribe(
-      //     (response) => console.log(response),
-      //     () => {
-      //       starCityList.value = new StorageValue<Array<{cityCode: string; cityName: any}>>(
-      //           [{cityCode: citycode, cityName: {}}],
-      //       );
-      //       new StorageService(starCityList).set();
-      //     },
-      // );
-      // this.getRealTimeWeather(citycode).subscribe((response) => console.log(response));
-      forkJoin({
-        realTime: new StorageService(realTimeWeatherStorage(citycode)).get().pipe(
-            catchError(() => {
-              throw '';
-            })
-        ),
-        // week: new StorageService(weekWeatherStorage(citycode)).get(),
-      }).pipe(
-          catchError(() => forkJoin({e: this.getRealTimeWeather(citycode)})),
-      ).subscribe(
-          (response) => {
-            console.log(response);
-            this.StartupStatus = false;
+  private GetCityCode() {
+    new LocationService().isAuthorized().subscribe((cityCode) => {
+      new StorageService(starCityList).get().subscribe(
+          (res) => {
+            new AddressService()
+            this.StarCityList = res.data;
           },
           () => {
-            console.log(11111);
-          },
-          () => {
-            console.log(2222);
+            starCityList.value = new StorageValue<Array<{cityCode: string; cityName: any}>>([{cityCode: cityCode, cityName: ''}]);
+            new StorageService(starCityList).set().subscribe();
           }
       );
-      // realTimeWeather(citycode).subscribe((res) => console.log(res));
-      // storageService.get().then((res) => {
-      //   this.StarCityList = res;
-      // }).catch((err) => {
-      //   storages.starCityList.value = [{citycode: citycode, cityname: cityname}];
-      //   this.StarCityList = [{citycode: citycode, cityname: cityname}];
-      //   storageService.set().then((res) => {
-      //     console.log(res);
-      //   }).catch((err) => {
-      //     console.log(err);
-      //   });
-      // });
-      // this.Cache_Is(citycode);
+      zip(new StorageService(realTimeWeatherStorage(cityCode)).get().pipe(
+          catchError((err) => this.getRealTimeWeather(cityCode).pipe(
+              switchMap((res) => new StorageService(realTimeWeatherStorage(cityCode, res)).set()),
+          )),
+          ), new StorageService(weekWeatherStorage(cityCode)).get().pipe(
+          catchError(() => this.getWeekWeather(cityCode).pipe(
+              switchMap((weather) => new StorageService(weekWeatherStorage(cityCode, weather)).set())
+          )),
+          ),
+      ).subscribe(response => {
+        this.StartupStatus = false;
+        this.RealTimeWeather = response[0].data;
+        this.OneWeekWeather = response[1].data;
+      });
     });
   }
-  // Cache_Is(citycode: any) {
-  //   const realTimeWeatherStorageService = new StorageService(storages.realTimeWeather(citycode));
-  //   realTimeWeatherStorageService.get().then((res) => {
-  //     this.SetRealTimeWeather(res, citycode);
-  //     this.StartupStatus = false;
-  //   }).catch((err) => {
-  //     this.GetRealTimeWeather(citycode);
-  //   });
-  //   const oneWeekWeatherStorageService = new StorageService(storages.oneWeekWeather(citycode));
-  //   oneWeekWeatherStorageService.get().then((res) => {
-  //     this.SetOneWeekWeather(res, citycode);
-  //     this.StartupStatus = false;
-  //   }).catch((err) => {
-  //     this.GetOneWeekWeather(citycode);
-  //   });
-  // }
-  getRealTimeWeather(cityCode: string) {
-    return realTimeWeather(cityCode).pipe(
-        switchMap((response) => {
-          const RealTimeWeather: any = {
-            Air: {
-              Index: response.air,
-              Level: response.air_level,
-              Pm25: response.air_pm25,
-              Tips: response.air_tips,
-              Humidity: response.humidity,
-              Pressure: response.pressure,
-              Visibility: response.visibility,
-            },
-            Address: {
-              Country: response.country,
-              City: response.city,
-              CityId: response.cityid,
-            },
-            Weather: {
-              Type: response.wea,
-              Icon: response.wea_img,
-            },
-            Temperature: {
-              Current: response.tem,
-              Max: response.tem1,
-              Min: response.tem2,
-            },
-            Wind: {
-              Type: response.win,
-              Meter: response.win_meter,
-              speed: response.win_speed,
-            },
-          };
-          const V = this.ReturnWindSpeed(RealTimeWeather.Wind.speed);
-          const T = RealTimeWeather.Temperature.Current;
-          const RH = parseInt(RealTimeWeather.Air.Humidity);
-          const AT = this.ReturnAT(T, V, RH);
-          RealTimeWeather['Temperature']['Somatosensory'] = AT;
-          return new StorageService(realTimeWeatherStorage(
-              cityCode,
-              RealTimeWeather,
-          )).set();
-        }),
-    );
-  }
-  async GetOneWeekWeather(citycode: any) {
-    let result: any = await uni.request({
-      url: 'https://www.tianqiapi.com/api/',
-      data: {version: 'v9', appid: '06369426', appsecret: 'VVM7jMR0', cityid: citycode},
-    });
-    result = result[1]['data']['data'];
-    console.log(result);
-    const OneWeekWeather: any = [];
-    for (const key in result) {
-      const week = result[key].week.substr(result[key].week.length - 1, 1);
-      const date = parseInt(result[key].day.split('日')[0]);
-      const type = result[key].wea;
-      const max = result[key].tem1;
-      const min = result[key].tem2;
-      const index = result[key].index;
-      index[0]['title'] = '紫外线';
-      index[1]['title'] = '运动';
-      index[2]['title'] = '血糖';
-      index[3]['title'] = '穿衣';
-      index[4]['title'] = '洗车';
-      index[5]['title'] = '空气污染';
-      index[0]['icon'] = 'fa-sun-o';
-      index[1]['icon'] = 'fa-child';
-      index[2]['icon'] = 'fa-heartbeat';
-      index[3]['icon'] = 'fa-male';
-      index[4]['icon'] = 'fa-car';
-      index[5]['icon'] = 'fa-envira';
-      const hours = result[key].hours;
-      for (const keychild in hours) {
-        hours[keychild]['hours'] = hours[keychild]['hours'].split('时')[0];
-        hours[keychild]['title'] = hours[keychild]['hours'] + ':00';
-      }
-      OneWeekWeather[key] = {
-        Date: {
-          Week: week,
-          Date: date,
+  private getRealTimeWeather(cityCode: string) {
+    return realTimeWeather(cityCode).pipe(map((response) => {
+      const RealTimeWeather: any = {
+        Air: {
+          Index: response.air,
+          Level: response.air_level,
+          Pm25: response.air_pm25,
+          Tips: response.air_tips,
+          Humidity: response.humidity,
+          Pressure: response.pressure,
+          Visibility: response.visibility,
+        },
+        Address: {
+          Country: response.country,
+          City: response.city,
+          CityId: response.cityid,
         },
         Weather: {
-          Type: type,
+          Type: response.wea,
+          Icon: response.wea_img,
         },
         Temperature: {
-          Max: max,
-          Min: min,
+          Current: response.tem,
+          Max: response.tem1,
+          Min: response.tem2,
         },
-        Index: index,
-        Hours: hours,
+        Wind: {
+          Type: response.win,
+          Meter: response.win_meter,
+          speed: response.win_speed,
+        },
       };
-    }
-    console.log(OneWeekWeather);
-    this.OneWeekWeather = OneWeekWeather;
-    new StorageService(storages.oneWeekWeather(
-        citycode,
-        {
-          create_time: new Time().currentTime(),
-          data: OneWeekWeather,
-        },
-    )).set().then((res) => {
-      console.log('缓存一周天气成功!');
+      const V = this.ReturnWindSpeed(RealTimeWeather.Wind.speed);
+      const T = RealTimeWeather.Temperature.Current;
+      const RH = parseInt(RealTimeWeather.Air.Humidity);
+      const AT = this.ReturnAT(T, V, RH);
+      RealTimeWeather['Temperature']['Somatosensory'] = AT;
+      return RealTimeWeather;
+    }));
+  }
+  private getWeekWeather(cityCode: string) {
+    return weekWeather(cityCode).pipe(map((response) => {
+      const OneWeekWeather: any = [];
+      response = response.data;
+      for (const key in response) {
+        const week = response[key].week.substr(response[key].week.length - 1, 1);
+        const date = parseInt(response[key].day.split('日')[0]);
+        const type = response[key].wea;
+        const max = response[key].tem1;
+        const min = response[key].tem2;
+        const index = response[key].index;
+        index[0]['title'] = '紫外线';
+        index[1]['title'] = '运动';
+        index[2]['title'] = '血糖';
+        index[3]['title'] = '穿衣';
+        index[4]['title'] = '洗车';
+        index[5]['title'] = '空气污染';
+        index[0]['icon'] = 'fa-sun-o';
+        index[1]['icon'] = 'fa-child';
+        index[2]['icon'] = 'fa-heartbeat';
+        index[3]['icon'] = 'fa-male';
+        index[4]['icon'] = 'fa-car';
+        index[5]['icon'] = 'fa-envira';
+        const hours = response[key].hours;
+        for (const keychild in hours) {
+          hours[keychild]['hours'] = hours[keychild]['hours'].split('时')[0];
+          hours[keychild]['title'] = hours[keychild]['hours'] + ':00';
+        }
+        OneWeekWeather[key] = {
+          Date: {
+            Week: week,
+            Date: date,
+          },
+          Weather: {
+            Type: type,
+          },
+          Temperature: {
+            Max: max,
+            Min: min,
+          },
+          Index: index,
+          Hours: hours,
+        };
+      }
+      return OneWeekWeather;
+    }));
+  }
+  Cache_Is(citycode: any) {
+    const realTimeWeatherStorageService = new StorageService(storages.realTimeWeather(citycode));
+    realTimeWeatherStorageService.get().then((res) => {
+      this.SetRealTimeWeather(res, citycode);
+      this.StartupStatus = false;
+    }).catch((err) => {
+      this.GetRealTimeWeather(citycode);
+    });
+    const oneWeekWeatherStorageService = new StorageService(storages.oneWeekWeather(citycode));
+    oneWeekWeatherStorageService.get().then((res) => {
+      this.SetOneWeekWeather(res, citycode);
+      this.StartupStatus = false;
+    }).catch((err) => {
+      this.GetOneWeekWeather(citycode);
     });
   }
   SetRealTimeWeather(RealTimeWeather: any, citycode: any) {
