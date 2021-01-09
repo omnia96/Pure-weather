@@ -1,8 +1,8 @@
 <template>
-  <div class="page">
+  <div class="page u-skeleton">
     <div class="status-bar" :style="'height:' + StatusBarHeight + 'px;'"></div>
     <div class="container">
-      <view class="header" :style="'margin-top:calc(90rpx + '+StatusBarHeight+'px);'">
+      <view class="header u-skeleton-rect" :style="'margin-top:calc(90rpx + '+StatusBarHeight+'px);'">
         <view class="icon">
           <icon-freecns-component-vue icon="Cumulus-Cloud" color="#2196f3" size="20px"/>
         </view>
@@ -16,7 +16,7 @@
           <scroll-view scroll-y style="width: 100%; height: 100%;">
             <view style="width: 100%;height: 100%;display: flex;flex-direction: column;align-items: center;">
               <view class="card">
-                <view class="header">
+                <view class="header u-skeleton-rect">
                   <view>今日天气</view>
                   <view class="address">
                     <view class="left" v-if="Address.icon == true">
@@ -61,7 +61,7 @@
                   </view>
                 </view>
               </view>
-              <view class="card">
+              <view class="card u-skeleton-rect">
                 <view class="header">
                   <text>今日空气</text>
                   <text>{{ RealTimeWeather.Air.Level }}</text>
@@ -187,9 +187,10 @@
         </swiper-item>
       </swiper>
     </div>
-    <start-up-component-vue v-if="StartupStatus"></start-up-component-vue>
+<!--    <start-up-component-vue v-if="StartupStatus"></start-up-component-vue>-->
     <navigation-component-vue :StatusBarHeight="StatusBarHeight"
                               :NavigationBarItems="NavigationBarItems"/>
+    <u-skeleton :loading="StartupStatus" :animation="true" bgColor="#FFF"></u-skeleton>
   </div>
 </template>
 <script lang="ts">
