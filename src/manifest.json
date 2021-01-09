@@ -41,7 +41,7 @@
             "ios": {
 
             },
-            "sdkConfigs": { 
+            "sdkConfigs": {
 
             }
         },
@@ -50,11 +50,12 @@
     "quickapp": {
 
     },
-    "mp-weixin": { 
+    "mp-weixin": {
         "usingComponents":true,
         "appid": "wx1348aa04528e9e17",
         "setting" : {
-        	"urlCheck" : false
+          "urlCheck" : true,
+          "es6": false
         },
         "permission": {
 			"scope.userLocation": {

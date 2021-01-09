@@ -317,7 +317,7 @@ export default class Home extends Vue {
           },
           () => {
             starCityList.value = new StorageValue<Array<{cityCode: string; cityName: any}>>([{cityCode: cityCode, cityName: ''}]);
-            new StorageService(starCityList).set().subscribe();
+            new StorageService(starCityList).set().subscribe((res) => this.StarCityList = res.data);
           }
       );
       zip(new StorageService(realTimeWeatherStorage(cityCode)).get().pipe(
