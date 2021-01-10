@@ -29,7 +29,10 @@
   "condition": {
     "current": 0,
     "list": [
-      {"name": "月天气", "path": "pages/home/monthWeather/monthWeather", "query": "city=101110112"}
+      {"name": "月天气", "path": "pages/home/monthWeather/monthWeather", "query": "city=101110112"},
+      {"name": "城市收藏", "path": "pages/star/star"},
+      {"name": "搜索", "path": "pages/search/search"},
+      {"name": "日志", "path": "pages/about/log/log"}
     ]
   }
 }

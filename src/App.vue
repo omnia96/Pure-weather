@@ -1,9 +1,11 @@
 <script lang="ts">
 import Vue from 'vue';
+import {UpdateService} from '@/core/service/update.service';
 export default Vue.extend({
   mpType: 'app',
   onLaunch() {
     console.log('App Launch');
+    new UpdateService();
     uni.hideTabBar();
   },
   onShow() {

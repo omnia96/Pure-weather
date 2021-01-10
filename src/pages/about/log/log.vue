@@ -42,6 +42,13 @@ export default class Log extends Vue {
   private lineMainTop = 0;
   public onLoad() {
     this.logs = [
+      {version: '1.1.7', date: '2021-01-11', content: [
+        '- 首次启动缓存未读取到bug修复',
+        '- 缓存机制优化',
+        '- 加入更新机制',
+        '- 首页加入骨架屏',
+        '- 暂时移除启动页面',
+      ]},
       {version: '1.1.6', date: '2020-08-01', content: ['- 月天气UI优化']},
       {version: '1.1.5', date: '2020-04-12', content: [
         '- 添加更新日志',

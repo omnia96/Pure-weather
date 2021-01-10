@@ -1,48 +1,58 @@
 <template>
-  <div class="page u-skeleton">
+  <div class="page">
     <div class="status-bar" :style="'height:' + StatusBarHeight + 'px;'"></div>
     <div class="container">
-      <view class="header u-skeleton-rect" :style="'margin-top:calc(90rpx + '+StatusBarHeight+'px);'">
+      <view class="header"
+            :style="'margin-top:calc(90rpx + '+StatusBarHeight+'px);'">
         <view class="icon">
           <icon-freecns-component-vue icon="Cumulus-Cloud" color="#2196f3" size="20px"/>
         </view>
         <view class="name">Pure · 简天气</view>
         <view class="current">首页</view>
       </view>
-      <swiper :style="'width:100%;height:calc(100vh - 85px - ' + StatusBarHeight + 'px);'"
+      <swiper class=""
+              :style="'width:100%;height:calc(100vh - 85px - ' + StatusBarHeight + 'px);'"
               :current="MainSwiper"
               @animationfinish="MainSwiperChange">
         <swiper-item v-for="(value,key) in StarCityList" v-bind:key="key">
           <scroll-view scroll-y style="width: 100%; height: 100%;">
-            <view style="width: 100%;height: 100%;display: flex;flex-direction: column;align-items: center;">
+            <view class="u-skeleton flex flex-direction align-center" style="width: 100%; height: 100%;">
               <view class="card">
-                <view class="header u-skeleton-rect">
+                <view class="header">
                   <view>今日天气</view>
                   <view class="address">
-                    <view class="left" v-if="Address.icon == true">
+                    <view class="left" v-if="Address.icon">
                       <icon-awesome-component-vue icon="fa-map-marker"/>
                     </view>
-                    <view class="right" v-if="Address.icon == true">{{ Address.district }}·{{ Address.street }}</view>
-                    <view class="right" v-if="Address.icon == false">
-                      {{ Address.province != Address.leader ? Address.province + '·' : '' }}{{ Address.leader != Address.city ? Address.leader + '·' : '' }}{{ Address.city }}
+                    <view class="right"
+                          v-if="Address.icon">{{ Address.district }}·{{ Address.street }}</view>
+                    <view class="right" v-else>
+                      {{ Address.province != Address.city ? Address.province + '·' : '' }}
+                      {{ Address.city != Address.district ? Address.city + '·' : '' }}
+                      {{ Address.district }}
                     </view>
                   </view>
                   <view>{{ Today.month }}月{{ Today.date }}日</view>
                 </view>
-                <view class="main today-weather" :style="CityImage != null? 'background-image: url('+CityImage+');':''">
+                <view class="main today-weather u-skeleton-rect"
+                      :style="CityImage != null? 'background-image: url('+CityImage+');':''">
                   <view class="start">
                     <view class="temperature">
                       <view class="status">
-                        <view :style="TemperatureStatus == true? 'background:#2196f3;':''" :data-id="true"
+                        <view :style="TemperatureStatus? 'background:#2196f3;':''" :data-id="true"
                               @tap="SwitchTemperatureStatus">实测
                         </view>
-                        <view :style="TemperatureStatus == false? 'background:#2196f3;':''" :data-id="false"
+                        <view :style="!TemperatureStatus? 'background:#2196f3;':''" :data-id="false"
                               @tap="SwitchTemperatureStatus">体感
                         </view>
                       </view>
                       <view class="value">
-                        <view v-if="TemperatureStatus == true">{{ RealTimeWeather.Temperature.Current }}°</view>
-                        <view v-if="TemperatureStatus == false">{{ RealTimeWeather.Temperature.Somatosensory }}°</view>
+                        <view v-if="TemperatureStatus">
+                          {{ RealTimeWeather.Temperature.Current }}°
+                        </view>
+                        <view v-if="!TemperatureStatus">
+                          {{ RealTimeWeather.Temperature.Somatosensory }}°
+                        </view>
                       </view>
                     </view>
                     <view class="type">
@@ -52,7 +62,6 @@
                         <view style="color: #2196f3;">{{ RealTimeWeather.Temperature.Min }}°</view>
                       </view>
                     </view>
-
                   </view>
                   <view class="end">
                     <view class="item">{{ RealTimeWeather.Wind.Type }}</view>
@@ -61,12 +70,12 @@
                   </view>
                 </view>
               </view>
-              <view class="card u-skeleton-rect">
-                <view class="header">
+              <view class="card">
+                <view class="header u-skeleton-rect">
                   <text>今日空气</text>
                   <text>{{ RealTimeWeather.Air.Level }}</text>
                 </view>
-                <view class="main today-air">
+                <view class="main today-air u-skeleton-rect">
                   <view class="item animation-slide-left" style="animation-delay: 0.3s">
                     <view class="title">Pm2.5</view>
                     <view class="content">{{ RealTimeWeather.Air.Pm25 }}</view>
@@ -89,13 +98,13 @@
                 <view class="header">
                   <text>Tips</text>
                 </view>
-                <view class="main today-tips">
+                <view class="main today-tips u-skeleton-rect">
                   <text>{{ RealTimeWeather.Air.Tips }}</text>
                 </view>
               </view>
               <view class="card">
                 <view class="header">每小时</view>
-                <view class="main">
+                <view class="main u-skeleton-rect">
                   <scroll-view class="hours" scroll-x="true">
                     <view class="item" v-for="(item,index) in OneWeekWeather[0].Hours" v-bind:key="index"
                           v-if="item.hours >= 8 && Today.date == OneWeekWeather[0].Date.Date && item.hours >= Today.hours">
@@ -140,7 +149,7 @@
                   <view>一周天气</view>
                   <view @click="more(key)">更多</view>
                 </view>
-                <view class="main week-weather">
+                <view class="main week-weather u-skeleton-rect">
                   <view class="item animation-slide-left" v-for="(item,index) in OneWeekWeather" v-bind:key="index"
                         :style="Today.date == item.Date.Date? 'color:#2196f3;animation-delay: ' + (index+1)*0.2 + 's':'color:#000000;animation-delay: ' + (index+1)*0.2 + 's'">
                     <view :style="Today.date == item.Date.Date? 'color:#2196f3;':'color:#9e9e9e;'">
@@ -157,7 +166,7 @@
                 <view class="header">
                   <view>指数</view>
                 </view>
-                <view class="main index">
+                <view class="main index u-skeleton-rect">
                   <view class="item" v-for="(item,index) in OneWeekWeather[0].Index" v-bind:key="index" :id="item.desc"
                         @click="ShowIndexDesc(item.desc)">
                     <view class="icon">
@@ -199,20 +208,19 @@ import IconAwesomeComponentVue from '../../components/IconAwesome/IconAwesome.co
 import NavigationComponentVue from '../../components/Navigation/Navigation.component.vue';
 import IconFreecnsComponentVue from '../../components/IconFreecns/IconFreecns.component.vue';
 import {systemInfoService} from '@/core/service/core/core.module';
-import {Time} from '@/core/libs/time';
 import {StorageService} from '@/core/service/storage.service';
-import {storages} from '../../core/config/config.module';
 import StartUpComponentVue from '../../components/StartUp/StartUp.component.vue';
 import Component from 'vue-class-component';
-import {async, zip} from 'rxjs';
-import {realTimeWeatherStorage, starCityList, weekWeatherStorage} from '@/core/config/storage/storage.config';
+import {zip} from 'rxjs';
+import {
+  realTimeWeatherStorage,
+  starCitiesStorage,
+  weekWeatherStorage,
+} from '@/core/config/storage/storage.config';
 import {catchError, map, switchMap} from 'rxjs/operators';
 import {realTimeWeather, weekWeather} from '@/core/requests/weather.requests';
 import {StorageValue} from '@/core/models/storageValue';
-import {LocationService} from '@/core/service/location.service';
 import {AddressService} from '@/core/service/address.service';
-
-const QQMapWX = require('../../static/js/qqmap.js');
 // #ifdef MP-WEIXIN
 let interstitialAd: any = {};
 declare const wx: any;
@@ -226,7 +234,7 @@ declare const wx: any;
 export default class Home extends Vue {
   private StatusBarHeight = systemInfoService.systemInfo.statusBarHeight;
   private Today: any = {};
-  private Address = null;
+  private Address: any = {};
   private StartupStatus = true;
   private RealTimeWeather: any = {};
   private OneWeekWeather = null;
@@ -257,12 +265,15 @@ export default class Home extends Vue {
   public onShow() {
     this.SetToday();
     this.MainSwiper = 0;
-    new StorageService(starCityList).get().subscribe((res) => {
+    new StorageService(starCitiesStorage).get().subscribe((res) => {
       this.StarCityList = res.data;
     });
   }
   public onHide() {
     this.MainSwiper = 0;
+    new StorageService(starCitiesStorage).get().subscribe((res) => {
+      this.StarCityList = res.data;
+    });
   }
   // 创建广告
   public CreateAd() {
@@ -292,13 +303,13 @@ export default class Home extends Vue {
     }, 5000);
     // #endif
   }
-  MainSwiperChange(e: any) {
+  private MainSwiperChange(e: any) {
     const current = e.detail.current;
     this.CityImage = null;
-    this.MainSwiper = 0;
+    this.MainSwiper = current;
     this.StarCityData(current);
   }
-  SetToday() {
+  private SetToday() {
     const date = new Date();
     const month = date.getMonth() + 1;
     const day = date.getDate();
@@ -310,31 +321,14 @@ export default class Home extends Vue {
     };
   }
   private GetCityCode() {
-    new LocationService().isAuthorized().subscribe((cityCode) => {
-      new StorageService(starCityList).get().subscribe(
-          (res) => {
-            new AddressService();
-            this.StarCityList = res.data;
-          },
-          () => {
-            starCityList.value = new StorageValue<Array<{cityCode: string; cityName: any}>>([{cityCode: cityCode, cityName: ''}]);
-            new StorageService(starCityList).set().subscribe((res) => this.StarCityList = res.data);
-          },
-      );
-      zip(new StorageService(realTimeWeatherStorage(cityCode)).get().pipe(
-          catchError((err) => this.getRealTimeWeather(cityCode).pipe(
-              switchMap((res) => new StorageService(realTimeWeatherStorage(cityCode, res)).set()),
-          )),
-      ), new StorageService(weekWeatherStorage(cityCode)).get().pipe(
-          catchError(() => this.getWeekWeather(cityCode).pipe(
-              switchMap((weather) => new StorageService(weekWeatherStorage(cityCode, weather)).set()),
-          )),
-      ),
-      ).subscribe((response) => {
-        this.StartupStatus = false;
-        this.RealTimeWeather = response[0].data;
-        this.OneWeekWeather = response[1].data;
-      });
+    new AddressService().area().subscribe((area) => {
+      this.Address = area;
+      this.Address.icon = true;
+      new StorageService(starCitiesStorage).get().pipe(catchError(() => {
+        starCitiesStorage.value = new StorageValue<Array<any>>([area]);
+        return new StorageService(starCitiesStorage).set();
+      })).subscribe((response) => this.StarCityList = response.data);
+      this.isWeatherStorage(area.id);
     });
   }
   private getRealTimeWeather(cityCode: string) {
@@ -424,46 +418,30 @@ export default class Home extends Vue {
       return OneWeekWeather;
     }));
   }
-  Cache_Is(citycode: any) {
-    const realTimeWeatherStorageService = new StorageService(storages.realTimeWeather(citycode));
-    realTimeWeatherStorageService.get().then((res) => {
-      this.SetRealTimeWeather(res, citycode);
+  private isWeatherStorage(cityCode: any) {
+    zip(new StorageService(realTimeWeatherStorage(cityCode)).get().pipe(
+        catchError((err) => this.getRealTimeWeather(cityCode).pipe(
+            switchMap((res) => new StorageService(realTimeWeatherStorage(cityCode, res)).set()),
+        )),
+    ), new StorageService(weekWeatherStorage(cityCode)).get().pipe(
+        catchError(() => this.getWeekWeather(cityCode).pipe(
+            switchMap((weather) => new StorageService(
+                weekWeatherStorage(cityCode, weather),
+            ).set()),
+        )),
+    ),
+    ).subscribe((response) => {
       this.StartupStatus = false;
-    }).catch((err) => {
-      this.GetRealTimeWeather(citycode);
-    });
-    const oneWeekWeatherStorageService = new StorageService(storages.oneWeekWeather(citycode));
-    oneWeekWeatherStorageService.get().then((res) => {
-      this.SetOneWeekWeather(res, citycode);
-      this.StartupStatus = false;
-    }).catch((err) => {
-      this.GetOneWeekWeather(citycode);
+      this.RealTimeWeather = response[0].data;
+      this.OneWeekWeather = response[1].data;
     });
   }
-  SetRealTimeWeather(RealTimeWeather: any, citycode: any) {
-    const createTime = RealTimeWeather.create_time;
-    const data = RealTimeWeather.data;
-    if (new Time().timeDifference(createTime, new Time().currentTime()) <= 30) {
-      this.RealTimeWeather = data;
-    } else {
-      this.GetRealTimeWeather(citycode);
-    }
-  }
-  SetOneWeekWeather(OneWeekWeather: any, citycode: any) {
-    const createTime: any = OneWeekWeather.create_time;
-    const data = OneWeekWeather.data;
-    if (new Time().timeDifference(createTime, new Time().currentTime()) <= 90) {
-      this.OneWeekWeather = data;
-    } else {
-      this.GetOneWeekWeather(citycode);
-    }
-  }
-  ReturnAT(T: any, V: any, RH: any) {
+  private ReturnAT(T: any, V: any, RH: any) {
     const e = (RH / 100) * 6.105 * Math.exp((17.27 * T) / (237.7 + T));
     const AT = (1.07 * T) + (0.2 * e) - (0.65 * V) - 2.7;
     return AT.toFixed(0);
   }
-  ReturnWindSpeed(WindLevel: any) {
+  private ReturnWindSpeed(WindLevel: any) {
     WindLevel = parseInt(WindLevel);
     switch (WindLevel) {
       case 0:
@@ -492,27 +470,26 @@ export default class Home extends Vue {
         return 0.1;
     }
   }
-  SwitchTemperatureStatus(e: any) {
+  private SwitchTemperatureStatus(e: any) {
     const status = e.currentTarget.dataset.id;
     this.TemperatureStatus = status;
   }
-  async StarCityData(current: any) {
-    new StorageService(storages.starCityList).get().then((res) => {
-      this.Cache_Is(res[current].citycode);
-      this.Address = res[current].cityname;
+  private async StarCityData(current: any) {
+    new StorageService(starCitiesStorage).get().subscribe((res) => {
+      this.isWeatherStorage(res.data[current].id);
+      this.Address = res.data[current];
     });
   }
-  ShowIndexDesc(desc: string) {
+  private ShowIndexDesc(desc: string) {
     uni.showToast({
       title: desc,
       icon: 'none',
     });
   }
-  more(key: number) {
-    // let address:any = this.Address;
+  private more(key: number) {
     const starCityList: any = this.StarCityList;
     uni.navigateTo({
-      url: './monthWeather/monthWeather?city=' + starCityList[key].citycode,
+      url: './monthWeather/monthWeather?city=' + starCityList[key].id,
     });
   }
 }

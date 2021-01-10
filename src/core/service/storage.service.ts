@@ -23,7 +23,7 @@ export class StorageService<T> {
         if (response.expiration === 0) {
           return response;
         } else {
-          if (moment().diff(response.createTime, 'seconds') > 0) {
+          if (moment().diff(response.createTime, 'seconds') < response.expiration) {
             return response;
           } else {
             this.remove();
@@ -33,7 +33,7 @@ export class StorageService<T> {
       }));
     }
     public getSync(): undefined | T {
-      const storage: StorageValue<T> = uni.getStorageSync(this.storage.key)
+      const storage: StorageValue<T> = uni.getStorageSync(this.storage.key);
       if (storage.expiration === 0) {
         return storage.data;
       } else {

@@ -3,17 +3,22 @@
     <view class="container">
       <view class="search">
         <input type="text" @input="SetIndex" v-model="text">
-        <icon-awesome-component-vue class="icon" icon="fa-search" size="5vw" color="#333333" @tap="but"/>
+        <icon-awesome-component-vue class="icon"
+                                    icon="fa-search" size="5vw" color="#333333" @tap="but"/>
       </view>
       <div class="drop-down">
-        <scroll-view class="index animation-expan-vertical" scroll-y="true" v-if="Index.length != null">
-          <view
-              class="animation-slide-left"
-              v-for="(item,index) in Index"
-              :key="index"
-              :data-value="item"
-              :style="'animation-delay: ' + (index+1)*0.2 + 's'"
-              @tap="SelectCity">{{item.provinceZh != item.leaderZh? item.provinceZh + '-':''}}{{item.leaderZh != item.cityZh? item.leaderZh + '-':''}}{{item.cityZh}}</view>
+        <scroll-view class="index animation-expan-vertical"
+                     scroll-y="true" v-if="index.length">
+          <view class="animation-slide-left"
+                v-for="(item, itemKey) in index"
+                :key="itemKey"
+                :data-value="item"
+                :style="'animation-delay: ' + (itemKey+1)*0.2 + 's'"
+                @tap="SelectCity">
+            {{item.provinceZh != item.leaderZh? item.provinceZh + '-':''}}
+            {{item.leaderZh != item.cityZh? item.leaderZh + '-':''}}
+            {{item.cityZh}}
+          </view>
         </scroll-view>
       </div>
       <view class="history card">
@@ -49,30 +54,34 @@
 <script lang="ts">
 import Vue from 'vue';
 import IconAwesomeComponentVue from '../../components/IconAwesome/IconAwesome.component.vue';
-import {systemInfoService} from '../../core/service/service.module';
-import {CityData} from '../../core/libs/cityData';
-import {StorageService} from '../../core/service/storage.service';
-import {storages} from '../../core/config/config.module';
+import {systemInfoService} from '@/core/service/core/core.module';
+import {CityData} from '@/core/libs/cityData';
+import {StorageService} from '@/core/service/storage.service';
 import Component from 'vue-class-component';
-import {searchHistory, starCityList} from "@/core/config/storage/storage.config";
+import {searchHistory, starCitiesStorage} from '@/core/config/storage/storage.config';
+import {Area} from '@/core/models/area';
 @Component({components: {
   IconAwesomeComponentVue,
 }})
 export default class Search extends Vue {
-  private popularCities: Array<{id: string, provinceZh: string, leaderZh: string, cityZh: string}> = [];
+  private popularCities: Array<{
+    id: string,
+    provinceZh: string,
+    leaderZh: string,
+    cityZh: string
+  }> = [];
   private text = '';
-  private index: any = {};
-  private SearchHistory: any;
+  private index: Array<any> = [];
+  private SearchHistory: Array<any> = [];
   private statusBarHeight = systemInfoService.systemInfo.statusBarHeight
   public onLoad() {
-    const storageService = new StorageService(storages.searchHistory);
-    console.log();
+    const storageService = new StorageService(searchHistory);
     storageService.get().subscribe((res) => {
       this.SearchHistory = res.data;
     },
-        () => {
-          storageService.set().subscribe();
-        })
+    () => {
+      storageService.set().subscribe();
+    });
   }
   public onReady() {
     this.popularCities = [
@@ -107,7 +116,7 @@ export default class Search extends Vue {
       }
       this.index = Index;
     } else {
-      this.index = {};
+      this.index = [];
     }
   }
   private SelectCity(e:any) {
@@ -119,7 +128,7 @@ export default class Search extends Vue {
       this.SearchHistory = res.data;
       this.AddToStar(value);
       if (storageService.storage) {
-        storageService.storage.value.data = res;
+        storageService.storage.value = res;
       }
       storageService.set();
     });
@@ -127,20 +136,11 @@ export default class Search extends Vue {
   private addThis(city: {id: string, provinceZh: string, leaderZh: string, cityZh: string}) {
     this.AddToStar(city);
   }
-  private AddToStar(value:any) {
-    const StarCityList = [];
-    const city: any = {
-      citycode: value.id,
-      cityname: {
-        icon: false,
-        province: value.provinceZh,
-        leader: value.leaderZh,
-        city: value.cityZh,
-      },
-    };
-    const storageService = new StorageService(starCityList);
+  private AddToStar(city: {id: string, provinceZh: string, leaderZh: string, cityZh: string}) {
+    const area = new Area(city.id, city.provinceZh, city.leaderZh, city.cityZh);
+    const storageService = new StorageService(starCitiesStorage);
     storageService.get().subscribe((res) => {
-      res.data.push(city);
+      res.data.push(area);
       if (res.data.length >= 5) {
         res.data.splice(1, 1);
       }
@@ -148,7 +148,7 @@ export default class Search extends Vue {
         storageService.storage.value = res;
       }
       storageService.set().subscribe((res) => {
-        this.index = {};
+        this.index = [];
         uni.navigateBack({
           delta: 1,
         });
@@ -156,8 +156,8 @@ export default class Search extends Vue {
     });
   }
   private clearHistory() {
-    new StorageService(storages.searchHistory).set().subscribe((res) => {
-      this.SearchHistory = null;
+    new StorageService(searchHistory).set().subscribe((res) => {
+      this.SearchHistory = [];
     });
   }
 }

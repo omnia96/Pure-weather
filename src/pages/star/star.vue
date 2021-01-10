@@ -3,14 +3,24 @@
     <view class="container">
       <view class="current item">
         <icon-awesome-component-vue class="icon" icon="fa-map-marker" size="20px"/>
-        <view class="title">{{StarCityList[0].cityname.district}}-{{StarCityList[0].cityname.street}}</view>
+        <view class="title">
+          {{starCities[0].district}}-{{starCities[0].street}}
+        </view>
         <view class="subtitle">您当前位置</view>
       </view>
-      <view v-for="(item,index) in StarCityList" v-bind:key="index">
+      <view v-for="(item,index) in starCities" v-bind:key="index">
         <div class="item" v-if="index > 0">
           <icon-awesome-component-vue class="icon" icon="fa-ellipsis-v" size="6vw"/>
-          <view class="title">{{item.cityname.province != item.cityname.leader? item.cityname.province + "-":""}}{{item.cityname.leader != item.cityname.city? item.cityname.leader + "-":""}}{{item.cityname.city}}</view>
-          <icon-awesome-component-vue class="icon" icon="fa-trash-o" size="6vw" :data-index="index" :data-item="item" @tap="DeleteThis"/>
+          <view class="title">
+            {{item.province !== item.city? item.province + "-":""}}
+            {{item.city !== item.district? item.city + "-":""}}
+            {{item.district}}
+          </view>
+          <div @click="DeleteThis(index, item)">
+            <icon-awesome-component-vue class="icon"
+                                        icon="fa-trash-o"
+                                        size="6vw"/>
+          </div>
         </div>
       </view>
     </view>
@@ -20,39 +30,40 @@
 import Vue from 'vue';
 import IconAwesomeComponentVue from '../../components/IconAwesome/IconAwesome.component.vue';
 import {StorageService} from '@/core/service/storage.service';
-import {storages} from '@/core/config/config.module';
 import Component from 'vue-class-component';
-import {starCityList} from "@/core/config/storage/storage.config";
+import {realTimeWeatherStorage, starCitiesStorage, weekWeatherStorage} from '@/core/config/storage/storage.config';
+import {switchMap} from 'rxjs/operators';
 @Component({components: {
   IconAwesomeComponentVue,
 }})
 export default class Star extends Vue {
-  private StarCityList: any;
+  private starCities: Array<any> = [];
   public onLoad() {
-    new StorageService(storages.starCityList).get().subscribe((res) => {
-      this.StarCityList = res.data;
+    new StorageService(starCitiesStorage).get().subscribe((res) => {
+      this.starCities = res.data;
     });
   }
-  private DeleteThis(e:any) {
-    const index = e.currentTarget.dataset.index;
-    const item = e.currentTarget.dataset.item;
+  private DeleteThis(index: number, item: any) {
+    console.log(index);
+    console.log(item);
     let title = '';
-    item.cityname.province != item.cityname.leader? title = title + item.cityname.province + '-':title = title;
-    item.cityname.leader != item.cityname.city? title = title + item.cityname.leader + '-':title = title,
-    title = title + item.cityname.city;
-    const storageService = new StorageService(starCityList);
+    item.province != item.city? title = title + item.province + '-': '';
+    item.city != item.district? title = title + item.city + '-' : '';
+    title = title + item.district;
+    const storageService = new StorageService(starCitiesStorage);
     storageService.get().subscribe((res) => {
       res.data.splice(index, 1);
-      this.StarCityList = res.data;
+      this.starCities = res.data;
       if (storageService.storage) {
         storageService.storage.value = res;
       }
-      storageService.set().subscribe((res) => {
-        storageService.remove().subscribe((res)=>{
-          uni.showToast({
-            icon: 'none',
-            title: title + '已从收藏城市列表中删除',
-          });
+      storageService.set().pipe(
+          switchMap(() => new StorageService(realTimeWeatherStorage(item.id)).remove()),
+          switchMap(() => new StorageService(weekWeatherStorage(item.id)).remove()),
+      ).subscribe((res)=>{
+        uni.showToast({
+          icon: 'none',
+          title: title + '已从收藏城市列表中删除',
         });
       });
     });

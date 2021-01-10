@@ -1,6 +1,5 @@
 import {Observable, Subject} from 'rxjs';
-import {map, switchMap} from 'rxjs/operators';
-import {AddressService} from '@/core/service/address.service';
+import {map} from 'rxjs/operators';
 
 export class LocationService {
   constructor() {
@@ -18,12 +17,9 @@ export class LocationService {
       success: (result) => isAuthorized$.next(),
       fail: (result) => isAuthorized$.error(result),
     });
-    return isAuthorized$.pipe(
-        switchMap(() => this.getLocation()),
-        switchMap((location) => new AddressService().getAddressCode(location)),
-    );
+    return isAuthorized$.pipe();
   }
-  private getLocation(): Observable<any> {
+  public getLocation(): Observable<any> {
     const location$ = new Subject<any>();
     uni.getLocation({
       type: 'gcj02',
