@@ -43,61 +43,49 @@
 </template>
 <script lang="ts">
 import Vue from 'vue';
-import {StorageService} from '../../../core/service/storage.service';
-import {storages} from '../../../core/config/config.module';
-import {Time} from '../../../core/libs/time';
+import {StorageService} from '@/core/service/storage.service';
+import {Time} from '@/core/libs/time';
 import Component from 'vue-class-component';
-import {monthWeather} from "@/core/config/storage/storage.config";
+import {monthWeatherStorage} from '@/core/config/storage/storage.config';
+import {catchError, map, switchMap} from 'rxjs/operators';
+import {monthWeather} from '@/core/requests/weather.requests';
 @Component({})
 export default class MonthWeather extends Vue {
  private monthWeatheradta: Array<any> = [];
  private title = '月天气';
- private citycode = 0;
+ private cityCode = 0;
  public onLoad(option:any) {
-   this.citycode = option.city;
-   new StorageService(monthWeather(String(this.citycode))).get().subscribe((res) => {
-     if (new Time().timeDifference(res.create_time, new Time().currentTime())>360) {
-       this.getdata();
-     } else {
-       this.monthWeatheradta=res.data;
-     }
-   }).catch((err) => {
-     this.getdata();
+   this.cityCode = option.city;
+   new StorageService(monthWeatherStorage(String(this.cityCode))).get().pipe(
+       catchError(() => this.getdata()),
+   ).subscribe((res) => {
+     this.monthWeatheradta = res.data;
    });
  }
  public getdata() {
-   uni.request({
-     url: 'https://www.tianqiapi.com/api',
-     data: {
-       version: 'v3',
-       appid: '06369426',
-       appsecret: 'VVM7jMR0',
-       cityid: this.citycode,
-     },
-     success: (res: any) => {
-       const data: Array<any>= res.data.data;
-       console.log(data);
-       for (const key in data) {
-         if (data[key] != null) {
-           this.monthWeatheradta.push(
-               {
-                 Week: data[key].week.substr(data[key].week.length - 1, 1),
-                 Date: data[key].date.split('-')[2],
-                 Type: data[key].wea,
-                 Max: data[key].tem1,
-                 Min: data[key].tem2,
-               },
-           );
+   return monthWeather(String(this.cityCode)).pipe(
+       map((response) => {
+         const data: Array<any> = response.data;
+         console.log(data);
+         for (const key in data) {
+           if (data[key] != null) {
+             this.monthWeatheradta.push(
+                 {
+                   Week: data[key].week.substr(data[key].week.length - 1, 1),
+                   Date: data[key].date.split('-')[2],
+                   Type: data[key].wea,
+                   Max: data[key].tem1,
+                   Min: data[key].tem2,
+                 },
+             );
+           }
          }
-       }
-       new StorageService(
-           storages.monthWeatheradta(String(this.citycode),
-               {create_time: new Time().currentTime(), data: this.monthWeatheradta}),
-       ).set().then((res) =>{
-         console.log('缓存成功');
-       });
-     },
-   });
+         return data;
+       }),
+       switchMap((response) => new StorageService(
+           monthWeatherStorage(String(this.cityCode), this.monthWeatheradta),
+       ).set()),
+   );
  }
  public setTemperaturePercentage(temperature: number) {
    if (temperature > 0) {

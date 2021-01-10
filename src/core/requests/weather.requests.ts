@@ -20,3 +20,13 @@ export function weekWeather(cityId: string): Observable<any> {
   const data = Object.assign({version: 'v9', cityid: cityId}, apiKey);
   return new Request().get('https://www.tianqiapi.com/api/', data);
 }
+
+/**
+ * 月天气
+ * @param {string} cityId
+ * @return {Observable<any>}
+ */
+export function monthWeather(cityId: string): Observable<any> {
+  const data = Object.assign({version: 'v3', cityid: cityId}, apiKey);
+  return new Request().get('https://www.tianqiapi.com/api', data);
+}

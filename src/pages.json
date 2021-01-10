@@ -29,7 +29,7 @@
   "condition": {
     "current": 0,
     "list": [
-      {"name": "月天气", "path": "views/pages/home/monthWeather/monthWeather", "query": "city=101110112"}
+      {"name": "月天气", "path": "pages/home/monthWeather/monthWeather", "query": "city=101110112"}
     ]
   }
 }

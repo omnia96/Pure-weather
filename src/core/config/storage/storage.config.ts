@@ -21,7 +21,7 @@ export const searchHistory: Storage<any> = {
   key: 'SearchHistory',
   value: new StorageValue<any>([]),
 };
-export const monthWeather = (cityCode :string, value?: any)=>{
+export const monthWeatherStorage = (cityCode :string, value?: any)=>{
   return {
     key: 'monthWeather' + cityCode,
     value: new StorageValue<any>(value),

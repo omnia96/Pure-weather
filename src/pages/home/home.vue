@@ -208,9 +208,9 @@ import {async, zip} from 'rxjs';
 import {realTimeWeatherStorage, starCityList, weekWeatherStorage} from '@/core/config/storage/storage.config';
 import {catchError, map, switchMap} from 'rxjs/operators';
 import {realTimeWeather, weekWeather} from '@/core/requests/weather.requests';
-import {StorageValue} from "@/core/models/storageValue";
-import {LocationService} from "@/core/service/location.service";
-import {AddressService} from "@/core/service/address.service";
+import {StorageValue} from '@/core/models/storageValue';
+import {LocationService} from '@/core/service/location.service';
+import {AddressService} from '@/core/service/address.service';
 
 const QQMapWX = require('../../static/js/qqmap.js');
 // #ifdef MP-WEIXIN
@@ -313,24 +313,24 @@ export default class Home extends Vue {
     new LocationService().isAuthorized().subscribe((cityCode) => {
       new StorageService(starCityList).get().subscribe(
           (res) => {
-            new AddressService()
+            new AddressService();
             this.StarCityList = res.data;
           },
           () => {
             starCityList.value = new StorageValue<Array<{cityCode: string; cityName: any}>>([{cityCode: cityCode, cityName: ''}]);
             new StorageService(starCityList).set().subscribe((res) => this.StarCityList = res.data);
-          }
+          },
       );
       zip(new StorageService(realTimeWeatherStorage(cityCode)).get().pipe(
           catchError((err) => this.getRealTimeWeather(cityCode).pipe(
               switchMap((res) => new StorageService(realTimeWeatherStorage(cityCode, res)).set()),
           )),
-          ), new StorageService(weekWeatherStorage(cityCode)).get().pipe(
+      ), new StorageService(weekWeatherStorage(cityCode)).get().pipe(
           catchError(() => this.getWeekWeather(cityCode).pipe(
-              switchMap((weather) => new StorageService(weekWeatherStorage(cityCode, weather)).set())
+              switchMap((weather) => new StorageService(weekWeatherStorage(cityCode, weather)).set()),
           )),
-          ),
-      ).subscribe(response => {
+      ),
+      ).subscribe((response) => {
         this.StartupStatus = false;
         this.RealTimeWeather = response[0].data;
         this.OneWeekWeather = response[1].data;
