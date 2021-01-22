@@ -1,7 +1,7 @@
 {
     "name": "pure-weather",
-    "appid": "",
-    "description": "__UNI__F9CB14D",
+    "appid": "__UNI__F9CB14D",
+    "description": "",
     "versionName": "1.0.6",
     "versionCode": "100",
 	"transformPx":false,
