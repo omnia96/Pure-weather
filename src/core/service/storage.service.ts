@@ -1,8 +1,12 @@
 import {Storage} from '@/core/models/storage';
-import {Observable, of, Subject} from 'rxjs';
+import {Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
 import moment from 'moment';
 import {StorageValue} from '@/core/models/storageValue';
+import GetStorageOptions = UniApp.GetStorageOptions;
+import SetStorageOptions = UniApp.SetStorageOptions;
+import {fromPromise} from "rxjs/internal-compatibility";
+import RemoveStorageOptions = UniApp.RemoveStorageOptions;
 
 export class StorageService<T> {
     storage: Storage<T>;
@@ -10,16 +14,12 @@ export class StorageService<T> {
       this.storage = storage;
     }
     public get(): Observable<StorageValue<T>> {
-      const option: GetStorageOptions = {};
-      const subject = new Subject<StorageValue<T>>();
-      if (this.storage) {
-        option.key = this.storage.key;
-      }
-      option.success = (res: { errMsg: string, data: StorageValue<T> }) => subject.next(res.data);
-      option.fail = (err: { errMsg: string }) => subject.error(err.errMsg);
-      option.complete = () => subject.complete();
-      uni.getStorage(option);
-      return subject.pipe(map((response) => {
+      const option: GetStorageOptions = {key: this.storage.key};
+      return fromPromise(new Promise<StorageValue<T>>((resolve, reject) => {
+        option.success = (res: { errMsg: string, data: StorageValue<T> }) => resolve(res.data);
+        option.fail = (err: { errMsg: string }) => reject(err.errMsg);
+        uni.getStorage(option)
+      })).pipe(map((response) => {
         if (response.expiration === 0) {
           return response;
         } else {
@@ -46,31 +46,18 @@ export class StorageService<T> {
       }
     }
     public set(): Observable<StorageValue<T>> {
-      const subject = new Subject<StorageValue<T>>();
-      const option: SetStorageOptions = {};
-      if (this.storage) {
-        option.key = this.storage.key;
-        option.data = this.storage.value;
-      }
-      option.success = (res: {errMsg: string}) => {
-        return subject.next(option.data);
-      };
-      option.fail = (err: {errMsg: string}) => {
-        console.log(err);
-        subject.error(err.errMsg);
-      };
-      option.complete = () => subject.complete();
-      uni.setStorage(option);
-      return subject.pipe();
+      const option: SetStorageOptions = {key: this.storage.key, data: this.storage.value};
+      return fromPromise(new Promise((resolve, reject) => {
+        option.success = (result) => resolve(option.data);
+        option.fail = (result) => reject(result);
+        uni.setStorage(option);
+      }));
     }
-    public remove(): Observable<Storage<T>> {
-      const option: RemoveStorageOptions = {};
-      if (this.storage) option.key = this.storage.key;
-      const subject = new Subject<Storage<T>>();
-      option.success = (res: {errMsg: string, data: Storage<T>}) => subject.next(res.data);
-      option.fail = (err: {errMsg: string}) => subject.error(err.errMsg);
-      option.complete = () => subject.complete();
-      uni.removeStorage(option);
-      return subject.pipe();
+    public remove(): Observable<any> {
+      const option: RemoveStorageOptions = {key: this.storage.key};
+      return fromPromise(new Promise<any>((resolve, reject) => {
+        option.success = (res) => resolve(res);
+        option.fail = (err: {errMsg: string}) => reject(err.errMsg);
+      }))
     }
 }

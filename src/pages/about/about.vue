@@ -1,38 +1,38 @@
 <template>
-    <div class="page">
-		<view class="status-bar" :style="'height:'+ statusBarHeight + 'px;'"></view>
-		<view class="container">
-			<view class="header">
-				<view class="icon"><IconFreecns icon="Cumulus-Cloud" color="#2196f3" size="20px"/></view>
-				<view class="name">Pure · 简天气</view>
-				<view class="current">关于</view>
-			</view>
-			<view class="logo">
-				<icon-freecns-component-vue icon="Cumulus-Cloud" color="#2196f3" size="14vw"/>
-			</view>
-			<view class="version">Pure · 简天气 {{version}}</view>
-			<view class="group">
-				<view class="item" @tap="opneSetting">
-					<icon-awesome-component-vue class="icon" icon="fa-lock"/>
-					<view class="title">授权管理</view>
-					<icon-awesome-component-vue class="icon" icon="fa-caret-right"/>
-				</view>
-                <view class="item" @tap="toLogs">
-					<icon-awesome-component-vue class="icon" icon="fa-bookmark"/>
-					<view class="title">更新日志</view>
-					<icon-awesome-component-vue class="icon" icon="fa-caret-right"/>
-				</view>
-                <!-- #ifdef MP-WEIXIN -->
-                <button open-type="contact" class="item">
-                    <icon-awesome-component-vue class="icon" icon="fa-commenting"/>
-                    <view class="title">在线联系</view>
-                    <icon-awesome-component-vue class="icon" icon="fa-caret-right"/>
-                </button>
-                <!-- #endif -->
-			</view>
-		</view>
-        <navigation-component-vue :StatusBarHeight="statusBarHeight" :NavigationBarItems="navigationBarItems"/>
-    </div>
+  <div class="page">
+    <view class="status-bar" :style="'height:'+ statusBarHeight + 'px;'"></view>
+    <view class="container">
+      <view class="header">
+        <view class="icon"><IconFreecns icon="Cumulus-Cloud" color="#2196f3" size="20px"/></view>
+        <view class="name">Pure · 简天气</view>
+        <view class="current">关于</view>
+      </view>
+      <view class="logo">
+        <icon-freecns-component-vue icon="Cumulus-Cloud" color="#2196f3" size="14vw"/>
+      </view>
+      <view class="version">Pure · 简天气 {{version}}</view>
+      <view class="group">
+        <view class="item" @tap="openSetting">
+          <icon-awesome-component-vue class="icon" icon="fa-lock"/>
+          <view class="title">授权管理</view>
+          <icon-awesome-component-vue class="icon" icon="fa-caret-right"/>
+        </view>
+        <view class="item" @click="toLogs">
+          <icon-awesome-component-vue class="icon" icon="fa-bookmark"/>
+          <view class="title">更新日志</view>
+          <icon-awesome-component-vue class="icon" icon="fa-caret-right"/>
+        </view>
+        <!-- #ifdef MP-WEIXIN -->
+        <button open-type="contact" class="item">
+            <icon-awesome-component-vue class="icon" icon="fa-commenting"/>
+            <view class="title">在线联系</view>
+            <icon-awesome-component-vue class="icon" icon="fa-caret-right"/>
+        </button>
+        <!-- #endif -->
+      </view>
+    </view>
+    <navigation-component-vue :StatusBarHeight="statusBarHeight" :NavigationBarItems="navigationBarItems"/>
+  </div>
 </template>
 <script lang="ts">
 import Vue from 'vue';
@@ -54,12 +54,12 @@ export default class About extends Vue {
     {icon: 'fa-home', title: '首页', path: '../home/home', selected: false},
     {icon: 'fa-exclamation-circle', title: '关于', path: '../about/about', selected: true},
   ];
-  private opneSetting() {
+  private openSetting() {
     uni.openSetting({});
   }
   private toLogs() {
     uni.navigateTo({
-      url: '/views/pages/about/log/log',
+      url: '/pages/about/log/log',
     });
   }
 }
