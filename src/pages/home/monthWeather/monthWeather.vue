@@ -20,7 +20,7 @@
               </div>
               <div class="temperature">
                   <div class="start flex flex-direction justify-end">
-                      <div :style="[{height: (item.Max*1 + 50) + '%'}]"></div>
+                      <div :style="[{height: item.Max / temperatureMax.max * 100 + '%'}]"></div>
                   </div>
                   <div class="end flex flex-direction justify-start">
                       <div :style="[{height: (item.Min*1 + 50) + '%'}]"></div>
@@ -47,18 +47,31 @@ import {StorageService} from '@/core/service/storage.service';
 import {Time} from '@/core/libs/time';
 import Component from 'vue-class-component';
 import {monthWeatherStorage} from '@/core/config/storage/storage.config';
-import {catchError, map, switchMap} from 'rxjs/operators';
+import {catchError, map, max, switchMap} from 'rxjs/operators';
 import {monthWeather} from '@/core/requests/weather.requests';
 @Component({})
 export default class MonthWeather extends Vue {
  private monthWeatheradta: Array<any> = [];
  private title = '月天气';
  private cityCode = 0;
+ private temperatureMax = {
+   max: 0,
+   min: 0,
+ };
  public onLoad(option:any) {
    this.cityCode = option.city;
    new StorageService(monthWeatherStorage(String(this.cityCode))).get().pipe(
        catchError(() => this.getdata()),
    ).subscribe((res) => {
+     console.log(res.data);
+     const maxArray = []
+     const minArray = []
+     res.data.forEach(value => {
+       maxArray.push(value.Max);
+       minArray.push(value.Min);
+     })
+     this.temperatureMax.max = Math.max(...maxArray);
+     this.temperatureMax.min = Math.max(...minArray);
      this.monthWeatheradta = res.data;
    });
  }
