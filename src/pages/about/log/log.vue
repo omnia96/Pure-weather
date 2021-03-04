@@ -42,6 +42,9 @@ export default class Log extends Vue {
   private lineMainTop = 0;
   public onLoad() {
     this.logs = [
+      {version: '1.1.9', date: '2021-03-04', content: [
+        '- 四十日天气样式优化',
+      ]},
       {version: '1.1.8', date: '2021-01-12', content: [
         '- ios 白屏bug修复',
         '- 更新列表入口bug修复',

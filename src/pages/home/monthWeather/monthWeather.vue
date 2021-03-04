@@ -16,69 +16,55 @@
             </div>
           </div>
           <div class="main">
-<!--              <div class="max">-->
-<!--                  <span>{{item.Max}}</span>-->
-<!--              </div>-->
-              <div class="temperature">
-                  <div class="start flex flex-direction justify-end">
-                    <span>{{item.Max}}</span>
-                    <div :style="[{height: maxPercentage.value(item.Max) + '%'}]"></div>
-                  </div>
-                  <div class="end flex flex-direction justify-start">
-                    <div :style="[{height: minPercentage.value(item.Min) + '%'}]"></div>
-                    <span>{{item.Min}}</span>
-                  </div>
+            <div class="temperature">
+              <div class="start flex flex-direction justify-end align-center">
+                <span>{{item.Max}}</span>
+                <div :style="[{height: maxPercentage.value(item.Max) + '%'}]"></div>
               </div>
-<!--              <div class="min">-->
-<!--                  <span>{{item.Min}}</span>-->
-<!--              </div>-->
+              <div class="end flex flex-direction justify-start align-center">
+                <div :style="[{height: minPercentage.value(item.Min) + '%'}]"></div>
+                <span>{{item.Min}}</span>
+              </div>
+            </div>
           </div>
         </div>
       </div>
     </scroll-view>
     <!-- #ifdef MP-WEIXIN -->
-<!--    <ad unit-id="adunit-2009e2ee092a6044" ad-type="video" ad-theme="white"></ad>-->
+    <ad unit-id="adunit-2009e2ee092a6044" ad-type="video" ad-theme="white"></ad>
     <!-- #endif -->
     <!-- #ifdef MP-QQ -->
-<!--    <ad unit-id="a7694155dfa8f11edb3d8e7d41767370" type="card"></ad>-->
+    <ad unit-id="a7694155dfa8f11edb3d8e7d41767370" type="card"></ad>
     <!-- #endif -->
   </div>
 </template>
 <script lang="ts">
 import Vue from 'vue';
 import {StorageService} from '@/core/service/storage.service';
-import {Time} from '@/core/libs/time';
 import Component from 'vue-class-component';
 import {monthWeatherStorage} from '@/core/config/storage/storage.config';
-import {catchError, map, min, switchMap} from 'rxjs/operators';
+import {catchError, map, switchMap} from 'rxjs/operators';
 import {monthWeather} from '@/core/requests/weather.requests';
 import {Percentage} from '@/core/unit/percentage';
+
 @Component({})
 export default class MonthWeather extends Vue {
  private monthWeatheradta: Array<any> = [];
  private title = '月天气';
  private cityCode = 0;
- private temperatureMax = {
-   max: 0,
-   min: 0,
- };
- private maxPercentage!: Percentage;
- private minPercentage!: Percentage;
+ private maxPercentage = new Percentage(0, 0);
+ private minPercentage = new Percentage(0, 0);
  public onLoad(option:any) {
    this.cityCode = option.city;
    new StorageService(monthWeatherStorage(String(this.cityCode))).get().pipe(
        catchError(() => this.getdata()),
    ).subscribe((res) => {
-     console.log(res.data);
-     const maxArray = [];
-     const minArray = [];
-     res.data.forEach((value) => {
+     const maxArray: Array<any> = [];
+     const minArray: Array<any> = [];
+     res.data.forEach((value: any) => {
        maxArray.push(value.Max);
        minArray.push(value.Min);
      });
-     console.log(maxArray);
-     this.temperatureMax.max = Math.max(...maxArray);
-     this.temperatureMax.min = Math.max(...minArray);
      this.maxPercentage = new Percentage(Math.max(...maxArray), Math.min(...maxArray));
      this.minPercentage = new Percentage(Math.min(...minArray), Math.max(...minArray));
      this.monthWeatheradta = res.data;
@@ -109,13 +95,6 @@ export default class MonthWeather extends Vue {
        ).set()),
    );
  }
- public setTemperaturePercentage(temperature: number) {
-   if (temperature > 0) {
-     return 50 + temperature;
-   } else {
-     return temperature;
-   }
- }
 }
 </script>
 <style lang="stylus">
@@ -123,10 +102,10 @@ export default class MonthWeather extends Vue {
   display flex
   flex-direction column
 .month-weathers
-  width 100vw
-  height calc(100vh - 500upx)
+  width calc(100vw - 60upx)
+  height calc(100vh - 606upx)
   white-space: nowrap;
-  padding 30upx
+  margin 30upx
   .item
     display inline-block
     width 100upx
@@ -158,8 +137,18 @@ export default class MonthWeather extends Vue {
     display flex
     flex-direction column
     align-items center
+    position relative
+    &::after
+      position absolute
+      content ""
+      bottom 0
+      top 0
+      border 2upx dashed #cccccc
     .temperature
-      flex 1
+      position absolute
+      top 20upx
+      bottom 20upx
+      z-index 1
       width 20upx
       display flex
       flex-direction column
@@ -169,7 +158,11 @@ export default class MonthWeather extends Vue {
         width 100%
         height 50%
         div
+          width 100%
           background-color #2196f3
+        span
+          font-weight bold
+          color #2196f3
       .start div
         border-radius 10upx 10upx 0 0
       .end div
