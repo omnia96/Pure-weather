@@ -1,12 +1,13 @@
-import {SystemInfo, Result} from './systemInfo.interface';
-
 export class SystemInfoService {
-    systemInfo:SystemInfo = {};
+    systemInfo!: UniApp.GetSystemInfoResult
     constructor() {
       this.getSystemInfo();
     }
-    async getSystemInfo() {
-      const result:Result<SystemInfo> = <Result<SystemInfo>> <unknown> await uni.getSystemInfo();
-      this.systemInfo = result[1];
+    private getSystemInfo() {
+      uni.getSystemInfo({
+        success: (result) => {
+          this.systemInfo = result;
+        },
+      });
     }
 }

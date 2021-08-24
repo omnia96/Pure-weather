@@ -3,20 +3,24 @@
     <div class="status-bar" :style="'height:' + StatusBarHeight + 'px;'"></div>
     <div class="container">
       <view class="header"
-            :style="'margin-top:calc(90rpx + '+StatusBarHeight+'px);'">
+            :style="'margin-top:calc(0rpx + '+StatusBarHeight+'px);'">
         <view class="icon">
           <icon-freecns-component-vue icon="Cumulus-Cloud" color="#2196f3" size="20px"/>
         </view>
         <view class="name">Pure · 简天气</view>
         <view class="current">首页</view>
       </view>
+      <div @click="toSearch">
+        <md-search></md-search>
+      </div>
       <swiper class=""
-              :style="'width:100%;height:calc(100vh - 85px - ' + StatusBarHeight + 'px);'"
+              :style="'width:100%;height:calc(100vh - 175px - ' + StatusBarHeight + 'px);'"
               :current="MainSwiper"
               @animationfinish="MainSwiperChange">
         <swiper-item v-for="(value,key) in StarCityList" v-bind:key="key">
           <scroll-view scroll-y style="width: 100%; height: 100%;">
-            <view class="u-skeleton flex flex-direction align-center" style="width: 100%; height: 100%;">
+            <view class="u-skeleton flex flex-direction align-center"
+                  style="width: 100%; height: 100%;">
               <view class="card">
                 <view class="header">
                   <view>今日天气</view>
@@ -196,9 +200,8 @@
         </swiper-item>
       </swiper>
     </div>
-<!--    <start-up-component-vue v-if="StartupStatus"></start-up-component-vue>-->
-    <navigation-component-vue :StatusBarHeight="StatusBarHeight"
-                              :NavigationBarItems="NavigationBarItems"/>
+<!--    <navigation-component-vue :StatusBarHeight="StatusBarHeight"-->
+<!--                              :NavigationBarItems="NavigationBarItems"/>-->
     <u-skeleton :loading="StartupStatus" :animation="true" bgColor="#FFF"></u-skeleton>
   </div>
 </template>
@@ -221,11 +224,13 @@ import {catchError, map, switchMap} from 'rxjs/operators';
 import {realTimeWeather, weekWeather} from '@/core/requests/weather.requests';
 import {StorageValue} from '@/core/models/storageValue';
 import {AddressService} from '@/core/service/address.service';
+import MdSearch from '@/components/md-search/md-search.vue';
 // #ifdef MP-WEIXIN
 let interstitialAd: any = {};
 declare const wx: any;
 // #endif
 @Component({components: {
+  MdSearch,
   IconAwesomeComponentVue,
   IconFreecnsComponentVue,
   NavigationComponentVue,
@@ -492,6 +497,12 @@ export default class Home extends Vue {
       url: './monthWeather/monthWeather?city=' + starCityList[key].id,
     });
   }
+  private toSearch() {
+    console.log(1111)
+    uni.navigateTo({
+      url: '/pages/search/search',
+    });
+  }
 }
 </script>
 <style lang="stylus" scoped>
@@ -507,7 +518,7 @@ export default class Home extends Vue {
     width: 100%
     height: 80upx
     display: flex
-    justify-content: center
+    justify-content: flex-start
     align-items: center
     .icon
       width: 80upx;
