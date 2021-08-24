@@ -2,14 +2,17 @@
   <div class="timeline">
     <scroll-view :scroll-y="true" @scroll="timelineScroll">
       <div class="timeline__content">
-        <view class="item animation-slide-left" v-for="(item,index) in logs" :key="index" :style="'animation-delay: ' + (index+1)*0.2 + 's'">
+        <view class="item animation-slide-left"
+              v-for="(item,index) in logs"
+              :key="index" :style="'animation-delay: ' + (index+1)*0.2 + 's'">
           <div class="item-content">
             <view class="cu-capsule radius">
               <view class="cu-tag bg-blue text-white">{{item.version}}</view>
               <view class="cu-tag line-blue">{{item.date}}</view>
             </view>
             <view class="margin-top-sm text-content">
-              <view v-for="(itemChild,indexChild) in item.content" :key="indexChild">{{itemChild}}</view>
+              <view v-for="(itemChild,indexChild) in item.content"
+                    :key="indexChild">{{itemChild}}</view>
             </view>
           </div>
         </view>
@@ -18,7 +21,8 @@
     <div class="timeline__side">
       <div class="main" :style="'top:' + lineMainTop + 'px;'">
         <div class="main-content">
-          <icon-awesome-component-vue class="icon" icon="fa-circle" color="rgba(0,0,0,0.23)" size="40rpx"/>
+          <icon-awesome-component-vue class="icon"
+                                      icon="fa-circle" color="rgba(0,0,0,0.23)" size="40rpx"/>
           <!-- <div class="content">2020-04-06</div> -->
         </div>
       </div>
@@ -42,6 +46,11 @@ export default class Log extends Vue {
   private lineMainTop = 0;
   public onLoad() {
     this.logs = [
+      {version: '1.2.0', date: '2021-08-24', content: [
+        '- 首页样式优化',
+        '- 城市收藏暂时移除',
+        '- 改版计划启动',
+      ]},
       {version: '1.1.9', date: '2021-03-04', content: [
         '- 四十日天气样式优化',
       ]},
