@@ -1,23 +1,33 @@
+/*
+ * @Author: Omnia96
+ * @Date: 2021-04-08 17:59:42
+ * @LastEditors: Omnia96
+ * @LastEditTime: 2021-09-21 19:43:59
+ * @Description: 位置服务
+ * @FilePath: /pure-weather/src/core/service/location.service.ts
+ */
 import {Observable, Subject} from 'rxjs';
+import {fromPromise} from 'rxjs/internal-compatibility';
 import {map} from 'rxjs/operators';
 
 export class LocationService {
-  constructor() {
-    this.isAuthorized().subscribe(
-        (response) => {
-          console.log(response);
-        },
-        (error) => this.showOpenSettingModal(),
-    );
-  }
+  constructor() {}
   public isAuthorized() {
-    const isAuthorized$ = new Subject();
-    uni.authorize({
-      scope: 'scope.userLocation',
-      success: (result) => isAuthorized$.next(),
-      fail: (result) => isAuthorized$.error(result),
-    });
-    return isAuthorized$.pipe();
+    return fromPromise(new Promise<{errMsg: string}>((resolve, reject) => {
+      uni.authorize({
+        scope: 'scope.userLocation',
+        success: (result: {errMsg: string}) => {
+          resolve(result);
+        },
+        fail: (result) => {
+          console.error(result);
+          this.showOpenSettingModal();
+          const {errMsg} = result;
+          reject(errMsg);
+        },
+        complete: () => {},
+      });
+    }));
   }
   public getLocation(): Observable<any> {
     const location$ = new Subject<any>();

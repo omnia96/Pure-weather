@@ -46,6 +46,9 @@ export default class Log extends Vue {
   private lineMainTop = 0;
   public onLoad() {
     this.logs = [
+      {version: '1.2.1', date: '2021-09-22', content: [
+        '- qq小程序ios端首页加载bug修复',
+      ]},
       {version: '1.2.0', date: '2021-08-24', content: [
         '- 首页样式优化',
         '- 城市收藏暂时移除',

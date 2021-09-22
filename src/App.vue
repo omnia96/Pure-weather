@@ -1,3 +1,11 @@
+<!--
+ * @Author: Omnia96
+ * @Date: 2021-04-08 17:59:42
+ * @LastEditors: Omnia96
+ * @LastEditTime: 2021-09-18 17:25:07
+ * @Description: App
+ * @FilePath: /pure-weather/src/App.vue
+-->
 <script lang="ts">
 import Vue from 'vue';
 import {UpdateService} from '@/core/service/update.service';
@@ -6,7 +14,9 @@ export default Vue.extend({
   onLaunch() {
     console.log('App Launch');
     new UpdateService();
+    // #ifdef MP-WEIXIN
     uni.hideTabBar();
+    // #endif
   },
   onShow() {
     console.log('App Show');

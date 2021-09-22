@@ -1,3 +1,11 @@
+/*
+ * @Author: Omnia96
+ * @Date: 2021-04-08 17:59:42
+ * @LastEditors: Omnia96
+ * @LastEditTime: 2021-09-21 19:09:26
+ * @Description: 请求
+ * @FilePath: /pure-weather/src/core/unit/Request.ts
+ */
 import {Observable, Subject} from 'rxjs';
 import {map} from 'rxjs/operators';
 
@@ -26,6 +34,7 @@ export class Request {
       fail: (error) => {
         subject.error(error);
       },
+      complete: () => subject.complete(),
     });
     return subject.pipe(
         map<any, any>((response) => Request.responseInterceptor(response)),

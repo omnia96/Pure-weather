@@ -1,3 +1,11 @@
+/*
+ * @Author: Omnia96
+ * @Date: 2021-04-08 17:59:42
+ * @LastEditors: Omnia96
+ * @LastEditTime: 2021-09-21 19:04:02
+ * @Description: 缓存服务
+ * @FilePath: /pure-weather/src/core/service/storage.service.ts
+ */
 import {Storage} from '@/core/models/storage';
 import {Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
@@ -5,7 +13,7 @@ import moment from 'moment';
 import {StorageValue} from '@/core/models/storageValue';
 import GetStorageOptions = UniApp.GetStorageOptions;
 import SetStorageOptions = UniApp.SetStorageOptions;
-import {fromPromise} from "rxjs/internal-compatibility";
+import {fromPromise} from 'rxjs/internal-compatibility';
 import RemoveStorageOptions = UniApp.RemoveStorageOptions;
 
 export class StorageService<T> {
@@ -18,7 +26,8 @@ export class StorageService<T> {
       return fromPromise(new Promise<StorageValue<T>>((resolve, reject) => {
         option.success = (res: { errMsg: string, data: StorageValue<T> }) => resolve(res.data);
         option.fail = (err: { errMsg: string }) => reject(err.errMsg);
-        uni.getStorage(option)
+        option.complete = () => {};
+        uni.getStorage(option);
       })).pipe(map((response) => {
         if (response.expiration === 0) {
           return response;
@@ -50,6 +59,7 @@ export class StorageService<T> {
       return fromPromise(new Promise((resolve, reject) => {
         option.success = (result) => resolve(option.data);
         option.fail = (result) => reject(result);
+        option.complete = () => {};
         uni.setStorage(option);
       }));
     }
@@ -58,6 +68,6 @@ export class StorageService<T> {
       return fromPromise(new Promise<any>((resolve, reject) => {
         option.success = (res) => resolve(res);
         option.fail = (err: {errMsg: string}) => reject(err.errMsg);
-      }))
+      }));
     }
 }

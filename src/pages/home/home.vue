@@ -110,41 +110,59 @@
                 <view class="header">每小时</view>
                 <view class="main u-skeleton-rect">
                   <scroll-view class="hours" scroll-x="true">
-                    <view class="item" v-for="(item,index) in OneWeekWeather[0].Hours" v-bind:key="index"
-                          v-if="item.hours >= 8 && Today.date == OneWeekWeather[0].Date.Date && item.hours >= Today.hours">
+                    <template v-for="(item,index) in OneWeekWeather[0].Hours">
+                      <view class="item" :key="index"
+                            v-if="
+                              item.hours >= 8 &&
+                              Today.date == OneWeekWeather[0].Date.Date &&
+                              item.hours >= Today.hours">
                       <view class="title">{{ item.title }}</view>
                       <view class="weather">{{ item.wea }}</view>
                       <view class="tem">{{ item.tem }}</view>
                     </view>
+                    </template>
                     <view class="item date" v-if="Today.date == OneWeekWeather[0].Date.Date">
                       {{ OneWeekWeather[1].Date.Date }}
                     </view>
-
-                    <view class="item" v-for="(item,index) in OneWeekWeather[0].Hours" v-bind:key="index"
-                          v-if="item.hours < 8  && (Today.date == OneWeekWeather[0].Date.Date || item.hours >= Today.hours)">
+                    <template v-for="(item,index) in OneWeekWeather[0].Hours">
+                      <view class="item" :key="index"
+                            v-if="
+                              item.hours < 8  &&
+                              (
+                                Today.date == OneWeekWeather[0].Date.Date ||
+                                item.hours >= Today.hours
+                              )
+                            ">
                       <view class="title">{{ item.title }}</view>
                       <view class="weather">{{ item.wea }}</view>
                       <view class="tem">{{ item.tem }}</view>
                     </view>
-                    <view class="item" v-for="(item,index) in OneWeekWeather[1].Hours" v-bind:key="index"
+                    </template>
+                    <template v-for="(item,index) in OneWeekWeather[1].Hours">
+                      <view class="item" :key="index"
                           v-if="index < 16">
                       <view class="title">{{ item.title }}</view>
                       <view class="weather">{{ item.wea }}</view>
                       <view class="tem">{{ item.tem }}</view>
                     </view>
+                    </template>
                     <view class="item date">{{ OneWeekWeather[2].Date.Date }}</view>
-                    <view class="item" v-for="(item,index) in OneWeekWeather[1].Hours" v-bind:key="index"
+                    <template v-for="(item,index) in OneWeekWeather[1].Hours">
+                      <view class="item" :key="index"
                           v-if="index >= 16">
                       <view class="title">{{ item.title }}</view>
                       <view class="weather">{{ item.wea }}</view>
                       <view class="tem">{{ item.tem }}</view>
                     </view>
-                    <view class="item" v-for="(item,index) in OneWeekWeather[2].Hours" v-bind:key="index"
+                    </template>
+                    <template v-for="(item,index) in OneWeekWeather[2].Hours">
+                      <view class="item" :key="index"
                           v-if="index < 16">
                       <view class="title">{{ item.title }}</view>
                       <view class="weather">{{ item.wea }}</view>
                       <view class="tem">{{ item.tem }}</view>
                     </view>
+                    </template>
                   </scroll-view>
                 </view>
               </view>
@@ -154,8 +172,12 @@
                   <view @click="more(key)">更多</view>
                 </view>
                 <view class="main week-weather u-skeleton-rect">
-                  <view class="item animation-slide-left" v-for="(item,index) in OneWeekWeather" v-bind:key="index"
-                        :style="Today.date == item.Date.Date? 'color:#2196f3;animation-delay: ' + (index+1)*0.2 + 's':'color:#000000;animation-delay: ' + (index+1)*0.2 + 's'">
+                  <view class="item animation-slide-left"
+                        v-for="(item,index) in OneWeekWeather" :key="index"
+                        :style="[{
+                          'animation-delay': (index+1)*0.2 + 's',
+                           color: Today.date == item.Date.Date? '#2196f3':'#000000'
+                        }]">
                     <view :style="Today.date == item.Date.Date? 'color:#2196f3;':'color:#9e9e9e;'">
                       {{ item.Date.Week }}
                     </view>
@@ -171,7 +193,8 @@
                   <view>指数</view>
                 </view>
                 <view class="main index u-skeleton-rect">
-                  <view class="item" v-for="(item,index) in OneWeekWeather[0].Index" v-bind:key="index" :id="item.desc"
+                  <view class="item"
+                        v-for="(item,index) in OneWeekWeather[0].Index" :key="index" :id="item.desc"
                         @click="ShowIndexDesc(item.desc)">
                     <view class="icon">
                       <icon-awesome-component-vue :icon="item.icon" size="20px"/>
@@ -214,13 +237,13 @@ import {systemInfoService} from '@/core/service/core/core.module';
 import {StorageService} from '@/core/service/storage.service';
 import StartUpComponentVue from '../../components/StartUp/StartUp.component.vue';
 import Component from 'vue-class-component';
-import {zip} from 'rxjs';
+import {of, zip} from 'rxjs';
 import {
   realTimeWeatherStorage,
   starCitiesStorage,
   weekWeatherStorage,
 } from '@/core/config/storage/storage.config';
-import {catchError, map, switchMap} from 'rxjs/operators';
+import {catchError, finalize, map, switchMap} from 'rxjs/operators';
 import {realTimeWeather, weekWeather} from '@/core/requests/weather.requests';
 import {StorageValue} from '@/core/models/storageValue';
 import {AddressService} from '@/core/service/address.service';
@@ -254,12 +277,19 @@ export default class Home extends Vue {
   public onLoad() {
     this.GetCityCode();
     // #ifdef MP-QQ
-    uni.hideTabBar();
+    uni.hideTabBar({
+      fail: (err: any) => console.log(err),
+    });
     // #endif
     // #ifdef MP-WEIXIN
     // 在页面onLoad回调事件中创建插屏广告实例
     this.CreateAd();
     // #endif
+    // uni.getSystemInfo({
+    //   success: (result) => {
+    //     console.log(result.safeArea);
+    //   },
+    // });
   }
   public onReady() {
     // #ifdef MP-WEIXIN
@@ -270,9 +300,14 @@ export default class Home extends Vue {
   public onShow() {
     this.SetToday();
     this.MainSwiper = 0;
-    new StorageService(starCitiesStorage).get().subscribe((res) => {
-      this.StarCityList = res.data;
-    });
+    new StorageService(starCitiesStorage).get().subscribe(
+        (res) => {
+          this.StarCityList = res.data;
+        },
+        () => {
+          this.StarCityList = [{}];
+        },
+    );
   }
   public onHide() {
     this.MainSwiper = 0;
@@ -326,15 +361,28 @@ export default class Home extends Vue {
     };
   }
   private GetCityCode() {
-    new AddressService().area().subscribe((area) => {
-      this.Address = area;
-      this.Address.icon = true;
-      new StorageService(starCitiesStorage).get().pipe(catchError(() => {
-        starCitiesStorage.value = new StorageValue<Array<any>>([area]);
-        return new StorageService(starCitiesStorage).set();
-      })).subscribe((response) => this.StarCityList = response.data);
-      this.isWeatherStorage(area.id);
-    });
+    new AddressService().area().pipe(
+        switchMap((area) => new StorageService(starCitiesStorage).get().pipe(
+            map((result) => {
+              const cities: any[] = [area];
+              result.data.splice(0, 1);
+              cities.push(...result.data);
+              return cities;
+            }),
+            catchError(() => of([area])),
+        )),
+        switchMap((cities) => {
+          starCitiesStorage.value = new StorageValue<Array<any>>(cities);
+          return new StorageService(starCitiesStorage).set().pipe(map((result) => result.data));
+        }),
+    ).subscribe(
+        (response) => {
+          this.Address = response[0];
+          this.Address.icon = true;
+          this.StarCityList = response;
+          this.isWeatherStorage(response[0].id);
+        },
+    );
   }
   private getRealTimeWeather(cityCode: string) {
     return realTimeWeather(cityCode).pipe(map((response) => {
@@ -381,62 +429,69 @@ export default class Home extends Vue {
       const OneWeekWeather: any = [];
       response = response.data;
       for (const key in response) {
-        const week = response[key].week.substr(response[key].week.length - 1, 1);
-        const date = parseInt(response[key].day.split('日')[0]);
-        const type = response[key].wea;
-        const max = response[key].tem1;
-        const min = response[key].tem2;
-        const index = response[key].index;
-        index[0]['title'] = '紫外线';
-        index[1]['title'] = '运动';
-        index[2]['title'] = '血糖';
-        index[3]['title'] = '穿衣';
-        index[4]['title'] = '洗车';
-        index[5]['title'] = '空气污染';
-        index[0]['icon'] = 'fa-sun-o';
-        index[1]['icon'] = 'fa-child';
-        index[2]['icon'] = 'fa-heartbeat';
-        index[3]['icon'] = 'fa-male';
-        index[4]['icon'] = 'fa-car';
-        index[5]['icon'] = 'fa-envira';
-        const hours = response[key].hours;
-        for (const keychild in hours) {
-          hours[keychild]['hours'] = hours[keychild]['hours'].split('时')[0];
-          hours[keychild]['title'] = hours[keychild]['hours'] + ':00';
+        if (response.hasOwnProperty(key)) {
+          const week = response[key].week.substr(response[key].week.length - 1, 1);
+          const date = parseInt(response[key].day.split('日')[0]);
+          const type = response[key].wea;
+          const max = response[key].tem1;
+          const min = response[key].tem2;
+          const index = response[key].index;
+          index[0]['title'] = '紫外线';
+          index[1]['title'] = '运动';
+          index[2]['title'] = '血糖';
+          index[3]['title'] = '穿衣';
+          index[4]['title'] = '洗车';
+          index[5]['title'] = '空气污染';
+          index[0]['icon'] = 'fa-sun-o';
+          index[1]['icon'] = 'fa-child';
+          index[2]['icon'] = 'fa-heartbeat';
+          index[3]['icon'] = 'fa-male';
+          index[4]['icon'] = 'fa-car';
+          index[5]['icon'] = 'fa-envira';
+          const hours = response[key].hours;
+          for (const keychild in hours) {
+            if (hours.hasOwnProperty(keychild)) {
+              hours[keychild]['hours'] = hours[keychild]['hours'].split('时')[0];
+              hours[keychild]['title'] = hours[keychild]['hours'] + ':00';
+            }
+          }
+          OneWeekWeather[key] = {
+            Date: {
+              Week: week,
+              Date: date,
+            },
+            Weather: {
+              Type: type,
+            },
+            Temperature: {
+              Max: max,
+              Min: min,
+            },
+            Index: index,
+            Hours: hours,
+          };
         }
-        OneWeekWeather[key] = {
-          Date: {
-            Week: week,
-            Date: date,
-          },
-          Weather: {
-            Type: type,
-          },
-          Temperature: {
-            Max: max,
-            Min: min,
-          },
-          Index: index,
-          Hours: hours,
-        };
       }
       return OneWeekWeather;
     }));
   }
   private isWeatherStorage(cityCode: any) {
-    zip(new StorageService(realTimeWeatherStorage(cityCode)).get().pipe(
-        catchError((err) => this.getRealTimeWeather(cityCode).pipe(
-            switchMap((res) => new StorageService(realTimeWeatherStorage(cityCode, res)).set()),
-        )),
-    ), new StorageService(weekWeatherStorage(cityCode)).get().pipe(
-        catchError(() => this.getWeekWeather(cityCode).pipe(
-            switchMap((weather) => new StorageService(
-                weekWeatherStorage(cityCode, weather),
-            ).set()),
-        )),
-    ),
+    zip(
+        new StorageService(realTimeWeatherStorage(cityCode)).get().pipe(
+            catchError((err) => this.getRealTimeWeather(cityCode).pipe(
+                switchMap((res) => new StorageService(realTimeWeatherStorage(cityCode, res)).set()),
+            )),
+        ),
+        new StorageService(weekWeatherStorage(cityCode)).get().pipe(
+            catchError(() => this.getWeekWeather(cityCode).pipe(
+                switchMap((weather) => new StorageService(
+                    weekWeatherStorage(cityCode, weather),
+                ).set()),
+            )),
+        ),
+    ).pipe(
+        finalize(() => this.StartupStatus = false),
     ).subscribe((response) => {
-      this.StartupStatus = false;
       this.RealTimeWeather = response[0].data;
       this.OneWeekWeather = response[1].data;
     });
@@ -498,7 +553,7 @@ export default class Home extends Vue {
     });
   }
   private toSearch() {
-    console.log(1111)
+    console.log(1111);
     uni.navigateTo({
       url: '/pages/search/search',
     });

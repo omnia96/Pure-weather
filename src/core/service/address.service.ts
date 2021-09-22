@@ -1,6 +1,14 @@
+/*
+ * @Author: Omnia96
+ * @Date: 2021-04-08 17:59:42
+ * @LastEditors: Omnia96
+ * @LastEditTime: 2021-09-21 19:43:00
+ * @Description: 地址服务
+ * @FilePath: /pure-weather/src/core/service/address.service.ts
+ */
 import {fromPromise} from 'rxjs/internal-compatibility';
 import {catchError, map, switchMap} from 'rxjs/operators';
-import {Observable, of} from 'rxjs';
+import {of} from 'rxjs';
 import {CityData} from '@/core/libs/cityData';
 import {LocationService} from '@/core/service/location.service';
 import {Area} from '@/core/models/area';
@@ -22,8 +30,10 @@ export class AddressService {
   }
   public area() {
     return new LocationService().isAuthorized().pipe(
-        switchMap(() => new LocationService().getLocation()),
-        catchError(() => of({latitude: '39.908823', longitude: '116.397470'})),
+        switchMap(() => new LocationService().getLocation().pipe()),
+        catchError((res) => {
+          return of({latitude: '39.908823', longitude: '116.397470'});
+        }),
         switchMap((location) => this.getAddressByQQMap(location).pipe(
             map((response) => {
               let citylist = new CityData().citys;
@@ -51,12 +61,16 @@ export class AddressService {
     keyword = keyword.split('');
     let word = '';
     for (const index in keyword) {
-      const array = [];
-      word = word + keyword[index];
-      for (const child in citylist) {
-        citylist[child][key].indexOf(word) != -1 ? array.push(citylist[child]) : '';
-      }
+      if (keyword.hasOwnProperty(index)) {
+        const array = [];
+        word = word + keyword[index];
+        for (const child in citylist) {
+          if (citylist.hasOwnProperty(child)) {
+            citylist[child][key].indexOf(word) != -1 ? array.push(citylist[child]) : '';
+          }
+        }
       array.length > 0 ? citylist = array : '';
+      }
     }
     return citylist;
   }

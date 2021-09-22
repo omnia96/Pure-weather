@@ -80,6 +80,7 @@
 			"scope.userLocation": {
 				"desc": "你的位置信息将用于天气定位"
 			}
-		}
+		},
+        "optimization":{ "subPackages":true }
     }
 }
