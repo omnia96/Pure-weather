@@ -82,5 +82,10 @@
 			}
 		},
         "optimization":{ "subPackages":true }
+    },
+    "h5": {
+        "router": {
+            "mode": "history"
+        }
     }
 }

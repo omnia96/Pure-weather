@@ -14,9 +14,7 @@ export default Vue.extend({
   onLaunch() {
     console.log('App Launch');
     new UpdateService();
-    // #ifdef MP-WEIXIN
     uni.hideTabBar();
-    // #endif
   },
   onShow() {
     console.log('App Show');

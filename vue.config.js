@@ -8,4 +8,7 @@
  */
 module.exports = {
   productionSourceMap: true,
+  configureWebpack: {
+    devtool: process.env.NODE_ENV === 'dev' ? 'source-map' : undefined,
+  },
 };

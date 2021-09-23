@@ -2,25 +2,24 @@
   <div class="page">
     <div class="status-bar" :style="'height:' + StatusBarHeight + 'px;'"></div>
     <div class="container">
-      <view class="header"
+      <div class="header"
             :style="'margin-top:calc(0rpx + '+StatusBarHeight+'px);'">
         <view class="icon">
           <icon-freecns-component-vue icon="Cumulus-Cloud" color="#2196f3" size="20px"/>
         </view>
         <view class="name">Pure · 简天气</view>
         <view class="current">首页</view>
-      </view>
+      </div>
       <div @click="toSearch">
         <md-search></md-search>
       </div>
-      <swiper class=""
-              :style="'width:100%;height:calc(100vh - 175px - ' + StatusBarHeight + 'px);'"
+      <swiper class="u-skeleton"
+              :style="'width:100%;height:calc(100vh - 105px - ' + StatusBarHeight + 'px);'"
               :current="MainSwiper"
               @animationfinish="MainSwiperChange">
         <swiper-item v-for="(value,key) in StarCityList" v-bind:key="key">
           <scroll-view scroll-y style="width: 100%; height: 100%;">
-            <view class="u-skeleton flex flex-direction align-center"
-                  style="width: 100%; height: 100%;">
+            <view class="flex flex-direction align-center h-100">
               <view class="card">
                 <view class="header">
                   <view>今日天气</view>
@@ -52,171 +51,171 @@
                       </view>
                       <view class="value">
                         <view v-if="TemperatureStatus">
-                          {{ RealTimeWeather.Temperature.Current }}°
+                          {{ realTimeWeather.temperature.current }}°
                         </view>
                         <view v-if="!TemperatureStatus">
-                          {{ RealTimeWeather.Temperature.Somatosensory }}°
+                          {{ realTimeWeather.temperature.Somatosensory }}°
                         </view>
                       </view>
                     </view>
                     <view class="type">
-                      <view class="title">{{ RealTimeWeather.Weather.Type }}</view>
+                      <view class="title">{{ realTimeWeather.weather.type }}</view>
                       <view class="temperature">
-                        <view style="color: #F0AD4E;">{{ RealTimeWeather.Temperature.Max }}°</view>
-                        <view style="color: #2196f3;">{{ RealTimeWeather.Temperature.Min }}°</view>
+                        <view style="color: #F0AD4E;">{{ realTimeWeather.temperature.Max }}°</view>
+                        <view style="color: #2196f3;">{{ realTimeWeather.temperature.Min }}°</view>
                       </view>
                     </view>
                   </view>
                   <view class="end">
-                    <view class="item">{{ RealTimeWeather.Wind.Type }}</view>
-                    <view class="item">{{ RealTimeWeather.Wind.Meter }}</view>
-                    <view class="item">{{ RealTimeWeather.Wind.speed }}</view>
+                    <view class="item">{{ realTimeWeather.wind.type }}</view>
+                    <view class="item">{{ realTimeWeather.wind.meter }}</view>
+                    <view class="item">{{ realTimeWeather.wind.speed }}</view>
                   </view>
                 </view>
               </view>
-              <view class="card">
-                <view class="header u-skeleton-rect">
-                  <text>今日空气</text>
-                  <text>{{ RealTimeWeather.Air.Level }}</text>
-                </view>
-                <view class="main today-air u-skeleton-rect">
-                  <view class="item animation-slide-left" style="animation-delay: 0.3s">
-                    <view class="title">Pm2.5</view>
-                    <view class="content">{{ RealTimeWeather.Air.Pm25 }}</view>
-                  </view>
-                  <view class="item animation-slide-left" style="animation-delay: 0.6s">
-                    <view class="title">湿度</view>
-                    <view class="content">{{ RealTimeWeather.Air.Humidity }}</view>
-                  </view>
-                  <view class="item animation-slide-left" style="animation-delay: 0.9s">
-                    <view class="title">气压hPa</view>
-                    <view class="content">{{ RealTimeWeather.Air.Pressure }}</view>
-                  </view>
-                  <view class="item animation-slide-left" style="animation-delay: 1.2s">
-                    <view class="title">能见度</view>
-                    <view class="content">{{ RealTimeWeather.Air.Visibility }}</view>
-                  </view>
-                </view>
-              </view>
-              <view class="card">
-                <view class="header">
-                  <text>Tips</text>
-                </view>
-                <view class="main today-tips u-skeleton-rect">
-                  <text>{{ RealTimeWeather.Air.Tips }}</text>
-                </view>
-              </view>
-              <view class="card">
-                <view class="header">每小时</view>
-                <view class="main u-skeleton-rect">
-                  <scroll-view class="hours" scroll-x="true">
-                    <template v-for="(item,index) in OneWeekWeather[0].Hours">
-                      <view class="item" :key="index"
-                            v-if="
-                              item.hours >= 8 &&
-                              Today.date == OneWeekWeather[0].Date.Date &&
-                              item.hours >= Today.hours">
-                      <view class="title">{{ item.title }}</view>
-                      <view class="weather">{{ item.wea }}</view>
-                      <view class="tem">{{ item.tem }}</view>
-                    </view>
-                    </template>
-                    <view class="item date" v-if="Today.date == OneWeekWeather[0].Date.Date">
-                      {{ OneWeekWeather[1].Date.Date }}
-                    </view>
-                    <template v-for="(item,index) in OneWeekWeather[0].Hours">
-                      <view class="item" :key="index"
-                            v-if="
-                              item.hours < 8  &&
-                              (
-                                Today.date == OneWeekWeather[0].Date.Date ||
-                                item.hours >= Today.hours
-                              )
-                            ">
-                      <view class="title">{{ item.title }}</view>
-                      <view class="weather">{{ item.wea }}</view>
-                      <view class="tem">{{ item.tem }}</view>
-                    </view>
-                    </template>
-                    <template v-for="(item,index) in OneWeekWeather[1].Hours">
-                      <view class="item" :key="index"
-                          v-if="index < 16">
-                      <view class="title">{{ item.title }}</view>
-                      <view class="weather">{{ item.wea }}</view>
-                      <view class="tem">{{ item.tem }}</view>
-                    </view>
-                    </template>
-                    <view class="item date">{{ OneWeekWeather[2].Date.Date }}</view>
-                    <template v-for="(item,index) in OneWeekWeather[1].Hours">
-                      <view class="item" :key="index"
-                          v-if="index >= 16">
-                      <view class="title">{{ item.title }}</view>
-                      <view class="weather">{{ item.wea }}</view>
-                      <view class="tem">{{ item.tem }}</view>
-                    </view>
-                    </template>
-                    <template v-for="(item,index) in OneWeekWeather[2].Hours">
-                      <view class="item" :key="index"
-                          v-if="index < 16">
-                      <view class="title">{{ item.title }}</view>
-                      <view class="weather">{{ item.wea }}</view>
-                      <view class="tem">{{ item.tem }}</view>
-                    </view>
-                    </template>
-                  </scroll-view>
-                </view>
-              </view>
-              <view class="card">
-                <view class="header">
-                  <view>一周天气</view>
-                  <view @click="more(key)">更多</view>
-                </view>
-                <view class="main week-weather u-skeleton-rect">
-                  <view class="item animation-slide-left"
-                        v-for="(item,index) in OneWeekWeather" :key="index"
-                        :style="[{
-                          'animation-delay': (index+1)*0.2 + 's',
-                           color: Today.date == item.Date.Date? '#2196f3':'#000000'
-                        }]">
-                    <view :style="Today.date == item.Date.Date? 'color:#2196f3;':'color:#9e9e9e;'">
-                      {{ item.Date.Week }}
-                    </view>
-                    <view>{{ item.Date.Date }}</view>
-                    <view class="weather">{{ item.Weather.Type }}</view>
-                    <view>{{ item.Temperature.Max }}</view>
-                    <view>{{ item.Temperature.Min }}</view>
-                  </view>
-                </view>
-              </view>
-              <view class="card">
-                <view class="header">
-                  <view>指数</view>
-                </view>
-                <view class="main index u-skeleton-rect">
-                  <view class="item"
-                        v-for="(item,index) in OneWeekWeather[0].Index" :key="index" :id="item.desc"
-                        @click="ShowIndexDesc(item.desc)">
-                    <view class="icon">
-                      <icon-awesome-component-vue :icon="item.icon" size="20px"/>
-                    </view>
-                    <view class="title">{{ item.title }}</view>
-                    <view class="level">{{ item.level }}</view>
-                  </view>
-                </view>
-              </view>
-              <view class="card">
-                <view class="header">
-                  <view>广告</view>
-                </view>
-                <view class="main ad-bar">
-                  <!-- #ifdef MP-WEIXIN -->
-                  <ad unit-id="adunit-86ce23bbd3c7393e"></ad>
-                  <!-- #endif -->
-                  <!-- #ifdef MP-QQ -->
-                  <ad unit-id="c5e6d691147cc2f04445eb0b5c84bf90" type="card"></ad>
-                  <!-- #endif -->
-                </view>
-              </view>
+<!--              <view class="card">-->
+<!--                <view class="header u-skeleton-rect">-->
+<!--                  <text>今日空气</text>-->
+<!--                  <text>{{ RealTimeWeather.Air.Level }}</text>-->
+<!--                </view>-->
+<!--                <view class="main today-air u-skeleton-rect">-->
+<!--                  <view class="item animation-slide-left" style="animation-delay: 0.3s">-->
+<!--                    <view class="title">Pm2.5</view>-->
+<!--                    <view class="content">{{ RealTimeWeather.Air.Pm25 }}</view>-->
+<!--                  </view>-->
+<!--                  <view class="item animation-slide-left" style="animation-delay: 0.6s">-->
+<!--                    <view class="title">湿度</view>-->
+<!--                    <view class="content">{{ RealTimeWeather.Air.Humidity }}</view>-->
+<!--                  </view>-->
+<!--                  <view class="item animation-slide-left" style="animation-delay: 0.9s">-->
+<!--                    <view class="title">气压hPa</view>-->
+<!--                    <view class="content">{{ RealTimeWeather.Air.Pressure }}</view>-->
+<!--                  </view>-->
+<!--                  <view class="item animation-slide-left" style="animation-delay: 1.2s">-->
+<!--                    <view class="title">能见度</view>-->
+<!--                    <view class="content">{{ RealTimeWeather.Air.Visibility }}</view>-->
+<!--                  </view>-->
+<!--                </view>-->
+<!--              </view>-->
+<!--              <view class="card">-->
+<!--                <view class="header">-->
+<!--                  <text>Tips</text>-->
+<!--                </view>-->
+<!--                <view class="main today-tips u-skeleton-rect">-->
+<!--                  <text>{{ RealTimeWeather.Air.Tips }}</text>-->
+<!--                </view>-->
+<!--              </view>-->
+<!--              <view class="card">-->
+<!--                <view class="header">每小时</view>-->
+<!--                <view class="main u-skeleton-rect">-->
+<!--                  <scroll-view class="hours" scroll-x="true">-->
+<!--                    <template v-for="(item,index) in OneWeekWeather[0].Hours">-->
+<!--                      <view class="item" :key="index"-->
+<!--                            v-if="-->
+<!--                              item.hours >= 8 &&-->
+<!--                              Today.date == OneWeekWeather[0].Date.Date &&-->
+<!--                              item.hours >= Today.hours">-->
+<!--                      <view class="title">{{ item.title }}</view>-->
+<!--                      <view class="weather">{{ item.wea }}</view>-->
+<!--                      <view class="tem">{{ item.tem }}</view>-->
+<!--                    </view>-->
+<!--                    </template>-->
+<!--                    <view class="item date" v-if="Today.date == OneWeekWeather[0].Date.Date">-->
+<!--                      {{ OneWeekWeather[1].Date.Date }}-->
+<!--                    </view>-->
+<!--                    <template v-for="(item,index) in OneWeekWeather[0].Hours">-->
+<!--                      <view class="item" :key="index"-->
+<!--                            v-if="-->
+<!--                              item.hours < 8  &&-->
+<!--                              (-->
+<!--                                Today.date == OneWeekWeather[0].Date.Date ||-->
+<!--                                item.hours >= Today.hours-->
+<!--                              )-->
+<!--                            ">-->
+<!--                      <view class="title">{{ item.title }}</view>-->
+<!--                      <view class="weather">{{ item.wea }}</view>-->
+<!--                      <view class="tem">{{ item.tem }}</view>-->
+<!--                    </view>-->
+<!--                    </template>-->
+<!--                    <template v-for="(item,index) in OneWeekWeather[1].Hours">-->
+<!--                      <view class="item" :key="index"-->
+<!--                          v-if="index < 16">-->
+<!--                      <view class="title">{{ item.title }}</view>-->
+<!--                      <view class="weather">{{ item.wea }}</view>-->
+<!--                      <view class="tem">{{ item.tem }}</view>-->
+<!--                    </view>-->
+<!--                    </template>-->
+<!--                    <view class="item date">{{ OneWeekWeather[2].Date.Date }}</view>-->
+<!--                    <template v-for="(item,index) in OneWeekWeather[1].Hours">-->
+<!--                      <view class="item" :key="index"-->
+<!--                          v-if="index >= 16">-->
+<!--                      <view class="title">{{ item.title }}</view>-->
+<!--                      <view class="weather">{{ item.wea }}</view>-->
+<!--                      <view class="tem">{{ item.tem }}</view>-->
+<!--                    </view>-->
+<!--                    </template>-->
+<!--                    <template v-for="(item,index) in OneWeekWeather[2].Hours">-->
+<!--                      <view class="item" :key="index"-->
+<!--                          v-if="index < 16">-->
+<!--                      <view class="title">{{ item.title }}</view>-->
+<!--                      <view class="weather">{{ item.wea }}</view>-->
+<!--                      <view class="tem">{{ item.tem }}</view>-->
+<!--                    </view>-->
+<!--                    </template>-->
+<!--                  </scroll-view>-->
+<!--                </view>-->
+<!--              </view>-->
+<!--              <view class="card">-->
+<!--                <view class="header">-->
+<!--                  <view>一周天气</view>-->
+<!--                  <view @click="more(key)">更多</view>-->
+<!--                </view>-->
+<!--                <view class="main week-weather u-skeleton-rect">-->
+<!--                  <view class="item animation-slide-left"-->
+<!--                        v-for="(item,index) in OneWeekWeather" :key="index"-->
+<!--                        :style="[{-->
+<!--                          'animation-delay': (index+1)*0.2 + 's',-->
+<!--                           color: Today.date == item.Date.Date? '#2196f3':'#000000'-->
+<!--                        }]">-->
+<!--                    <view :style="Today.date == item.Date.Date? 'color:#2196f3;':'color:#9e9e9e;'">-->
+<!--                      {{ item.Date.Week }}-->
+<!--                    </view>-->
+<!--                    <view>{{ item.Date.Date }}</view>-->
+<!--                    <view class="weather">{{ item.Weather.Type }}</view>-->
+<!--                    <view>{{ item.Temperature.Max }}</view>-->
+<!--                    <view>{{ item.Temperature.Min }}</view>-->
+<!--                  </view>-->
+<!--                </view>-->
+<!--              </view>-->
+<!--              <view class="card">-->
+<!--                <view class="header">-->
+<!--                  <view>指数</view>-->
+<!--                </view>-->
+<!--                <view class="main index u-skeleton-rect">-->
+<!--                  <view class="item"-->
+<!--                        v-for="(item,index) in OneWeekWeather[0].Index" :key="index" :id="item.desc"-->
+<!--                        @click="ShowIndexDesc(item.desc)">-->
+<!--                    <view class="icon">-->
+<!--                      <icon-awesome-component-vue :icon="item.icon" size="20px"/>-->
+<!--                    </view>-->
+<!--                    <view class="title">{{ item.title }}</view>-->
+<!--                    <view class="level">{{ item.level }}</view>-->
+<!--                  </view>-->
+<!--                </view>-->
+<!--              </view>-->
+<!--              <view class="card">-->
+<!--                <view class="header">-->
+<!--                  <view>广告</view>-->
+<!--                </view>-->
+<!--                <view class="main ad-bar">-->
+<!--                  &lt;!&ndash; #ifdef MP-WEIXIN &ndash;&gt;-->
+<!--                  <ad unit-id="adunit-86ce23bbd3c7393e"></ad>-->
+<!--                  &lt;!&ndash; #endif &ndash;&gt;-->
+<!--                  &lt;!&ndash; #ifdef MP-QQ &ndash;&gt;-->
+<!--                  <ad unit-id="c5e6d691147cc2f04445eb0b5c84bf90" type="card"></ad>-->
+<!--                  &lt;!&ndash; #endif &ndash;&gt;-->
+<!--                </view>-->
+<!--              </view>-->
               <view class="copyright">Powered By Omnia96</view>
             </view>
           </scroll-view>
@@ -248,6 +247,7 @@ import {realTimeWeather, weekWeather} from '@/core/requests/weather.requests';
 import {StorageValue} from '@/core/models/storageValue';
 import {AddressService} from '@/core/service/address.service';
 import MdSearch from '@/components/md-search/md-search.vue';
+import RealTimeWeather from "@/core/models/realTimeWeather";
 // #ifdef MP-WEIXIN
 let interstitialAd: any = {};
 declare const wx: any;
@@ -264,8 +264,16 @@ export default class Home extends Vue {
   private Today: any = {};
   private Address: any = {};
   private StartupStatus = true;
-  private RealTimeWeather: any = {};
-  private OneWeekWeather = null;
+  private realTimeWeather: RealTimeWeather = new RealTimeWeather();
+  private OneWeekWeather = [
+    {
+      Date: {},
+      Hours: [],
+      Weather: {},
+    },
+    {Hours: [], Weather: {}},
+    {Date: {}, Weather: {}},
+  ];
   private CityImage = null;
   private TemperatureStatus = true;
   private MainSwiper = 0;
@@ -277,9 +285,7 @@ export default class Home extends Vue {
   public onLoad() {
     this.GetCityCode();
     // #ifdef MP-QQ
-    uni.hideTabBar({
-      fail: (err: any) => console.log(err),
-    });
+    uni.hideTabBar();
     // #endif
     // #ifdef MP-WEIXIN
     // 在页面onLoad回调事件中创建插屏广告实例
@@ -405,8 +411,8 @@ export default class Home extends Vue {
           Type: response.wea,
           Icon: response.wea_img,
         },
-        Temperature: {
-          Current: response.tem,
+        temperature: {
+          current: response.tem,
           Max: response.tem1,
           Min: response.tem2,
         },
@@ -417,10 +423,10 @@ export default class Home extends Vue {
         },
       };
       const V = this.ReturnWindSpeed(RealTimeWeather.Wind.speed);
-      const T = RealTimeWeather.Temperature.Current;
+      const T = RealTimeWeather.temperature.current;
       const RH = parseInt(RealTimeWeather.Air.Humidity);
       const AT = this.ReturnAT(T, V, RH);
-      RealTimeWeather['Temperature']['Somatosensory'] = AT;
+      RealTimeWeather['temperature']['Somatosensory'] = AT;
       return RealTimeWeather;
     }));
   }
@@ -492,7 +498,7 @@ export default class Home extends Vue {
     ).pipe(
         finalize(() => this.StartupStatus = false),
     ).subscribe((response) => {
-      this.RealTimeWeather = response[0].data;
+      this.realTimeWeather = response[0].data;
       this.OneWeekWeather = response[1].data;
     });
   }
