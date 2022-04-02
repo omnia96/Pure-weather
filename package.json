@@ -42,6 +42,7 @@
     "uview-ui": "^1.8.4",
     "vue": "^2.6.14",
     "vue-class-component": "^6.3.2",
+    "vue-jsonp": "^2.0.0",
     "vue-property-decorator": "^8.5.1",
     "vuex": "^3.6.2"
   },

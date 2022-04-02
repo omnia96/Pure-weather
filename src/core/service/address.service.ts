@@ -12,12 +12,30 @@ import {of} from 'rxjs';
 import {CityData} from '@/core/libs/cityData';
 import {LocationService} from '@/core/service/location.service';
 import {Area} from '@/core/models/area';
+import {jsonp} from 'vue-jsonp';
 
 const QQMapWX = require('../../static/js/qqmap.js');
 export class AddressService {
   private getAddressByQQMap(location: any) {
     const txmap = new QQMapWX({key: 'QG2BZ-4OS3U-QNUVG-4RYJG-C54ZZ-3ZFCW'});
-    const promise = new Promise((resolve, reject) => {
+    let promise;
+    // #ifdef H5
+    promise = new Promise((resolve, reject) => {
+      jsonp(
+          'https://apis.map.qq.com/ws/geocoder/v1/',
+          {
+            location: location['latitude'] + ',' + location['longitude'],
+            key: 'QG2BZ-4OS3U-QNUVG-4RYJG-C54ZZ-3ZFCW',
+            get_poi: 1,
+            output: 'jsonp',
+          },
+      ).then(({result}: any) => {
+        resolve(result.address_component);
+      });
+    });
+    // #endif
+    // #ifndef H5
+    promise = new Promise((resolve, reject) => {
       txmap.reverseGeocoder({
         location: {
           latitude: location['latitude'],
@@ -26,6 +44,7 @@ export class AddressService {
         success: (res: any) => resolve(res.result.address_component),
       });
     });
+    // #endif
     return fromPromise<any>(promise);
   }
   public area() {

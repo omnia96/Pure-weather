@@ -247,7 +247,7 @@ import {realTimeWeather, weekWeather} from '@/core/requests/weather.requests';
 import {StorageValue} from '@/core/models/storageValue';
 import {AddressService} from '@/core/service/address.service';
 import MdSearch from '@/components/md-search/md-search.vue';
-import RealTimeWeather from "@/core/models/realTimeWeather";
+import RealTimeWeather from '@/core/models/realTimeWeather';
 // #ifdef MP-WEIXIN
 let interstitialAd: any = {};
 declare const wx: any;
